@@ -22,7 +22,7 @@ RUN apt-get install -y pig
 RUN apt-get install -y oozie-client
 
 # Installing FUSE
-RUN apt-get install -y hadoop-hdfs-fuse && mkdir /hdfs
+RUN apt-get install -y hadoop-hdfs-fuse && mkdir /hdfs/dcc
 
 # Install command-line utils
 RUN apt-get install -y vim.tiny
