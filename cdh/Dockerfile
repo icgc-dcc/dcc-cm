@@ -31,7 +31,7 @@ RUN apt-get install -y oozie-client
 RUN apt-get install -y hadoop-hdfs-fuse && mkdir -p /hdfs/dcc
 
 # Install command-line utils
-RUN apt-get install -y vim.tiny git curl tree mongodb inetutils-ping
+RUN apt-get install -y vim.tiny git curl tree mongodb inetutils-ping sendemail
 
 # Remove defaults in preparation for mounting
 RUN unlink /etc/hadoop/conf
