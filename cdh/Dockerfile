@@ -33,29 +33,6 @@ RUN apt-get install -y hadoop-hdfs-fuse && mkdir -p /hdfs/dcc
 # Install command-line utils
 RUN apt-get install -y vim.tiny
 
-# TODO: Consider using the following
-
-# Copy configuration files
-#ADD ./etc/ /etc/
-#ADD ./root_scripts/ /root/
-
-# Init environment
-#RUN cat /root/set_env >> /etc/profile
-
-#RUN unlink /etc/hadoop/conf
-#ADD ./hadoop/ /etc/hadoop/conf/
-
-#RUN unlink /etc/hbase/conf
-#ADD ./hbase/ /etc/hbase/conf/
-
-#RUN unlink /etc/zookeeper/conf
-#ADD ./zookeeper/ /etc/zookeeper/conf/
-
-# Replace placeholders with the actual settings
-#RUN sed -i 's/$HOST_ADDRESS/hstation.vanlab.com/g' /etc/hadoop/conf/*
-#RUN sed -i 's/$HOST_ADDRESS/hstation.vanlab.com/g' /etc/hbase/conf/*
-#RUN sed -i 's/$HOST_ADDRESS/hstation.vanlab.com/g' /etc/zookeeper/conf/*
-
-#RUN sed -i 's/$FS_MOUNT_POINT/\/dfs/g' /etc/hadoop/conf/*
-#RUN sed -i 's/$FS_MOUNT_POINT/\/dfs/g' /etc/hbase/conf/*
-#RUN sed -i 's/$FS_MOUNT_POINT/\/dfs/g' /etc/zookeeper/conf/*
+# Remove defaults in preparation for mounting
+RUN unlink /etc/hadoop/conf
+RUN unlink /etc/hbase/conf
