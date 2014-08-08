@@ -15,6 +15,12 @@ RUN apt-get -y install curl ;\
     echo "deb [arch=amd64] http://archive.cloudera.com/cdh4/ubuntu/precise/amd64/cdh precise-cdh4.1.2 contrib\ndeb-src http://archive.cloudera.com/cdh4/ubuntu/precise/amd64/cdh precise-cdh4.1.2 contrib" > /etc/apt/sources.list.d/cloudera.list ;\
     apt-get update
 
+# Installing HBase
+RUN apt-get install -y hadoop-hdfs
+
+# Installing HBase
+RUN apt-get install -y hbase
+
 # Installing Pig
 RUN apt-get install -y pig
 
@@ -26,6 +32,8 @@ RUN apt-get install -y hadoop-hdfs-fuse && mkdir -p /hdfs/dcc
 
 # Install command-line utils
 RUN apt-get install -y vim.tiny
+
+# TODO: Consider using the following
 
 # Copy configuration files
 #ADD ./etc/ /etc/
