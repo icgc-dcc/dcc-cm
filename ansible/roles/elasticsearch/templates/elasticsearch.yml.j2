@@ -1,0 +1,28 @@
+action:
+  disable_delete_all_indices: true
+bootstrap:
+  mlockall: true
+cluster:
+  name: {{ es_cluster_name }}
+#discovery:
+#  zen:
+#    ping:
+#      multicast:
+#        ping:
+#          enabled: false
+#discovery:
+#  zen:
+#    minimum_master_nodes: 8
+#    ping:
+#      timeout: 30s
+#gateway:
+#  expected_data_nodes: 15
+http:
+  initial_line_length: 1000kb
+  max_chunk_size: 1000kb
+  max_content_length: 1500mb
+  max_header_size: 100kb
+#node:
+#  name: hcn-118
+#path:
+#  data: /data1/dfs/elasticsearch,/data2/dfs/elasticsearch,/data3/dfs/elasticsearch

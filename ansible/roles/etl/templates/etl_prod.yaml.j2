@@ -1,0 +1,142 @@
+# Root directory of DCC submission filesystem
+# fsSubmissionRoot: "/icgc/homogenized" # Not actually used anymore...; fs-convention
+smtpServer: "***REMOVED***"
+sender: "noreply@oicr.on.ca"
+recipients: "a@b.c" # ';' separated
+
+
+# URI to the submission system web app
+submissionWebAppUri: "http://hwww2-dcc.oicr.on.ca:5380"
+
+# Root directory of DCC loader filesystem
+fsLoaderRoot: "/icgc/etl" #FIXME: Remove
+
+# Specify compression type for the output of the loader to be consumed by the exporter
+fileSystemOutputCompression: "LZO"
+
+# FileSystem Scheme. This sets hadoop's fs.defaultFS
+#fsUrl: "***REMOVED***"
+fsUrl: "{{ default_fs }}"
+
+# Specifies the number of maximum concurrent flows in the loader phase 
+loaderMaxConcurrentFlows: 50 
+
+# ElasticSearch URI
+# esUri: "es://***REMOVED***:9300" # rpc-port
+esUri: "{{ elasticsearch_uri }}"
+
+# ElasticSearch bulk insert batch size
+esBulkSize: 10000
+
+# Submission MongoDB URI
+submissionMongoUri: "{{ mongo_base_uri }}/icgc"
+
+# Release MongoDB URI (do not specify a database)
+releaseMongoUri: "{{ mongo_base_uri }}"
+
+# Admin URI (necessary for mongoinit component to satisfy mongo splitVector's permissions in the ETL)
+etlAdminMongoUri: "{{ mongo_base_uri }}"
+
+# DCC Identifier Service
+identifierServiceUri: "{{ identifier_uri }}"
+
+# Project MongoDB URI
+projectMongoUri: "{{ mongo_base_uri }}/dcc-project"
+
+# Gene MongoDB URI
+geneMongoUri: "{{ mongo_base_uri }}/dcc-genome"
+
+# Remove controlled data
+filterAllControlled: false
+
+# FASTA file for VCF generation
+#fastaFile: "/u/dcc_dev/dcc-etl/data/genome/GRCh37.75/GRCh37.75.fasta"
+fastaFile: "{{ data_dir }}/GRCh37.fasta"
+
+fathmmPostgresqlUri: "{{ postgresql_uri }}"
+
+# ES archive output directory
+archiveDir: "/tmp" #FIXME: Remove
+
+# Export mutation VCF file
+exportVCF: true
+
+# Hadoop configuration
+loaderHadoop:
+  #fs.defaultFS: "***REMOVED***"
+  fs.defaultFS: "{{ default_fs }}"
+
+  # temporarily lower the replication factor manually
+  #dfs.replication: 2
+
+  #mapred.job.tracker : "***REMOVED***:8021"
+  mapred.job.tracker : "{{ job_tracker }}"
+  # mapred.job.shuffle.input.buffer.percent: 0.5
+  mapred.child.java.opts: "-Xmx6g"
+  mapred.reduce.tasks: 20
+  mapred.task.timeout: 1800000
+  
+  # 2013-04-13: Added to see if helps speedup reducers 
+  io.sort.mb: 200
+  io.sort.factor: 20
+
+  # Uncomment the following line to not use any file splits for MongoDB
+  #mongo.input.split.create_input_splits: "false"
+  # Uncomment the following line to change how many MB each mapper will get (default is 8)
+  mongo.input.split_size: 128 
+
+  # 2013-04-11: Added to try to lessen required bandwidth to / disk space on the reducer
+  mapred.output.compress: true 
+  mapred.output.compression.type: "BLOCK"
+  mapred.map.output.compression.codec: "org.apache.hadoop.io.compress.SnappyCodec"
+
+  # 2013-04-12: Reducers are big for the indexer. Disabling this may help prevent colocating reducers on a small cluseter.
+  mapred.reduce.tasks.speculative.execution: false
+
+indexerHadoop:
+  #fs.defaultFS: "***REMOVED***"
+  fs.defaultFS: "{{ default_fs }}"
+
+  # temporarily lower the replication factor manually
+  #dfs.replication: 2
+
+  #mapred.job.tracker : "***REMOVED***:8021"
+  mapred.job.tracker : "{{ job_tracker }}"
+  # mapred.job.shuffle.input.buffer.percent: 0.5
+  mapred.child.java.opts: "-Xmx6g"
+  mapred.reduce.tasks: 20
+  mapred.task.timeout: 1800000
+  
+  # 2013-04-13: Added to see if helps speedup reducers 
+  io.sort.mb: 200
+  io.sort.factor: 20
+
+  # Uncomment the following line to not use any file splits for MongoDB
+  #mongo.input.split.create_input_splits: "false"
+  # Uncomment the following line to change how many MB each mapper will get (default is 8)
+  mongo.input.split_size: 128 
+
+  # 2013-04-11: Added to try to lessen required bandwidth to / disk space on the reducer
+  mapred.output.compress: true 
+  mapred.output.compression.type: "BLOCK"
+  mapred.map.output.compression.codec: "org.apache.hadoop.io.compress.SnappyCodec"
+
+  # 2013-04-12: Reducers are big for the indexer. Disabling this may help prevent colocating reducers on a small cluseter.
+  mapred.reduce.tasks.speculative.execution: false
+
+  #mapred.map.child.java.opts: "-Xmx64g -XX:MaxDirectMemorySize=32g"
+  mapred.map.child.java.opts: "-Xmx8g -XX:MaxDirectMemorySize=3g"
+
+# ICGC Client configuration
+icgc:
+  cgpServiceUrl: "https://icgc.org/ud_oauth/1/search/"
+  cudServiceUrl: "https://icgc.org/ud_rest/1/"
+  shortServiceUrl: "http://icgc.org/short/api/1/"
+  consumerKey: "***REMOVED***"
+  consumerSecret: "***REMOVED***"
+  accessToken: "***REMOVED***"
+  accessSecret: "***REMOVED***"
+  cudAppId: "b2ljcl93ZWJkZXY6b3UzbGwzdHQzMjAxMg=="
+  strictSSLCertificates: true
+  requestLoggingEnabled: true
+

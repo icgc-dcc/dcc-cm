@@ -1,0 +1,53 @@
+- name: Install python-software-properties
+  apt: pkg=python-software-properties state=installed update_cache=yes
+
+
+- name: Add repository key
+  apt_key: data="{{ lookup('file', 'ACCC4CF8.asc') }}"  state=present
+
+
+- name: Add PostgreSQL repository
+  apt_repository: repo="{{ postgresql_repo }}" state=present
+
+
+- name: Install postgresql
+  apt: pkg="postgresql-{{ postgresql_version }}" state=installed update_cache=yes
+
+
+- name: Install development header files
+  apt: pkg={{ item }} state=installed update_cache=yes state=installed
+  with_items:
+    - libpq-dev
+
+
+- name: Install PIP
+  apt: pkg="python-pip" state=installed
+
+
+- name: Install psycopg2
+  apt: pkg="python-psycopg2" state=installed
+
+
+- name: Install PostgreSQL config file
+  copy: src=postgresql.conf dest=/etc/postgresql/{{ postgresql_version }}/main/postgresql.conf force=yes
+
+
+- name: Install PostgreSQL hba file
+  copy: src=pg_hba.conf dest=/etc/postgresql/{{ postgresql_version }}/main/pg_hba.conf force=yes
+
+
+- name: Set kernel shared memory
+  shell: "sysctl -w kernel.shmmax=17179869184"
+
+
+- name: Set kerel shared memory
+  shell: "sysctl -w kernel.shmall=4194304"
+
+
+- name: Restart postgres server
+  shell: "service postgresql restart"
+  
+
+
+
+

@@ -1,0 +1,39 @@
+################################################################################
+# Installs Cloudera Manager 5.1
+################################################################################
+
+- name: get CDH repository package
+  get_url: url=http://archive.cloudera.com/cdh5/one-click-install/precise/amd64/cdh5-repository_1.0_all.deb dest=~/cdh5-repository_1.0_all.deb
+- name: Install CDH repository package
+  shell: dpkg -i ~/cdh5-repository_1.0_all.deb
+- name: get ClouderaManager repo list
+  get_url: url=http://archive.cloudera.com/cm5/ubuntu/precise/amd64/cm/cloudera.list dest=/etc/apt/sources.list.d/cloudera-manager.list
+- name: update the repositories
+  shell: apt-get update
+- name: update apt repositories
+  action: shell apt-get update ; true
+- name: install python-apt
+  raw: "apt-get install -y python-apt"
+- name: install ntp
+  action: apt pkg=ntp state=latest
+  notify: start ntp
+- name: install sudo
+  action: apt pkg=sudo state=latest
+- name: install tree
+  action: apt pkg=tree state=latest
+- name: install curl
+  action: apt pkg=curl state=latest
+- name: Install Java
+  include: tasks/install-java.yml
+- name: Install Cloudera Manager Server
+  action: apt pkg={{ item }} state=latest
+  with_items:
+    - cloudera-manager-daemons
+    - cloudera-manager-server-db
+    - cloudera-manager-server
+- name: Start CM service
+  action: service name={{ item }} state=running
+  with_items:
+    - cloudera-scm-server-db
+    - cloudera-scm-server
+

@@ -1,8 +1,3 @@
-ICGC DCC - Docker Ansible
-===
+Ansible scripts for ETL, Portal and Submission
 
-Ansible client environment with Nova, Keystone, Neutron and Quantum python modules installed.
-
-Available at Docker Hub:
-
-https://registry.hub.docker.com/u/icgcdcc/ansible/
+_NOTE_: `./portal` needs to be integrated into the rest of the configuration. It was copied from `dcc/dcc-portal/src/main/ansiable`

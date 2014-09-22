@@ -1,0 +1,17 @@
+# Copyright 2014(c) The Ontario Institute for Cancer Research. All rights reserved.
+#
+# DCC Submission Server - Authorization and authentication configuration
+#
+# Description: 
+#   This is the configuration file for managing users, roles and passwords 
+#   for the dcc-submission system.
+#
+# See:
+#   - http://shiro.apache.org/configuration.html#Configuration-INIConfiguration
+
+# {{ ansible_managed }}
+[users]
+admin = {{ admin_password_hash }}, admin
+
+[roles]
+admin = *

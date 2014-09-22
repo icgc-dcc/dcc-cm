@@ -1,0 +1,22 @@
+# Copyright 2014(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+# HTTPS
+server {
+	listen 443 ssl;
+	server_name {{ server_name }};
+	ssl_certificate     /etc/ssl/dcc/portal.crt;
+	ssl_certificate_key /etc/ssl/dcc/portal.key;
+	ssl_ciphers RC4:HIGH:!aNULL:!MD5;
+	ssl_prefer_server_ciphers on;
+
+	location / {
+		proxy_pass http://web-cluster;
+	}
+}
+
+# HTTP
+server {
+	listen 80;
+	server_name {{ server_name }};
+	rewrite ^ https://$server_name$request_uri? permanent;
+}

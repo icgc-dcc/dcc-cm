@@ -1,0 +1,38 @@
+- name: Create VM instances
+  nova_compute:
+    auth_url: "{{ auth_url }}"
+    login_username: "{{ login_username }}"
+    login_password: "{{ login_password }}"
+    login_tenant_name: "{{ login_tenant_name }}"
+    security_groups: "dcc"
+    state: present
+    name: "{{ inventory_hostname }}"
+    image_id: "{{ image_id }}"
+    key_name: "{{ keypair_name }}"
+    wait_for: 500
+    nics:
+      - net-id: "{{ private_net }}"
+    flavor_id: "{{ flavor_id }}"
+    meta:
+      hostname: "{{ inventory_hostname }}"
+      group: ansible
+    user_data: "#cloud-config\nmanage_etc_hosts: true"
+  delegate_to: localhost
+  register: data
+
+- name: Assign IP address to cluster VM
+  quantum_floating_ip:
+    state: present
+    auth_url: "{{ auth_url }}"
+    login_username: "{{ login_username }}"
+    login_password: "{{ login_password }}"
+    login_tenant_name: "{{ login_tenant_name }}"
+    network_name: "public (external)"
+    instance_name: "{{ inventory_hostname }}"
+    internal_network_name: "dcc"
+  delegate_to: localhost
+  register: data
+
+#- name: Add public ip to hostgroup
+#  add_host: name={{ data.public_ip }} groups={{ logical_group }} hostname={{ inventory_hostname }}
+

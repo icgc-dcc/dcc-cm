@@ -1,4 +1,5 @@
-ICGC DCC - Docker
+ICGC DCC - Configuration Management
 ===
 
-Project that contains all of the `Dockerfile`s for the ICGC DCC 2.0 system.
+Collection of CM files and automation for DCC operational environments.
+

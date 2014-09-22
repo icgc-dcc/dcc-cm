@@ -1,0 +1,14 @@
+- name: Ensure directories
+  file: path="{{ portal_root }}" state="directory"
+
+- name: Download dcc-portal
+  get_url: url="https://seqwaremaven.oicr.on.ca/artifactory/dcc-release/org/icgc/dcc/dcc-portal-api/{{ portal_version }}/dcc-portal-api-{{ portal_version }}-dist.tar.gz" dest="/tmp/portal.tgz"
+
+- name: Extract dcc-portal 
+  shell: "tar xf /tmp/portal.tgz -C {{ portal_root }}"
+
+- name: Copy over portal configuraiton file
+  template: src="settings.yml.j2" dest="{{ portal_root }}/conf/settings.yml" mode=644 force=yes
+
+- name: Start dcc-portal
+  shell: "{{ portal_root }}/dcc-portal-api-{{ portal_version }}/bin/dcc-portal-api restart"

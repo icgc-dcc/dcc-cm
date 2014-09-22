@@ -1,0 +1,61 @@
+################################################################################
+# Main vars for ETL
+################################################################################
+
+# Server name prefix
+server_prefix: "dchang2"
+
+# Directories
+staging_dir: "/tmp"
+
+
+################################################################################
+# DCC Resources, DCC Dependices
+################################################################################
+
+# External URLs 
+external_submission_url: https://submissions.dcc.icgc.org
+external_docs_url: http://docs.icgc.org
+
+# Artifactory URLS
+artifactory_url: http://seqwaremaven.oicr.on.ca/artifactory
+artifactory_release_url: "{{ artifactory_url }}/dcc-release" 
+artifactory_deps_url: "{{ artifactory_url }}/simple/dcc-dependencies" 
+artifactory_release_url: "{{ artifactory_url }}/simple/dcc-release"
+artifactory_snapshot_url: "{{ artifactory_url }}/simple/dcc-snapshot"
+
+
+reference_genome_version: GRCh37
+reference_genome_name: dcc-reference-genome
+reference_genome_archive: "{{ reference_genome_name }}-{{ reference_genome_version }}.tar.gz"
+reference_genome_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ reference_genome_name }}/{{ reference_genome_version }}/{{ reference_genome_archive }}"
+
+
+
+
+################################################################################
+# DCC ETL 
+#
+# /dcc_etl
+#    /keys
+#    /etl_script (The git repository)
+#    /config
+#    /data
+#    /lib
+################################################################################
+etl_root_dir: "/dcc_etl"
+keys_dir: "{{ etl_root_dir }}/keys" 
+repo_dir: "{{ etl_root_dir }}/etl_script"   
+config_dir: "{{ etl_root_dir }}/config"
+data_dir: "{{ etl_root_dir }}/data"
+lib_dir: "{{ etl_root_dir }}/lib"
+fuse_root_dir: "/hdfs/dcc"
+
+
+
+################################################################################
+# DCC Portal 
+################################################################################
+es_index_name: "openstack-test"
+
+

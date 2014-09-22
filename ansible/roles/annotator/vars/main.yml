@@ -1,0 +1,21 @@
+# Jerry said the snpeff directory name is dependent on the reference genome name
+
+annotator_root: "/u/dcc_dev/dcc-annotator"
+annotator_snpeff_dir:  "{{ annotator_root }}/data/snpeff/GRCh37.75"
+annotator_reference_dir: "{{ annotator_root }}/data/genome"
+
+annotator_import_fs: LOCAL
+annotator_export_fs: LOCAL
+annotator_work_dir: "/tmp/work"
+
+snpeff_version: 3.3-GRCh37.75
+snpeff_name: dcc-snpeff
+snpeff_archive: "{{ snpeff_name }}-{{ snpeff_version }}.bin"
+snpeff_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ snpeff_name }}/{{ snpeff_version }}/{{ snpeff_archive }}"
+
+reference_genome_version: GRCh37
+reference_genome_name: dcc-reference-genome
+reference_genome_archive: "{{ reference_genome_name }}-{{ reference_genome_version }}.tar.gz"
+reference_genome_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ reference_genome_name }}/{{ reference_genome_version }}/{{ reference_genome_archive }}"
+
+

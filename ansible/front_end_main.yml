@@ -1,0 +1,14 @@
+---
+# Copyright 2014(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+# This  playbook deploys nginx and varnish servers
+
+- name: Configure and deploy varnish and nginx
+  hosts: ["varnish", "nginx"]
+  gather_facts: no
+  user: ubuntu
+  sudo: yes
+
+  roles:
+    - varnish
+    - nginx

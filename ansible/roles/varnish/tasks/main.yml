@@ -1,0 +1,23 @@
+---
+# Copyright 2014(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- name: Install apt-transport-https
+  apt: name=apt-transport-https update_cache=yes
+
+- name: Add Varnish repository key
+  apt_key: url=https://repo.varnish-cache.org/ubuntu/GPG-key.txt state=present
+
+- name: Add Varnish repositoty to sources list
+  apt_repository: repo='deb https://repo.varnish-cache.org/ubuntu/ precise varnish-{{ varnish_version }}'
+
+- name: Install Varnish
+  apt: name=varnish update_cache=yes
+
+- name: Copy portal.vcl
+  template: src=portal.vcl.j2 dest=/etc/varnish/portal.vcl mode=0644
+
+- name: Copy Varnish configuration
+  template: src=varnish.j2 dest=/etc/default/varnish mode=0644
+
+- name: Restart Varnish
+  service: name=varnish state=restarted

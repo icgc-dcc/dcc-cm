@@ -1,0 +1,269 @@
+################################################################################
+#
+# Submission playbook
+# 1) Hadoop
+# 2) CDH Manager
+# 3) MongoDB
+# 4) Submission Node
+#
+# TODO
+#   - System (.system) need to be set in place
+#   - Need to clear root_dir on HDFS
+#   - Better injection of mongo_uri, job_tracker
+#   - CDH API for provisioning cluster
+#
+# Hacks
+#   - Codelists and Dictionary should not use /ws/seed
+#   
+#
+################################################################################
+
+- name: Generate initial hosts
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - "vars/main.yml"
+  tasks:
+    - name: Add Host
+      add_host: name="dchang-submission-cm" groups=group_01
+    - name: Add Host
+      add_host: name={{ item }} groups=group_02
+      with_sequence: count=3 format="dchang-submission-worker-%02x"
+    - name: Add Host
+      add_host: name="dchang-submission-mongo" groups=group_03
+    - name: Add Host
+      add_host: name="dchang-submission-main" groups=group_04
+
+
+- name: Create Openstack host file
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: "Remove previous host file if exist"
+      shell: rm -f bootstrap_hosts
+      delegate_to: localhost
+    - name: "Create new host file with localhost entry"
+      shell: echo "127.0.0.1 localhost" > bootstrap_hosts
+      delegate_to: localhost
+
+
+- name: Deploy CM
+  hosts: group_01
+  user: root
+  gather_facts: false
+  serial: 1
+  vars_files:
+    - "vars/main.yml"
+  tasks:
+    - include: tasks/create-instances.yml
+    - name: Add public ip to hostgroup
+      add_host: name={{ data.public_ip }} groups=manager,all_instances hostname={{ inventory_hostname }}
+
+
+- name: Deploy worker nodes
+  hosts: group_02
+  user: root
+  gather_facts: false
+  serial: 1
+  vars_files:
+    - "vars/main.yml"
+  tasks:
+    - include: tasks/create-instances.yml
+    - name: Add public ip to hostgroup
+      add_host: name={{ data.public_ip }} groups=workers,all_instances hostname={{ inventory_hostname }}
+
+
+- name: Deploy mongo node
+  hosts: group_03
+  user: root
+  gather_facts: false
+  serial: 1
+  vars_files:
+    - "vars/main.yml"
+  tasks:
+    - include: tasks/create-instances.yml
+    - name: Add public ip to hostgroup
+      add_host: name={{ data.public_ip }} groups=mongo,all_instances hostname={{ inventory_hostname }}
+
+
+
+- name: Deploy submission server node
+  hosts: group_04
+  user: root
+  gather_facts: false
+  serial: 1
+  vars_files:
+    - "vars/main.yml"
+  tasks:
+    - include: tasks/create-instances.yml
+    - name: Add public ip to hostgroup
+      add_host: name={{ data.public_ip }} groups=main,all_instances hostname={{ inventory_hostname }}
+
+
+
+
+
+################################################################################
+# Getting around openstack quirkyness of not having DNS
+################################################################################
+- name: Check if SSH is ready on servers
+  hosts: all_instances
+  gather_facts: False
+  tasks:
+    - name: Wait for ssh
+      wait_for: host={{ inventory_hostname }} port=22 timeout=600
+      delegate_to: localhost
+
+
+
+- name: Grab openstack node's internal IPs
+  hosts: all_instances
+  gather_facts: True
+  serial: 1
+  vars_files:
+    - "vars/main.yml"
+  vars:
+    host_key_checking: False
+    ansible_ssh_user: ubuntu
+    ansible_ssh_private_key_file: ~/.ssh/id_rsa
+  tasks:
+    - name: debug
+      shell: echo "{{ ansible_all_ipv4_addresses[0] }} {{ ansible_hostname }}" >> bootstrap_hosts
+      delegate_to: localhost
+
+
+- name: Replace /etc/hosts with bootstrapped hosts file
+  hosts: all_instances
+  sudo: True
+  serial: 1
+  vars_files:
+    - "vars/main.yml"
+  vars:
+    host_key_checking: False
+    ansible_ssh_user: ubuntu
+    ansible_ssh_private_key_file: ~/.ssh/id_rsa
+  tasks:
+    - name: Copying... 
+      copy: src=bootstrap_hosts dest=/etc/hosts owner=root group=root
+
+
+
+
+
+
+################################################################################
+# Real work starts here: MongoDB, CM, Server
+################################################################################
+- name: Setting up MongoDB
+  hosts: mongo
+  sudo: True
+  gather_facts: False
+  vars:
+    host_key_checking: False
+    ansible_ssh_user: ubuntu
+    ansible_ssh_private_key_file: ~/.ssh/id_rsa
+  sudo: yes
+  roles:
+    - mongodb
+
+- name: Setting up Cloudera Manager
+  hosts: manager 
+  sudo: True
+  gather_facts: False
+  vars:
+    host_key_checking: False
+    ansible_ssh_user: ubuntu
+    ansible_ssh_private_key_file: ~/.ssh/id_rsa
+  vars_files:
+    - "vars/main.yml"
+  tasks:
+    - name: Setup CDH repositories
+      include: tasks/install-cdh-repository.yml
+    - name: update apt repositories
+      action: shell apt-get update ; true
+    - name: install python-apt
+      raw: "apt-get install -y python-apt"
+    - name: install ntp
+      action: apt pkg=ntp state=latest
+      notify: start ntp
+    - name: install sudo
+      action: apt pkg=sudo state=latest
+    - name: install tree
+      action: apt pkg=tree state=latest
+    - name: install curl
+      action: apt pkg=curl state=latest
+    - name: Install Java
+      include: tasks/install-java.yml
+    - name: Install Cloudera Manager Server
+      action: apt pkg={{ item }} state=latest
+      with_items:
+        - cloudera-manager-daemons
+        - cloudera-manager-server-db
+        - cloudera-manager-server
+    - name: Start CM service
+      action: service name={{ item }} state=running
+      with_items:
+        - cloudera-scm-server-db
+        - cloudera-scm-server
+  handlers:
+  - name: start ntp
+    action: service name=ntp state=started
+
+
+
+- name: Pause playbook
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  tasks:
+    - pause: prompt="Time to do manual work for the cluster..."
+
+
+
+# TOD: setup hadoop cluster. Grab mongodb uri and jobtracker uri.
+- name: Setting up submission server
+  hosts: main
+  gather_facts: False
+  sudo: yes
+  vars:
+    host_key_checking: False
+    ansible_ssh_user: ubuntu
+    ansible_ssh_private_key_file: ~/.ssh/id_rsa
+    fs_url: "hdfs://dchang-submission-worker-01"
+    job_tracker: "dchang-submission-worker-01:8021"
+    mongo_host: "dchang-submissionl-mongo"
+  vars_files:
+    - "vars/main.yml"
+  pre_tasks:
+    - name: Install Java
+      include: tasks/install-java.yml
+  roles:
+     - mongodb
+     - submission
+
+
+#- name: Install Cloudera manager
+#  hosts: G1
+#  sudo: True
+#  gather_facts: false
+#  vars:
+#    host_key_checking: False
+#    ansible_ssh_user: ubuntu
+#    ansible_ssh_private_key_file: ~/.ssh/id_rsa
+#  vars_files:
+#    - "vars/main.yml"
+#  tasks:
+#    - name: Install Cloudera Manager Server
+#      action: apt pkg={{ item }} state=latest
+#      with_items:
+#      - cloudera-manager-daemons
+#      - cloudera-manager-server-db
+#      - cloudera-manager-server
+#    - name: Start CM service
+#      action: service name={{ item }} state=running
+#      with_items:
+#      - cloudera-scm-server-db
+#      - cloudera-scm-server
+#
+
+

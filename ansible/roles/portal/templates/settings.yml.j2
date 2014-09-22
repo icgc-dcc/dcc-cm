@@ -1,0 +1,154 @@
+# HTTP
+http:
+  port: {{ http_port }}
+  adminPort: {{ http_admin_port }}
+  rootPath: "/api/*"
+
+  # HTTP request log settings.
+  requestLog:
+
+    # Settings for logging to stdout.
+    console:
+
+      # If true, log requests to stdout.
+      enabled: false
+
+    # Settings for logging to a file.
+    file:
+
+      # If true, log requests to a file.
+      enabled: false
+
+# Authentication
+crowd:
+  ssoUrl: {{ crowd_sso_url }}
+
+hazelcast:
+  # NB: Below hazelcast settings do not have default values. The portal won't start if they're unset
+
+  # Credentials to enter a group. E.g. dev, uat, prod groups
+  groupName: "dcc-prod"
+  groupPassword: "DccProdPasswd"
+
+  # Time-to-live settings.
+  # Maximum number of seconds for each entry to stay in the cache. Entries that are
+  # older than the set value and not updated for that time
+  # will get automatically evicted from the cache.
+
+  # Expire inactive users in 15 minutes
+  usersCacheTTL: 900
+
+  # Expire openId authentication attempt in 2 minutes
+  openidAuthTTL: 120
+
+# ElasticSearch index and hosts
+elastic:
+  indexName: {{ es_index_name }}
+  nodeAddresses:
+     - host: {{ es_host }}
+       port: 9300
+
+# Mail
+mail:
+  enabled: false
+  recipientEmail: ***REMOVED***
+
+# Genomemaps
+browser:
+  dataSources:
+     - uri: gene
+       className: org.icgc.dcc.portal.browser.ds.GeneDataSource
+     - uri: mutation
+       className: org.icgc.dcc.portal.browser.ds.MutationDataSource
+# Data download
+download:
+  enabled: true
+  uri: {{ download_uri }}
+  dynamicRootPath: "/icgc/download/dynamic"
+  staticRootPath: "/icgc/download/static"
+  currentReleaseSymlink: {{ download_current }}
+  stage: "PRODUCTION"
+  quorum: {{ download_quorum }}
+  oozieUrl: {{ download_oozie_url }}
+  appPath: {{ download_app_path }}
+  releaseName: "CURRENT_RELEASE"
+
+# Logging settings
+logging:
+
+  # Settings for logging to stdout.
+  console:
+
+    # If true, write log statements to stdout.
+    enabled: true
+
+  # Settings for logging to a file.
+  file:
+
+    # If true, write log statements to a file.
+    enabled: false
+
+    # Do not write log statements below this threshold to the file.
+    threshold: INFO
+
+    # The file to which current statements will be logged.
+    currentLogFilename: ../logs/dcc-portal-api.log
+
+    # When the log file rotates, the archived log will be renamed to this and gzipped. The
+    # %d is replaced with the previous day (yyyy-MM-dd). Custom rolling windows can be created
+    # by passing a SimpleDateFormat-compatible format as an argument: "%d{yyyy-MM-dd-hh}".
+    archivedLogFilenamePattern: ../logs/dcc-portal-api-%d.log.gz
+
+    # The number of archived files to keep.
+    archivedFileCount: 10
+
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL
+  level: INFO
+
+  # Logger-specific levels
+  loggers:
+
+    # Jersey request logging
+    "com.sun.jersey.api.container.filter.LoggingFilter": INFO
+
+    # ElasticSearch query logging
+    "org.icgc.dcc.portal.service.BaseQueryService": WARN
+
+    # Very chatty
+    "com.wordnik.swagger.jsonschema.ApiModelParser": WARN
+
+    # dynamic downloader logging
+    "org.apache.hadoop.hbase": WARN
+    "org.apache.zookeeper": WARN
+
+    # ERRORs should be converted to WARNs in Swagger 1.2.2
+    "com.wordnik.swagger.jaxrs.HelpApi": OFF
+# ICGC Client configuration
+icgc:
+
+  # CGP/DACO API endpoint
+  cgpUrl: "https://icgc.org/ud_oauth/1/search"
+
+  # ShortUrl API endpoint
+  shortUrl: "https://icgc.org/short/api/1/shorten"
+
+  # CUD API endpoint
+  cudUrl: "https://icgc.org/ud_rest/1"
+
+  # CUD credentials. Obtained from webdev@oicr.on.ca
+  cudAppId: {{ icgc_cud_id }}
+  cudUser: {{ icgc_cud_user }}
+  cudPassword: {{ icgc_cud_passwd }}
+
+  # OAuth credentials
+  # To generate the credentials go to icgc.org, log in, go to the "OAuth Settings" tab and request "Regenerate all tokens"
+  consumerKey: "***REMOVED***"
+  consumerSecret: "***REMOVED***"
+  accessToken: "***REMOVED***"
+  accessSecret: "***REMOVED***"
+
+  # Log HTTP requests to the API
+  enableHttpLogging: false
+
+  # Disallow self-signed SSL certificates
+  enableStrictSSL: true

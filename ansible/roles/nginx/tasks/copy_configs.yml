@@ -1,0 +1,20 @@
+---
+# Copyright 2014(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- name: Copy nginx.conf
+  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf mode=0644
+
+- name: Copy dcc_portal
+  template: src=dcc_portal.j2 dest=/etc/nginx/sites-available/dcc_portal mode=0644
+
+- name: Create dcc directory
+  file: path=/etc/ssl/dcc state=directory
+
+- name: Copy portal.crt
+  copy: src=portal.crt dest=/etc/ssl/dcc/portal.crt mode=0644
+
+- name: Copy portal.key
+  copy: src=portal.key dest=/etc/ssl/dcc/portal.key mode=0644
+
+- name: Enable dcc_portal
+  file: src=/etc/nginx/sites-available/dcc_portal dest=/etc/nginx/sites-enabled/dcc_portal state=link

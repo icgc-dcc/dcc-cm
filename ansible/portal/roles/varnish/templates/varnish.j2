@@ -1,0 +1,49 @@
+#
+# Copyright 2014(c) The Ontario Institute for Cancer Research. All rights reserved.
+#
+# Description: 
+#   This is DCC portal configuration file for varnish 3.0.4. Used for parameters and command line arguments. 
+#
+#   /etc/init.d/varnish expects the variables $DAEMON_OPTS, $NFILES and $MEMLOCK
+#   to be set from this shell script fragment.
+#
+# Notes: 
+#   When you change this, you need to run service varnish restart for the changes to take effect. 
+#
+#   If systemd is installed, this file is obsolete and ignored.  You will
+#   need to copy /lib/systemd/system/varnish.service to /etc/systemd/system/ and
+#   edit that file.
+#
+#   On RedHat-based OS’s, this is kept in /etc/sysconfig/varnish instead.
+#
+#   Most Varnish-installations use two configuration-files. One of them is used by the operating system 
+#   to start Varnish (this), while the other contains the VCL.
+#
+# See:
+#   https://www.varnish-software.com/static/book/Getting_started.html?highlight=daemon_opts#configuration
+#
+# Typical installation location:
+#   /etc/default/varnish
+#
+# SCM:
+#  https://github.com/icgc-dcc/dcc/blob/develop/dcc-portal/dcc-portal-api/src/main/varnish/varnish
+#
+
+# Should we start varnishd at boot?  Set to "no" to disable.
+START={{ varnish_start }}
+
+# Maximum number of open files (for ulimit -n)
+NFILES={{ varnish_nfiles }}
+
+# Maximum locked memory size (for ulimit -l)
+# Used for locking the shared memory log in memory.  If you increase log size,
+# you need to increase this number as well
+MEMLOCK={{ varnish_memlock }}
+
+# Listen on port 5381, administration on localhost:5383, and forward to
+# one content server selected by the vcl file, based on the request.  Use a 6GB
+# in-memory cache.
+DAEMON_OPTS="-a :{{ varnish_port }} \
+             -T {{ varnish_host }}:{{ varnish_admin_port }} \
+             -f /etc/varnish/portal.vcl \
+             -s malloc,{{ varnish_memory }}G"

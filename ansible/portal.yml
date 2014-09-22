@@ -1,0 +1,13 @@
+# has a dependancy on Java
+- name: Portal deployment
+  hosts: ["portal"]
+  gather_facts: no
+  user: ubuntu
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+  pre_tasks:
+    - name: Install Java
+      include: tasks/install-java.yml
+  roles:
+    - portal
