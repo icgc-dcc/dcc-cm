@@ -200,7 +200,7 @@
   tags:
     - first
     - debug
- 
+
 
 - name: Provision OpenStack Instance
   hosts: group_07
@@ -245,7 +245,6 @@
   vars:
     host_key_checking: False
     ansible_ssh_user: ubuntu
-    ansible_ssh_private_key_file: ~/.ssh/id_rsa
   tasks:
     - name: Writing IPs to host file
       shell: echo "{{ ansible_all_ipv4_addresses[0] }} {{ ansible_hostname }}" >> bootstrap_hosts
@@ -264,7 +263,6 @@
   vars:
     host_key_checking: False
     ansible_ssh_user: ubuntu
-    ansible_ssh_private_key_file: ~/.ssh/id_rsa
   tasks:
     - name: Copying... 
       copy: src=bootstrap_hosts dest=/etc/hosts owner=root group=root
@@ -413,6 +411,8 @@
       with_items:
         - cloudera-scm-server-db
         - cloudera-scm-server
+    - name: Upload pem file.
+      copy: src="{{ ansible_ssh_private_key_file }}" dest=/home/ubuntu/dcc.pem mode=0600
   handlers:
     - name: start ntp
       action: service name=ntp state=started
@@ -462,9 +462,9 @@
 # Manual work required here
 #
 # 1) Use CM to provision the cluster, worker nodes need
-#   - HBase, HDFS, MapReduce, Oozie, Zookeeper
+#   - Zookeeper, HDFS, MapReduce, HBase, Oozie
 #
-# 2) Use CM to install HDFS client on etl main node so it can access FUSE
+# 2) Use CM to install HDFS client on etl main node so it can access HDFS
 #   - Goto Home => HDFS => Instances 
 #   - Select "Add Role Instances"
 #   - Select Gateway and select the etl host
@@ -560,7 +560,7 @@
 #   http://www.cloudera.com/content/cloudera-content/cloudera-docs/CM4Ent/4.6.2/Cloudera-Manager-Installation-Guide/cmig_install_LZO_Compression.html
 #
 ################################################################################
-   
+
 
 # TODO: Should remove mongodb dependency, this is just used for overarch to init release db
 - name: Setting up main ETL node
