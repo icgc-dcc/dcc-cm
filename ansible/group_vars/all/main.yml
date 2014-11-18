@@ -3,7 +3,7 @@
 ################################################################################
 
 # Server name prefix
-server_prefix: "dchang2"
+server_prefix: "dcc"
 
 # Directories
 staging_dir: "/tmp"
