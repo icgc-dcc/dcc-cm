@@ -353,7 +353,6 @@
     - first
 
 
-
 # FIXME: Production uses /u/dcc_dev/ as a shared directory, we don't have this on openstack
 - name: Copy reference genome to worker ndoes
   hosts: workers
@@ -373,8 +372,6 @@
   tags:
     - first
   
-      
-
 
 - name: Setting up Cloudera Manager
   hosts: manager
@@ -411,15 +408,11 @@
       with_items:
         - cloudera-scm-server-db
         - cloudera-scm-server
-    - name: Upload pem file.
-      copy: src="{{ ansible_ssh_private_key_file }}" dest=/home/ubuntu/dcc.pem mode=0600
   handlers:
     - name: start ntp
       action: service name=ntp state=started
   tags:
     - first
-
-
 
 - name: Install LZO
   hosts: main:workers
@@ -443,9 +436,6 @@
   tags:
     - first
     - debug
-
-
-
 
 - name: Pause playbook
   hosts: localhost
