@@ -20,6 +20,7 @@ java_name: oracle-java7
 # Cloudera Manager Configurations
 service_types_and_names: { ZOOKEEPER: ZOOKEEPER-1, HDFS: HDFS-1, MAPREDUCE: MAPREDUCE-1, HBASE: HBASE-1, OOZIE: OOZIE-1 }
 host_list: [ dcc-etl-worker-01, dcc-etl-worker-02, dcc-etl-worker-03, dcc-etl-worker-04 ]
+etl_main_host: dcc-etl-main
 cluster_name: ETL
 cdh_version: CDH5
 cdh_version_number: 5

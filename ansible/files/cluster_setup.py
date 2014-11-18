@@ -27,12 +27,13 @@ import yaml
 
 # Configuration
 service_types_and_names = {
-    "ZOOKEEPER": "ZOOKEEPER-1",
-    "HDFS": "HDFS-1",
-    "MAPREDUCE": "MAPREDUCE-1",
-    "HBASE": "HBASE-1",
-    "OOZIE": "OOZIE-1"}
+    "ZOOKEEPER": "ZOOKEEPER",
+    "HDFS": "HDFS",
+    "MAPREDUCE": "MAPREDUCE",
+    "HBASE": "HBASE",
+    "OOZIE": "OOZIE"}
 host_list = None
+etl_main_host = None
 cluster_name = "ETL"
 cdh_version = "CDH5"
 cdh_version_number = "5"
@@ -65,6 +66,7 @@ def read_config(config_file):
     cm_repo_url = config['cm_repo_url']
     service_types_and_names = config['service_types_and_names']
     host_list = config['host_list']
+    etl_main_host = config['etl_main_host']
     cluster_name = config['cluster_name']
     cdh_version = config['cdh_version']
     cdh_version_number = config['cdh_version_number']
@@ -248,6 +250,54 @@ def set_up_cluster():
         exit(0)
 
     print "First run successfully executed. Cluster has been set up!"
+
+
+def setup_etl_main():
+    # get a handle on the instance of CM that we have running
+    api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=7)
+
+    # get the CM instance
+    cm = ClouderaManager(api)
+
+    # read private key
+    private_key = open(private_key_path, 'rb').read()
+
+    # install hosts on etl-main
+    cmd = cm.host_install(host_username, [etl_main_host], private_key=private_key, cm_repo_url=cm_repo_url)
+    print "Installing etl_main_host. This will take a while."
+    while cmd.success is None:
+        sleep(30)
+        cmd = cmd.fetch()
+
+    if cmd.success is not True:
+        print "cm_host_install failed: " + cmd.resultMessage
+        exit(0)
+
+    print "cm_host_install succeeded."
+
+    cluster = api.get_cluster(cluster_name)
+
+    # add etl_main_host to cluster
+    cluster.add_hosts([etl_main_host])
+
+    # add gateway role to etl_main_host for hbase, hdfs and mapreduce
+
+    # install HDFS client on etl main node so it can access HDFS
+    hdfs_service = cluster.get_service("HDFS")
+    hdfs_service.create_role("HDFS-gw-0", "GATEWAY", etl_main_host)
+
+    # install MapReduce client on the etl main node so it can run exporter
+    mr_service = cluster.get_service("MAPREDUCE")
+    mr_service.create_role("MAPREDUCE-gw-0", "GATEWAY", etl_main_host)
+
+    # install HBase client on etl main node
+    hbase_service = cluster.get_service("HBASE")
+    hbase_service.create_role("HBASE-gw-0", "GATEWAY", etl_main_host)
+
+    print "About to restart cluster"
+    cluster.stop().wait()
+    cluster.start().wait()
+    print "Done restarting cluster"
 
 
 def main(argv):
