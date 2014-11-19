@@ -234,7 +234,7 @@ def set_up_cluster():
     print "First run successfully executed. Cluster has been set up!"
 
 
-def setup_etl_main():
+def configure_cluster():
 
     # get a handle on the instance of CM that we have running
     api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=7)
@@ -279,16 +279,13 @@ def setup_etl_main():
 
     # TODO: are these needed service-wide?
 
-    # See hbase.dynamic.jars.dir in http://hbase.apache.org/book.html 
-    hbase_service_config = {
-      'hbase_service_config_safety_valve' : '<property><name>hbase.dynamic.jars.dir</name><value>/hbase_lib</value></property>'
-    }
-    hbase_service.update_config(hbase_service_config)
-
+    # See hbase.dynamic.jars.dir in http://hbase.apache.org/book.html
     # Edit /etc/hbase/conf/hbase-site.xml in the main ETL node to get around hbase max hfile limitation
     # See: http://stackoverflow.com/questions/24950393/trying-to-load-more-than-32-hfiles-to-one-family-of-one-region
+    value = '<property><name>hbase.dynamic.jars.dir</name><value>/hbase_lib</value></property>' \
+            '<property><name>hbase.mapreduce.bulkload.max.hfiles.perRegion.perFamily</name><value>5000</value></property>'
     hbase_service_config = {
-      'hbase_service_config_safety_valve' : '<property><name>hbase.mapreduce.bulkload.max.hfiles.perRegion.perFamily</name><value>5000</value></property>'
+      'hbase_service_config_safety_valve' : value
     }
     hbase_service.update_config(hbase_service_config)
 
@@ -310,6 +307,7 @@ def main(argv):
         elif opt in ("-h", "--cloudera_manager_host"):
             cm_host = arg
     set_up_cluster()
+    configure_cluster()
 
 
 if __name__ == "__main__":
