@@ -25,15 +25,21 @@ from time import sleep
 import sys
 import yaml
 
+zookeeper_service_name = "ZOOKEEPER"
+hdfs_service_name = "HDFS"
+mapred_service_name = "MAPRED"
+hbase_service_name = "HBASE"
+oozie_service_name = "OOZIE"
+
 # Configuration
 service_types_and_names = {
-    "ZOOKEEPER": "ZOOKEEPER",
-    "HDFS": "HDFS",
-    "MAPREDUCE": "MAPREDUCE",
-    "HBASE": "HBASE",
-    "OOZIE": "OOZIE"}
-host_list = None
-etl_main_host = None
+    "ZOOKEEPER": zookeeper_service_name,
+    "HDFS": hdfs_service_name,
+    "MAPREDUCE": mapred_service_name,
+    "HBASE": hbase_service_name,
+    "OOZIE": oozie_service_name}
+host_list = ['dcc-etl-worker-01', 'dcc-etl-worker-02', 'dcc-etl-worker-03', 'dcc-etl-worker-04']
+etl_main_host = "dcc-etl-main"
 cluster_name = "ETL"
 cdh_version = "CDH5"
 cdh_version_number = "5"
@@ -45,38 +51,14 @@ cm_password = "admin"
 cm_service_name = "mgmt"
 cm_repo_url = None
 
-reports_manager_host = None
+reports_manager_host = "dcc-etl-worker-01"
 reports_manager_name = "reports_manager"
 reports_manager_username = "rman"
 reports_manager_password = ""
 reports_manager_database_type = "postgresql"
 
-host_username = None
-private_key_path = None
-
-
-def read_config(config_file):
-    # read the configuration from the provided settings file
-    stream = open(config_file, 'r')
-    config = yaml.load(stream)
-    cm_port = config['cm_port']
-    cm_username = config['cm_username']
-    cm_password = config['cm_password']
-    cm_service_name = config['cm_service_name']
-    cm_repo_url = config['cm_repo_url']
-    service_types_and_names = config['service_types_and_names']
-    host_list = config['host_list']
-    etl_main_host = config['etl_main_host']
-    cluster_name = config['cluster_name']
-    cdh_version = config['cdh_version']
-    cdh_version_number = config['cdh_version_number']
-    reports_manager_host = config['reports_manager_host']
-    reports_manager_name = config['reports_manager_name']
-    reports_manager_username = config['reports_manager_username']
-    reports_manager_password = config['reports_manager_password']
-    reports_manager_database_type = config['reports_manager_database_type']
-    host_username = config['host_username']
-    private_key_path = config['ansible_ssh_private_key_file']
+host_username = "ubuntu"
+private_key_file_path = None
 
 
 def set_up_cluster():
@@ -94,7 +76,7 @@ def set_up_cluster():
     cm.create_mgmt_service(service_setup)
 
     # read private key
-    private_key = open(private_key_path, 'rb').read()
+    private_key = open(private_key_file_path, 'rb').read()
 
     # install hosts on this CM instance
     cmd = cm.host_install(host_username, host_list, private_key=private_key, cm_repo_url=cm_repo_url)
@@ -253,6 +235,7 @@ def set_up_cluster():
 
 
 def setup_etl_main():
+
     # get a handle on the instance of CM that we have running
     api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=7)
 
@@ -283,16 +266,31 @@ def setup_etl_main():
     # add gateway role to etl_main_host for hbase, hdfs and mapreduce
 
     # install HDFS client on etl main node so it can access HDFS
-    hdfs_service = cluster.get_service("HDFS")
-    hdfs_service.create_role("HDFS-gw-0", "GATEWAY", etl_main_host)
+    hdfs_service = cluster.get_service(hdfs_service_name)
+    hdfs_service.create_role("{0}-gw-1".format(hdfs_service_name), "GATEWAY", etl_main_host)
 
     # install MapReduce client on the etl main node so it can run exporter
-    mr_service = cluster.get_service("MAPREDUCE")
-    mr_service.create_role("MAPREDUCE-gw-0", "GATEWAY", etl_main_host)
+    mapred_service = cluster.get_service(mapred_service_name)
+    mapred_service.create_role("{0}-gw-1".format(mapred_service_name), "GATEWAY", etl_main_host)
 
     # install HBase client on etl main node
-    hbase_service = cluster.get_service("HBASE")
-    hbase_service.create_role("HBASE-gw-0", "GATEWAY", etl_main_host)
+    hbase_service = cluster.get_service(hbase_service_name)
+    hbase_service.create_role("{0}-gw-1".format(hbase_service_name), "GATEWAY", etl_main_host)
+
+    # TODO: are these needed service-wide?
+
+    # See hbase.dynamic.jars.dir in http://hbase.apache.org/book.html 
+    hbase_service_config = {
+      'hbase_service_config_safety_valve' : '<property><name>hbase.dynamic.jars.dir</name><value>/hbase_lib</value></property>'
+    }
+    hbase_service.update_config(hbase_service_config)
+
+    # Edit /etc/hbase/conf/hbase-site.xml in the main ETL node to get around hbase max hfile limitation
+    # See: http://stackoverflow.com/questions/24950393/trying-to-load-more-than-32-hfiles-to-one-family-of-one-region
+    hbase_service_config = {
+      'hbase_service_config_safety_valve' : '<property><name>hbase.mapreduce.bulkload.max.hfiles.perRegion.perFamily</name><value>5000</value></property>'
+    }
+    hbase_service.update_config(hbase_service_config)
 
     print "About to restart cluster"
     cluster.stop().wait()
@@ -301,18 +299,16 @@ def setup_etl_main():
 
 
 def main(argv):
-    config_file = ''
     try:
-        opts, args = getopt.getopt(argv, "c:h:", ["config_file=", "cloudera_manager_host="])
+        opts, args = getopt.getopt(argv, "p:h:", ["private_key_file_path=", "cloudera_manager_host="])
     except getopt.GetoptError:
-        print 'cluster_setup.py -c <config_file> -h <cloudera_manager_host>'
+        print 'cluster_setup.py -p <private_key_file_path> -h <cloudera_manager_host>'
         sys.exit(2)
     for opt, arg in opts:
-        if opt in ("-c", "--config_file"):
-            config_file = arg
+        if opt in ("-p", "--private_key_file_path"):
+            private_key_file_path = arg
         elif opt in ("-h", "--cloudera_manager_host"):
             cm_host = arg
-    read_config(config_file)
     set_up_cluster()
 
 
