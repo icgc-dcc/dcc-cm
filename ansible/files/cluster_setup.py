@@ -277,6 +277,9 @@ def configure_cluster():
     hbase_service = cluster.get_service(hbase_service_name)
     hbase_service.create_role("{0}-gw-1".format(hbase_service_name), "GATEWAY", etl_main_host)
 
+    # deploy client config.
+    cluster.deploy_client_config()
+
     # TODO: are these needed service-wide?
 
     # See hbase.dynamic.jars.dir in http://hbase.apache.org/book.html
