@@ -61,7 +61,7 @@ host_username = "ubuntu"
 private_key_file_path = None
 
 
-def set_up_cluster():
+def setup_cluster():
     # get a handle on the instance of CM that we have running
     api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=7)
 
@@ -292,6 +292,25 @@ def configure_cluster():
     }
     hbase_service.update_config(hbase_service_config)
 
+    # Configure compression codecs for TaskTracker, a comma separated list
+    value = 'org.apache.hadoop.io.compress.DefaultCodec,' \
+            'org.apache.hadoop.io.compress.GzipCodec,'\
+            'org.apache.hadoop.io.compress.BZip2Codec,'\
+            'com.hadoop.compression.lzo.LzoCodec,'\
+            'com.hadoop.compression.lzo.LzopCodec,'\
+            'org.apache.hadoop.io.compress.SnappyCodec'
+    mapred_tt_config = {
+      'io.compression.codecs' : value
+    }
+    tt = mapred_service.get_role_config_group("{0}-TASKTRACKER-BASE".format(mapred_service_name))
+    tt.update_config(mapred_tt_config)
+
+    mapred_service_config = {
+      'mapreduce_service_env_safety_valve' : 'HADOOP_CLASSPATH=$HADOOP_CLASSPATH:/usr/lib/hadoop/lib/*\nJAVA_LIBRARY_PATH=$JAVA_LIBRARY_PATH:/usr/lib/hadoop/lib/native'
+    }
+    mapred_service.update_config(mapred_service_config)
+
+    # Now restart the cluster for changes to take effect.
     print "About to restart cluster"
     cluster.stop().wait()
     cluster.start().wait()
@@ -309,7 +328,7 @@ def main(argv):
             private_key_file_path = arg
         elif opt in ("-h", "--cloudera_manager_host"):
             cm_host = arg
-    set_up_cluster()
+    setup_cluster()
     configure_cluster()
 
 
