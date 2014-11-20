@@ -521,32 +521,6 @@
     - second
 
 
-
-################################################################################
-# FIXME: Bootstrap dcc-genome in mongodb
-# Need newer importer to be online, right now just copy from local 
-################################################################################
-- name: Bootstrap dcc-genome
-  hosts: mongo
-  sudo: True
-  gather_facts: False
-  vars_files:
-    - "vars/main.yml"
-  tasks:
-    - name: Copy dcc-genes
-      copy: src="/Users/dchang/mongodb-osx-x86_64-2.4.1/bin/dump/dcc-genome" dest="/tmp/" mode=0777
-    - name: Bootstrap Gene
-      shell: mongorestore --db dcc-genome --collection Gene /tmp/dcc-genome/Gene.bson
-    - name: Bootstrap Pathway
-      shell: mongorestore --db dcc-genome --collection Pathway /tmp/dcc-genome/Pathway.bson
-    - name: Bootstrap Gene List
-      shell: mongorestore --db dcc-genome --collection GeneList /tmp/dcc-genome/GeneList.bson
-  tags:
-    - second
-
-
-
-
 # Install downloader component (not actually installled on the hosts)
 - name: Install downloader
   hosts: main
