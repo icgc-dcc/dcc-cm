@@ -103,8 +103,8 @@
     - debug
 
 
-- name: Provision OpenStack Instance
-  hosts: group_01
+- name: Provision OpenStack Instances
+  hosts: {{ item.host }}
   user: root
   gather_facts: False
   serial: 1
@@ -113,111 +113,20 @@
   tasks:
     - include: tasks/create-instances.yml
     - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} groups=postgres,all_instances hostname={{ inventory_hostname }}
+      add_host: name={{ data.public_ip }} groups={{ item.group }},all_instances hostname={{ inventory_hostname }}
   tags:
     - first
     - debug
-
-
-- name: Provision OpenStack Instance
-  hosts: group_02
-  user: root
-  gather_facts: False
-  serial: 1
-  vars_files:
-    - "vars/main.yml"
-  tasks:
-    - include: tasks/create-instances.yml
-    - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} groups=identifier,all_instances hostname={{ inventory_hostname }}
-  tags:
-    - first
-    - debug
-
-
-- name: Provision OpenStack Instance
-  hosts: group_03
-  user: root
-  gather_facts: False
-  serial: 1
-  vars_files:
-    - "vars/main.yml"
-  tasks:
-    - include: tasks/create-instances.yml
-    - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} groups=manager,all_instances hostname={{ inventory_hostname }}
-  tags:
-    - first
-    - debug
-
-
-- name: Provision OpenStack Instance
-  hosts: group_04
-  user: root
-  gather_facts: False
-  serial: 1
-  vars_files:
-    - "vars/main.yml"
-  tasks:
-    - include: tasks/create-instances.yml
-    - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} groups=workers,all_instances hostname={{ inventory_hostname }}
-  tags:
-    - first
-    - debug
-
-
-
-- name: Provision OpenStack Instance
-  hosts: group_05
-  user: root
-  gather_facts: False
-  serial: 1
-  vars_files:
-    - "vars/main.yml"
-  tasks:
-    - include: tasks/create-instances.yml
-    - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} groups=mongo,all_instances hostname={{ inventory_hostname }}
-  tags:
-    - first
-    - debug
-
-
-
-
-- name: Provision OpenStack Instance
-  hosts: group_06
-  user: root
-  gather_facts: False
-  serial: 1
-  vars_files:
-    - "vars/main.yml"
-  tasks:
-    - include: tasks/create-instances.yml
-    - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} groups=main,all_instances hostname={{ inventory_hostname }}
-  tags:
-    - first
-    - debug
-
-
-- name: Provision OpenStack Instance
-  hosts: group_07
-  user: root
-  gather_facts: False
-  serial: 1
-  vars_files:
-    - "vars/main.yml"
-  tasks:
-    - include: tasks/create-instances.yml
-    - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} groups=elasticsearch,all_instances hostname={{ inventory_hostname }}
-  tags:
-    - first
-    - debug
-
-
+  with_items:
+    - { host: 'group_01', group: 'postgres' }
+    - { name: 'group_02', groups: 'identifier' }
+    - { name: 'group_03', groups: 'manager' }
+    - { name: 'group_04', groups: 'workers' }
+    - { name: 'group_05', groups: 'mongo' }
+    - { name: 'group_06', groups: 'main' }
+    - { name: 'group_07', groups: 'elasticsearch' }
+    - { name: 'group_08', groups: 'identifier' }
+    - { name: 'group_09', groups: 'identifier' }
 
 
 
