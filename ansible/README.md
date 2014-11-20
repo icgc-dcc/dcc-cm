@@ -36,7 +36,7 @@ $ python setup.py install
 
 #### 4. Provide the settings.
 
-Create a new file, `vars/main.yml` using `vars/main.yml.template` as template, providing necessary credentials.
+Create a new file, `vars/main.yml` using `vars/main.yml.template` as template, providing necessary settings.
 
 #### 5. Edit ssh config
 
@@ -48,9 +48,9 @@ Host 10.5.74.*
 	UserKnownHostsFile=/dev/null
 ```
 
-### RUN
+### Run
 
-Run teh following command:
+Execute the following command:
 
 ```bash
 $ ansible-playbook -i config/hosts etl_main.yml
