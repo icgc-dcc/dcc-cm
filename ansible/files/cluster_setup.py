@@ -283,30 +283,39 @@ def configure_cluster():
     # TODO: are these needed service-wide?
 
     # See hbase.dynamic.jars.dir in http://hbase.apache.org/book.html
-    # Edit /etc/hbase/conf/hbase-site.xml in the main ETL node to get around hbase max hfile limitation
-    # See: http://stackoverflow.com/questions/24950393/trying-to-load-more-than-32-hfiles-to-one-family-of-one-region
-    value = '<property><name>hbase.dynamic.jars.dir</name><value>/hbase_lib</value></property>' \
-            '<property><name>hbase.mapreduce.bulkload.max.hfiles.perRegion.perFamily</name><value>5000</value></property>'
+    config_value = '<property><name>hbase.dynamic.jars.dir</name><value>/hbase_lib</value></property>'
     hbase_service_config = {
-      'hbase_service_config_safety_valve' : value
+      'hbase_service_config_safety_valve' : config_value
     }
     hbase_service.update_config(hbase_service_config)
 
+    # Edit /etc/hbase/conf/hbase-site.xml in the main ETL node to get around hbase max hfile limitation
+    # See: http://stackoverflow.com/questions/24950393/trying-to-load-more-than-32-hfiles-to-one-family-of-one-region
+    gw = hbase_service.get_role_config_group("{0}-GATEWAY-BASE".format(hbase_service_name))
+    hbase_gw_config = {
+      'hbase_client_config_safety_valve' : '<property><name>hbase.mapreduce.bulkload.max.hfiles.perRegion.perFamily</name><value>5000</value></property>'
+    }
+    gw.update_config(hbase_gw_config)
+    # deploy client config again.
+    cluster.deploy_client_config()
+
     # Configure compression codecs for TaskTracker, a comma separated list
-    value = 'org.apache.hadoop.io.compress.DefaultCodec,' \
+    config_value = 'org.apache.hadoop.io.compress.DefaultCodec,' \
             'org.apache.hadoop.io.compress.GzipCodec,'\
             'org.apache.hadoop.io.compress.BZip2Codec,'\
             'com.hadoop.compression.lzo.LzoCodec,'\
             'com.hadoop.compression.lzo.LzopCodec,'\
             'org.apache.hadoop.io.compress.SnappyCodec'
     mapred_tt_config = {
-      'io.compression.codecs' : value
+      'io.compression.codecs' : config_value
     }
     tt = mapred_service.get_role_config_group("{0}-TASKTRACKER-BASE".format(mapred_service_name))
     tt.update_config(mapred_tt_config)
 
+    config_value = 'HADOOP_CLASSPATH=$HADOOP_CLASSPATH:/usr/lib/hadoop/lib/*\n' \
+            'JAVA_LIBRARY_PATH=$JAVA_LIBRARY_PATH:/usr/lib/hadoop/lib/native'
     mapred_service_config = {
-      'mapreduce_service_env_safety_valve' : 'HADOOP_CLASSPATH=$HADOOP_CLASSPATH:/usr/lib/hadoop/lib/*\nJAVA_LIBRARY_PATH=$JAVA_LIBRARY_PATH:/usr/lib/hadoop/lib/native'
+      'mapreduce_service_env_safety_valve' : config_value
     }
     mapred_service.update_config(mapred_service_config)
 
