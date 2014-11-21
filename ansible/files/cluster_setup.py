@@ -59,7 +59,7 @@ reports_manager_database_type = "postgresql"
 host_username = "ubuntu"
 
 
-def setup_cluster(cm_host, private_key_file_path):
+def setup_cluster(cm_host, private_key_path):
     # get a handle on the instance of CM that we have running
     api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=7)
 
@@ -74,7 +74,7 @@ def setup_cluster(cm_host, private_key_file_path):
     cm.create_mgmt_service(service_setup)
 
     # read private key
-    private_key = open(private_key_file_path, 'rb').read()
+    private_key = open(private_key_path, 'rb').read()
 
     # install hosts on this CM instance
     cmd = cm.host_install(host_username, host_list, private_key=private_key, cm_repo_url=cm_repo_url)
@@ -232,7 +232,7 @@ def setup_cluster(cm_host, private_key_file_path):
     print "First run successfully executed. Cluster has been set up!"
 
 
-def configure_cluster(cm_host, private_key_file_path):
+def configure_cluster(cm_host, private_key_path):
 
     # get a handle on the instance of CM that we have running
     api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=7)
@@ -258,10 +258,10 @@ def configure_cluster(cm_host, private_key_file_path):
 
     cluster = api.get_cluster(cluster_name)
 
-    # add etl_main_host to cluster
+    print "adding etl_main_host to cluster"
     cluster.add_hosts([etl_main_host])
 
-    # add gateway role to etl_main_host for hbase, hdfs and mapreduce
+    print "adding gateway role to etl_main_host for hbase, hdfs and mapreduce"
 
     # install HDFS client on etl main node so it can access HDFS
     hdfs_service = cluster.get_service(hdfs_service_name)
@@ -275,11 +275,12 @@ def configure_cluster(cm_host, private_key_file_path):
     hbase_service = cluster.get_service(hbase_service_name)
     hbase_service.create_role("{0}-gw-1".format(hbase_service_name), "GATEWAY", etl_main_host)
 
-    # deploy client config.
+    print "deploying client configurations"
     cluster.deploy_client_config()
 
     # TODO: are these needed service-wide?
 
+    print "Updating configurations for HBASE"
     # See hbase.dynamic.jars.dir in http://hbase.apache.org/book.html
     config_value = '<property><name>hbase.dynamic.jars.dir</name><value>/hbase_lib</value></property>'
     hbase_service_config = {
@@ -297,6 +298,7 @@ def configure_cluster(cm_host, private_key_file_path):
     # deploy client config again.
     cluster.deploy_client_config()
 
+    print "Updating configurations for MAPREDUCE"
     # Configure compression codecs for TaskTracker, a comma separated list
     config_value = 'org.apache.hadoop.io.compress.DefaultCodec,' \
             'org.apache.hadoop.io.compress.GzipCodec,'\
@@ -305,7 +307,7 @@ def configure_cluster(cm_host, private_key_file_path):
             'com.hadoop.compression.lzo.LzopCodec,'\
             'org.apache.hadoop.io.compress.SnappyCodec'
     mapred_tt_config = {
-      'io.compression.codecs' : config_value
+      'override_io_compression_codecs' : config_value
     }
     tt = mapred_service.get_role_config_group("{0}-TASKTRACKER-BASE".format(mapred_service_name))
     tt.update_config(mapred_tt_config)
@@ -326,21 +328,21 @@ def configure_cluster(cm_host, private_key_file_path):
 
 def main(argv):
     cm_host = ''
-    private_key_file_path = ''
+    private_key_path = ''
     try:
-        opts, args = getopt.getopt(argv, "p:h:", ["private_key_file_path=", "cloudera_manager_host="])
+        opts, args = getopt.getopt(argv, "p:h:", ["private_key_path=", "cloudera_manager_host="])
     except getopt.GetoptError:
-        print 'cluster_setup.py -p <private_key_file_path> -h <cloudera_manager_host>'
+        print 'cluster_setup.py -p <private_key_path> -h <cloudera_manager_host>'
         sys.exit(2)
     for opt, arg in opts:
-        if opt in ("-p", "--private_key_file_path"):
-            private_key_file_path = arg
+        if opt in ("-p", "--private_key_path"):
+            private_key_path = arg
         elif opt in ("-h", "--cloudera_manager_host"):
             cm_host = arg
-    print "using private_key_file_path: " + private_key_file_path
+    print "using private_key_path: " + private_key_path
     print "using cloudera manager host: " + cm_host
-    #setup_cluster(cm_host, private_key_file_path)
-    configure_cluster(cm_host, private_key_file_path)
+    setup_cluster(cm_host, private_key_path)
+    configure_cluster(cm_host, private_key_path)
 
 
 if __name__ == "__main__":
