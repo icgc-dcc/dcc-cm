@@ -8,13 +8,7 @@
     - "fathmm_schema.sql"
  
 - name: Create identifier database
-  postgresql_db: name="dcc_identifier" state=absent
-
-- name: Create identifier database
   postgresql_db: name="dcc_identifier" state=present
-
-- name: Create fathmm database
-  postgresql_db: name="fathmm" state=absent
 
 - name: Create fathmm database
   postgresql_db: name="fathmm" state=present
