@@ -455,11 +455,15 @@
     - "vars/main.yml"
   tasks:
     - name: Ensure data directory
-      file: path="{{ item }}" state="directory" mode=0777 
+      file: path="{{ item }}" 
+            state="directory" 
+            mode=0777 
       with_items:
         - "{{ data_dir }}"
     - name: Copy genome
-      get_url: "url={{ reference_genome_url }} dest={{ data_dir }}/{{ reference_genome_archive }} mode=0777"
+      get_url: "url={{ reference_genome_url }} 
+                dest={{ data_dir }}/{{ reference_genome_archive }} 
+                mode=0777"
     - name: Extract the reference genome 
       command: "tar xzf {{ data_dir }}/{{ reference_genome_archive }} -C {{ data_dir }}"
   tags:
