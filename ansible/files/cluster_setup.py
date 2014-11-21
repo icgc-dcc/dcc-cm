@@ -319,6 +319,9 @@ def configure_cluster(cm_host, private_key_path):
     }
     mapred_service.update_config(mapred_service_config)
 
+    # deploy client config again, just to be sure.
+    cluster.deploy_client_config()
+
     # Now restart the cluster for changes to take effect.
     print "About to restart cluster"
     cluster.stop().wait()
