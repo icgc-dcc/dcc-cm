@@ -44,7 +44,6 @@ cluster_name = "ETL"
 cdh_version = "CDH5"
 cdh_version_number = "5"
 
-cm_host = None
 cm_port = 7180
 cm_username = "admin"
 cm_password = "admin"
@@ -58,10 +57,9 @@ reports_manager_password = ""
 reports_manager_database_type = "postgresql"
 
 host_username = "ubuntu"
-private_key_file_path = None
 
 
-def setup_cluster():
+def setup_cluster(cm_host, private_key_file_path):
     # get a handle on the instance of CM that we have running
     api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=7)
 
@@ -234,7 +232,7 @@ def setup_cluster():
     print "First run successfully executed. Cluster has been set up!"
 
 
-def configure_cluster():
+def configure_cluster(cm_host, private_key_file_path):
 
     # get a handle on the instance of CM that we have running
     api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=7)
@@ -327,6 +325,8 @@ def configure_cluster():
 
 
 def main(argv):
+    cm_host = ''
+    private_key_file_path = ''
     try:
         opts, args = getopt.getopt(argv, "p:h:", ["private_key_file_path=", "cloudera_manager_host="])
     except getopt.GetoptError:
@@ -337,8 +337,10 @@ def main(argv):
             private_key_file_path = arg
         elif opt in ("-h", "--cloudera_manager_host"):
             cm_host = arg
-    setup_cluster()
-    configure_cluster()
+    print "using private_key_file_path: " + private_key_file_path
+    print "using cloudera manager host: " + cm_host
+    #setup_cluster(cm_host, private_key_file_path)
+    configure_cluster(cm_host, private_key_file_path)
 
 
 if __name__ == "__main__":
