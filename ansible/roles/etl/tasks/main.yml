@@ -99,7 +99,7 @@
   get_url: "url={{ dcc_etl_cli_jar }} dest={{ lib_dir }} mode=0444"
 
 - name: Download dcc-submission-validator
-  get_url: "url={{ dcc_submission_server_jar }} dest="{{ lib_dir }}/dcc-validator.jar" mode=0444"
+  get_url: "url={{ dcc_submission_server_jar }} dest={{ lib_dir }}/dcc-validator.jar mode=0444"
 
 - name: Copy logging configuraiton
   copy: src="logback.xml" dest="{{ config_dir }}/logback.xml" mode=644
