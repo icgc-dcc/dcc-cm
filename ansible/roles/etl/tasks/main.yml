@@ -95,30 +95,17 @@
   command: "tar xzf {{ data_dir }}/{{ reference_genome_archive }} -C {{ data_dir }}"
 
 
+- name: Download dcc-etl-cli
+  get_url: "url={{ dcc_etl_cli_jar }} dest={{ lib_dir }} mode=0444"
 
-#- name: Download dcc-etl-cli
-#  get_url: "url={{ dcc_etl_url }} dest={{ lib_dir }} mode=0444"
-
-#- name: Download dcc-submission-validator
-#  get_url: "url={{ dcc_validator_url }} dest={{ lib_dir }} mode=0444"
-
-
-# FIXME: Should fetch from artifactory
-- name: Upload dcc-etl-cli
-  copy: src="/Users/dchang/workspace/dcc/dcc-etl/dcc-etl-cli/target/dcc-etl-cli-3.5.2-SNAPSHOT.jar" dest="{{ lib_dir }}/dcc-etl.jar" mode=644
-
-
-# FIXME: Should fetch from artifactory
-- name: Upload dcc-validator
-  copy: src="/Users/dchang/workspace/dcc/dcc-submission/dcc-submission-server/target/dcc-submission-server-3.5.2-SNAPSHOT.jar" dest="{{ lib_dir }}/dcc-validator.jar" mode=644
-
+- name: Download dcc-submission-validator
+  get_url: "url={{ dcc_submission_server_jar }} dest="{{ lib_dir }}/dcc-validator.jar" mode=0444"
 
 - name: Copy logging configuraiton
   copy: src="logback.xml" dest="{{ config_dir }}/logback.xml" mode=644
 
 - name: Prepare etl configuration
   template: src=etl_prod.yaml.j2 dest="{{ config_dir }}/etl_prod.yaml"
-
 
 - name: Create icgc dir
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir /icgc"

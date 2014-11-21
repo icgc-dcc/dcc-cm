@@ -2,7 +2,6 @@
   shell: "rm -rf /u/dcc_dev/dcc-annotator"
   ignore_errors: yes
 
-
 - name: Create directories
   file: path="{{ item }}" state="directory" owner="dcc_dev"
   with_items:
@@ -11,10 +10,8 @@
     - "{{ annotator_snpeff_dir }}"
     - "{{ annotator_reference_dir }}"
 
-
-# FIXME: Remove this later to use artifactory
-- name: Upload dcc-annotator
-  copy: src="/Users/dchang/workspace/dcc/dcc-annotator/target/dcc-annotator-3.5.2-SNAPSHOT-dist.tar.gz" dest="/tmp/dcc-annotator.tar.gz" mode=644
+- name: get dcc-annotator tarball from artifactory
+  get_url: url="{{ dcc_etl_annotator_tarball }}" dest="/tmp/dcc-annotator.tar.gz" mode=644
 
 - name: Extract dcc-annotator ==> /u/dcc_dev/dcc_annotator
   shell: "tar xzf /tmp/dcc-annotator.tar.gz --strip 1 -C /u/dcc_dev/dcc-annotator"

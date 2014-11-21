@@ -8,15 +8,11 @@
     - "{{ exporter_root }}"
     - "{{ exporter_root }}/exporter/logs"
 
-
-# FIXME: should use artifactory
-- name: Upload dcc-exporter
-  copy: src="/Users/dchang/workspace/dcc/dcc-downloader/target/dcc-downloader-3.5.2-SNAPSHOT-dist.tar.gz" dest="/tmp/dcc-exporter.tar.gz" mode=644
+- name: get dcc-annotator tarball from artifactory
+  get_url: url="{{ dcc_exporter_tarball }}" dest="/tmp/dcc-exporter.tar.gz" mode=644
 
 - name: Extract dcc-exporter
   shell: "tar xzf /tmp/dcc-exporter.tar.gz --strip 1 -C {{ exporter_root }}"
-
-
 
 # Make up HDFS directories 
 - name: Make downloader directory
@@ -26,7 +22,6 @@
 - name: Give downloader ownership
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -chown -R downloader /user/downloader"
   ignore_errors: yes
-
 
 
 # Patch overarching script FIXME: should be parameterized in overarch

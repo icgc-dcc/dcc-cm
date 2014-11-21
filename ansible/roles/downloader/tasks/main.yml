@@ -9,14 +9,11 @@
     - "/u/dcc_dev"
     - "{{ downloader_root }}"
 
-
-# FIXME: should use artifactory when ready
-- name: Upload dcc-downloader
-  copy: src="/Users/dchang/workspace/dcc/dcc-downloader/target/dcc-downloader-3.5.2-SNAPSHOT-dist.tar.gz" dest="/tmp/dcc-downloader.tar.gz" mode=644
+- name: get dcc-downloader tarball from artifactory
+  get_url: url="{{ dcc_downloader_tarball }}" dest="/tmp/dcc-downloader.tar.gz" mode=644
 
 - name: Extract dcc-downloader
   shell: "tar xzf /tmp/dcc-downloader.tar.gz --strip 1 -C {{ downloader_root }}"
-
 
 
 # Patch oozie workflow configurations
