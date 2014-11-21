@@ -66,27 +66,34 @@
   gather_facts: False
   tasks:
     - name: "Adding host"
-      add_host: name="{{ server_prefix }}-etl-postgres" groups=group_01
+      add_host: name="{{ server_prefix }}-etl-postgres" 
+                groups=group_01
     - name: "Adding host"
-      add_host: name="{{ server_prefix }}-etl-identifier" groups=group_02
+      add_host: name="{{ server_prefix }}-etl-identifier" 
+                groups=group_02
     - name: "Adding host"
-      add_host: name="{{ server_prefix }}-etl-cm" groups=group_03
+      add_host: name="{{ server_prefix }}-etl-cm" 
+                groups=group_03
     - name: "Adding host"
-      add_host: name="{{ item }}" groups=group_04
-      with_sequence: count=4 format="{{ server_prefix }}-etl-worker-%02x"
+      add_host: name="{{ item }}" 
+                groups=group_04
+      with_sequence: count=4 
+                     format="{{ server_prefix }}-etl-worker-%02x"
     - name: "Adding host"
-      add_host: name="{{ server_prefix }}-etl-mongo" groups=group_05
+      add_host: name="{{ server_prefix }}-etl-mongo" 
+                groups=group_05
     - name: "Adding host"
-      add_host: name="{{ server_prefix }}-etl-main" groups=group_06
+      add_host: name="{{ server_prefix }}-etl-main" 
+                groups=group_06
     - name: "Adding host"
-      add_host: name="{{ server_prefix }}-etl-elasticsearch" groups=group_07
+      add_host: name="{{ server_prefix }}-etl-elasticsearch" 
+                groups=group_07
     - name: "Adding host"
-      add_host: name="{{ server_prefix }}-etl-test" groups=group_08
+      add_host: name="{{ server_prefix }}-etl-test" 
+                groups=group_08
   tags:
-    - first
+    - launch
     - debug
-
-
 
 - name: Create Openstack host file
   hosts: localhost
@@ -99,22 +106,28 @@
       shell: echo "127.0.0.1 localhost" > bootstrap_hosts
       delegate_to: localhost
   tags:
-    - first
+    - launch
     - debug
+
+
+################################################################################
+#           Start creating OpenStack instances.                                #
+################################################################################
 
 - name: Provision OpenStack Instance
   hosts: group_01
   user: root
   gather_facts: False
-  serial: 1
   vars_files:
     - "vars/main.yml"
   tasks:
     - include: tasks/create-instances.yml
     - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} groups=postgres,all_instances hostname={{ inventory_hostname }}
+      add_host: name={{ data.public_ip }} 
+                groups=postgres,all_instances 
+                hostname={{ inventory_hostname }}
   tags:
-    - first
+    - launch
     - debug
 
 
@@ -122,15 +135,16 @@
   hosts: group_02
   user: root
   gather_facts: False
-  serial: 1
   vars_files:
     - "vars/main.yml"
   tasks:
     - include: tasks/create-instances.yml
     - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} groups=identifier,all_instances hostname={{ inventory_hostname }}
+      add_host: name={{ data.public_ip }} 
+                groups=identifier,all_instances 
+                hostname={{ inventory_hostname }}
   tags:
-    - first
+    - launch
     - debug
 
 
@@ -138,17 +152,18 @@
   hosts: group_03
   user: root
   gather_facts: False
-  serial: 1
   vars_files:
     - "vars/main.yml"
   tasks:
     - include: tasks/create-instances.yml
     - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} groups=manager,all_instances hostname={{ inventory_hostname }}
+      add_host: name={{ data.public_ip }} 
+                groups=manager,all_instances 
+                hostname={{ inventory_hostname }}
     - name: Save manager's public IP for later
       set_fact: cm_host={{ data.public_ip }}
   tags:
-    - first
+    - launch
     - debug
 
 
@@ -156,32 +171,33 @@
   hosts: group_04
   user: root
   gather_facts: False
-  serial: 1
   vars_files:
     - "vars/main.yml"
   tasks:
     - include: tasks/create-instances.yml
     - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} groups=workers,all_instances hostname={{ inventory_hostname }}
+      add_host: name={{ data.public_ip }} 
+                groups=workers,all_instances 
+                hostname={{ inventory_hostname }}
   tags:
-    - first
+    - launch
     - debug
-
 
 
 - name: Provision OpenStack Instance
   hosts: group_05
   user: root
   gather_facts: False
-  serial: 1
   vars_files:
     - "vars/main.yml"
   tasks:
     - include: tasks/create-instances.yml
     - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} groups=mongo,all_instances hostname={{ inventory_hostname }}
+      add_host: name={{ data.public_ip }} 
+                groups=mongo,all_instances 
+                hostname={{ inventory_hostname }}
   tags:
-    - first
+    - launch
     - debug
 
 
@@ -189,15 +205,16 @@
   hosts: group_06
   user: root
   gather_facts: False
-  serial: 1
   vars_files:
     - "vars/main.yml"
   tasks:
     - include: tasks/create-instances.yml
     - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} groups=main,all_instances hostname={{ inventory_hostname }}
+      add_host: name={{ data.public_ip }} 
+                groups=main,all_instances 
+                hostname={{ inventory_hostname }}
   tags:
-    - first
+    - launch
     - debug
 
 
@@ -205,37 +222,38 @@
   hosts: group_07
   user: root
   gather_facts: False
-  serial: 1
   vars_files:
     - "vars/main.yml"
   tasks:
     - include: tasks/create-instances.yml
     - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} groups=elasticsearch,all_instances hostname={{ inventory_hostname }}
+      add_host: name={{ data.public_ip }} 
+                groups=elasticsearch,all_instances 
+                hostname={{ inventory_hostname }}
   tags:
-    - first
+    - launch
     - debug
 
 
 ################################################################################
-# Getting around openstack quirkyness of not having DNS
+#           Getting around openstack quirkyness of not having                  #
 ################################################################################
+
 - name: Check if SSH is ready on servers
   hosts: all_instances
   gather_facts: False
   tasks:
     - name: Wait for ssh
-      wait_for: host={{ inventory_hostname }} port=22 timeout=900
+      wait_for: host={{ inventory_hostname }} 
+                port=22 
+                timeout=900
       delegate_to: localhost
   tags:
-    - first
-
-
+    - launch
 
 - name: Grab openstack node's internal IPs
   hosts: all_instances
   gather_facts: True
-  serial: 1
   vars_files:
     - "vars/main.yml"
   vars:
@@ -246,14 +264,11 @@
       shell: echo "{{ ansible_all_ipv4_addresses[0] }} {{ ansible_hostname }}" >> bootstrap_hosts
       delegate_to: localhost
   tags:
-    - first
-
-
+    - launch
 
 - name: Replace /etc/hosts with bootstrapped hosts file
   hosts: all_instances
   sudo: True
-  serial: 1
   vars_files:
     - "vars/main.yml"
   vars:
@@ -261,41 +276,41 @@
     ansible_ssh_user: ubuntu
   tasks:
     - name: Copying... 
-      copy: src=bootstrap_hosts dest=/etc/hosts owner=root group=root
+      copy: src=bootstrap_hosts 
+            dest=/etc/hosts 
+            owner=root 
+            group=root
   tags:
-    - first
-
-
+    - launch
 
 
 ################################################################################
-# Real work starts here
+#                           Provision each host.                               #
 ################################################################################
+
 - name: Install postgresql database server
   hosts: postgres
   sudo: True
-  serial: 1
   gather_facts: True
   vars_files:
     - "vars/main.yml"
   roles:
     - postgres
   tags:
-    - first
+    - provision
 
 
 - name: Bootstrap databases
   hosts: postgres
   sudo_user: postgres
   sudo: True
-  serial: 1
   gather_facts: True
   vars_files:
     - "vars/main.yml"
   roles:
     - postgresData
   tags:
-    - first
+    - provision
 
 
 # Generated password for ansible postgres???
@@ -304,7 +319,6 @@
 - name: Provision Identifier
   hosts: identifier
   sudo: True
-  serial: 1
   gather_facts: True
   vars_files:
     - "vars/main.yml"
@@ -316,7 +330,7 @@
   roles:
     - identifier
   tags:
-    - first
+    - provision
   
 
 - name: Setting up MongoDB
@@ -328,7 +342,7 @@
   roles:
     - mongodb
   tags:
-    - first
+    - provision
 
 
 - name: Setting up Elasticsearch Node
@@ -338,7 +352,6 @@
   vars_files: 
     - "vars/main.yml"
   vars:
-    # es_cluster_name: cdh_elasticsearch 
     es_cluster_name: elasticsearch 
   pre_tasks:
     - name: Install Java
@@ -346,7 +359,100 @@
   roles:
     - elasticsearch
   tags:
-    - first
+    - provision
+
+
+- name: Setting up Cloudera Manager
+  hosts: manager
+  sudo: True
+  gather_facts: False
+  vars_files:
+    - "vars/main.yml"
+  tasks:
+    - name: Setup CDH repositories
+      include: tasks/install-cdh-repository.yml
+    - name: update apt repositories
+      apt:  update_cache=yes
+    - name: install python-apt
+      apt:  pkg=python-apt 
+            state=latest
+    - name: install ntp
+      apt:  pkg=ntp state=latest
+      notify: start ntp
+    - name: install sudo
+      apt:  pkg=sudo 
+            state=latest
+    - name: install tree
+      apt:  pkg=tree 
+            state=latest
+    - name: install curl
+      apt:  pkg=curl 
+            state=latest
+    - name: Install Java
+      include: tasks/install-java.yml
+    - name: Install Cloudera Manager Server
+      apt:  pkg={{ item }} 
+            state=latest
+      with_items:
+        - cloudera-manager-daemons
+        - cloudera-manager-server-db
+        - cloudera-manager-server
+      environment: proxy_env
+    - name: Start CM services
+      service:  name={{ item }} 
+                state=started
+      with_items:
+        - cloudera-scm-server-db
+        - cloudera-scm-server
+  handlers:
+    - name: start ntp
+      service:  name=ntp 
+                state=started
+  tags:
+    - provision
+
+- name: Install LZO
+  hosts: main:workers
+  sudo: True
+  gather_facts: False
+  vars_files:
+    - "vars/main.yml"
+  tasks:
+    - name: Get extra repo
+      copy: src="files/gplextras.list" 
+            dest="/etc/apt/sources.list.d/gplextras.list" 
+            mode=0644 
+            force=yes
+    - name: Update apt-get 
+      apt:  update_cache=yes
+    - name: Install apt packages
+      apt:  pkg={{ item }} 
+            state=installed
+      with_items:
+        - liblzo2-2
+        - hadoop-lzo
+        - lzop
+  tags:
+    - provision
+    - debug
+
+- name: Provision Hadoop Cluster using Cloudera Manager API
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  vars_files:
+    - "vars/main.yml"
+  tasks:
+    - name: Run Python script to setup cluster
+      command: "python files/cluster_setup.py -p {{ ansible_ssh_private_key_file }} -h {{ hostvars['dcc-etl-cm']['cm_host'] }} "
+  tags:
+    - provision
+    - debug
+
+
+################################################################################
+#                    Apply required configurations to each host.               #
+################################################################################
 
 
 # FIXME: Production uses /u/dcc_dev/ as a shared directory, we don't have this on openstack
@@ -366,85 +472,7 @@
     - name: Extract the reference genome 
       command: "tar xzf {{ data_dir }}/{{ reference_genome_archive }} -C {{ data_dir }}"
   tags:
-    - first
-  
-
-- name: Setting up Cloudera Manager
-  hosts: manager
-  sudo: True
-  gather_facts: False
-  vars_files:
-    - "vars/main.yml"
-  tasks:
-    - name: Setup CDH repositories
-      include: tasks/install-cdh-repository.yml
-    - name: update apt repositories
-      action: shell apt-get update ; true
-    - name: install python-apt
-      raw: "apt-get install -y python-apt"
-    - name: install ntp
-      action: apt pkg=ntp state=latest
-      notify: start ntp
-    - name: install sudo
-      action: apt pkg=sudo state=latest
-    - name: install tree
-      action: apt pkg=tree state=latest
-    - name: install curl
-      action: apt pkg=curl state=latest
-    - name: Install Java
-      include: tasks/install-java.yml
-    - name: Install Cloudera Manager Server
-      action: apt pkg={{ item }} state=latest
-      with_items:
-        - cloudera-manager-daemons
-        - cloudera-manager-server-db
-        - cloudera-manager-server
-    - name: Start CM service
-      action: service name={{ item }} state=running
-      with_items:
-        - cloudera-scm-server-db
-        - cloudera-scm-server
-  handlers:
-    - name: start ntp
-      action: service name=ntp state=started
-  tags:
-    - first
-
-- name: Install LZO
-  hosts: main:workers
-  sudo: True
-  gather_facts: False
-  vars_files:
-    - "vars/main.yml"
-  tasks:
-    - name: Get liblzo2-2
-      apt: pkg="liblzo2-2" state=installed
-    #- name: Get extra repo
-    #  get_url: url="http://archive.cloudera.com/gplextras5/ubuntu/precise/amd64/gplextras/cloudera.list" dest="/etc/apt/sources.list.d/gplextras.list"
-    - name: Get extra repo
-      copy: src="files/gplextras.list" dest="/etc/apt/sources.list.d/gplextras.list" mode=0644 force=yes
-    - name: Update apt-get 
-      shell: apt-get update
-    - name: Get hadoop lzo
-      apt: pkg="hadoop-lzo" state=installed force=yes
-    - name: Just to test, get lzop
-      apt: pkg="lzop" state=installed
-  tags:
-    - first
-    - debug
-
-- name: Provision Hadoop Cluster using Cloudera Manager API
-  hosts: localhost
-  connection: local
-  gather_facts: False
-  vars_files:
-    - "vars/main.yml"
-  tasks:
-    - name: Run Python script to setup cluster
-      command: "python files/cluster_setup.py -p {{ ansible_ssh_private_key_file }} -h {{ hostvars['dcc-etl-cm']['cm_host'] }} "
-  tags:
-    - debug
-
+    - config
 
 # TODO: Should remove mongodb dependency, this is just used for overarch to init release db
 - name: Setting up main ETL node
@@ -465,14 +493,11 @@
       include: tasks/install-java.yml
     - name: Setup CDH repositories
       include: tasks/install-cdh-repository.yml
-    - name: update apt repositories
-      action: shell apt-get update ; true
   roles:
     - mongodb
     - etl
   tags:
-    - second
-
+    - config
 
 
 - name: Install annotator component on ETL Main
@@ -487,7 +512,7 @@
   roles:
     - annotator
   tags:
-    - second
+    - config
 
 
 - name: Install exporter component on ETL Main
@@ -503,7 +528,7 @@
   roles:
     - exporter
   tags:
-    - second
+    - config
 
 
 # Install downloader component (not actually installled on the hosts)
@@ -522,7 +547,7 @@
   roles:
     - downloader
   tags:
-    - second
+    - config
     - debug
 
 
