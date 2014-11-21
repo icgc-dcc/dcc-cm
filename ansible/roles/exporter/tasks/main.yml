@@ -42,5 +42,6 @@
 # Patch environment: FIXME: should probably be parameterized by overarch
 - name: Patch setenv
   lineinfile: dest="{{ exporter_root }}/exporter/bin/setenv.sh" regexp="^export HBASE_CONF_DIR" line="export HBASE_CONF_DIR=/etc/hbase/conf"
+  ignore_errors: yes
 
 

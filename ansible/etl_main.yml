@@ -371,43 +371,33 @@
   tasks:
     - name: Setup CDH repositories
       include: tasks/install-cdh-repository.yml
-    - name: update apt repositories
-      apt:  update_cache=yes
-    - name: install python-apt
-      apt:  pkg=python-apt 
-            state=latest
-    - name: install ntp
-      apt:  pkg=ntp state=latest
-      notify: start ntp
-    - name: install sudo
-      apt:  pkg=sudo 
-            state=latest
-    - name: install tree
-      apt:  pkg=tree 
-            state=latest
-    - name: install curl
-      apt:  pkg=curl 
-            state=latest
     - name: Install Java
       include: tasks/install-java.yml
-    - name: Install Cloudera Manager Server
+
+    - name: Update apt-get 
+      apt:  update_cache=yes
+    
+    - name: Install apt packages
       apt:  pkg={{ item }} 
             state=latest
       with_items:
+        - python-apt
+        - ntp
+        - sudo
+        - tree
+        - curl
         - cloudera-manager-daemons
         - cloudera-manager-server-db
         - cloudera-manager-server
       environment: proxy_env
-    - name: Start CM services
+    
+    - name: Start services
       service:  name={{ item }} 
                 state=started
       with_items:
+        - ntp
         - cloudera-scm-server-db
         - cloudera-scm-server
-  handlers:
-    - name: start ntp
-      service:  name=ntp 
-                state=started
   tags:
     - provision
 
@@ -432,6 +422,7 @@
         - liblzo2-2
         - hadoop-lzo
         - lzop
+      environment: proxy_env
   tags:
     - provision
     - debug

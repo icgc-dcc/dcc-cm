@@ -13,6 +13,10 @@ staging_dir: "/tmp"
 # DCC Resources, DCC Dependices
 ################################################################################
 
+# DCC apt proxy.
+proxy_env:
+  http_proxy: ***REMOVED***
+
 # External URLs 
 external_submission_url: https://submissions.dcc.icgc.org
 external_docs_url: http://docs.icgc.org
