@@ -328,6 +328,9 @@ def configure_cluster(cm_host, private_key_path):
     cluster.start().wait()
     print "Done restarting cluster"
 
+    # deploy client config again, just to be sure.
+    cluster.deploy_client_config()
+
 
 def main(argv):
     cm_host = ''
