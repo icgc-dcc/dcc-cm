@@ -13,7 +13,6 @@
 # OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER                              
 # IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-import getopt
 
 from cm_api.api_client import ApiResource
 from cm_api.endpoints.clusters import create_cluster
@@ -24,6 +23,7 @@ from cm_api.endpoints.role_config_groups import get_role_config_group
 from time import sleep
 import sys
 import yaml
+import getopt
 
 zookeeper_service_name = "ZOOKEEPER"
 hdfs_service_name = "HDFS"
@@ -67,9 +67,11 @@ def setup_cluster(cm_host, private_key_path):
     cm = ClouderaManager(api)
 
     # activate the CM trial license
+    # TODO check for existence
     cm.begin_trial()
 
     # create the management service
+    # TODO check for existence
     service_setup = ApiServiceSetupInfo(name=cm_service_name, type="MGMT")
     cm.create_mgmt_service(service_setup)
 
@@ -278,8 +280,6 @@ def configure_cluster(cm_host, private_key_path):
     print "deploying client configurations"
     cluster.deploy_client_config()
 
-    # TODO: are these needed service-wide?
-
     print "Updating configurations for HBASE"
     # See hbase.dynamic.jars.dir in http://hbase.apache.org/book.html
     config_value = '<property><name>hbase.dynamic.jars.dir</name><value>/hbase_lib</value></property>'
@@ -319,16 +319,13 @@ def configure_cluster(cm_host, private_key_path):
     }
     mapred_service.update_config(mapred_service_config)
 
-    # deploy client config again, just to be sure.
-    cluster.deploy_client_config()
-
     # Now restart the cluster for changes to take effect.
     print "About to restart cluster"
     cluster.stop().wait()
     cluster.start().wait()
     print "Done restarting cluster"
 
-    # deploy client config again, just to be sure.
+    # deploy client config again.
     cluster.deploy_client_config()
 
 
