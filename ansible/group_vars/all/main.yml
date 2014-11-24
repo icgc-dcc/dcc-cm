@@ -3,7 +3,7 @@
 ################################################################################
 
 # Server name prefix
-server_prefix: "dchang2"
+server_prefix: "dcc"
 
 # Directories
 staging_dir: "/tmp"
@@ -12,6 +12,10 @@ staging_dir: "/tmp"
 ################################################################################
 # DCC Resources, DCC Dependices
 ################################################################################
+
+# DCC apt proxy.
+proxy_env:
+  http_proxy: ***REMOVED***
 
 # External URLs 
 external_submission_url: https://submissions.dcc.icgc.org
@@ -24,14 +28,17 @@ artifactory_deps_url: "{{ artifactory_url }}/simple/dcc-dependencies"
 artifactory_release_url: "{{ artifactory_url }}/simple/dcc-release"
 artifactory_snapshot_url: "{{ artifactory_url }}/simple/dcc-snapshot"
 
-
 reference_genome_version: GRCh37
 reference_genome_name: dcc-reference-genome
 reference_genome_archive: "{{ reference_genome_name }}-{{ reference_genome_version }}.tar.gz"
 reference_genome_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ reference_genome_name }}/{{ reference_genome_version }}/{{ reference_genome_archive }}"
 
-
-
+dcc_etl_annotator_tarball: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-etl-annotator/3.5.11-SNAPSHOT/dcc-etl-annotator-3.5.11-SNAPSHOT-dist.tar.gz"
+dcc_etl_cli_jar: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-etl-cli/3.5.11-SNAPSHOT/dcc-etl-cli-3.5.11-SNAPSHOT.jar"
+dcc_submission_server_jar: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-submission-server/3.5.11-SNAPSHOT/dcc-submission-server-3.5.11-SNAPSHOT.jar"
+dcc_submission_server_tarball_artifactory_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-submission-server/3.5.11-SNAPSHOT/dcc-submission-server-3.5.11-SNAPSHOT-dist.tar.gz"
+dcc_downloader_tarball: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-downloader/3.6.1.2-SNAPSHOT/dcc-downloader-3.6.1.2-SNAPSHOT-dist.tar.gz"
+dcc_exporter_tarball: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-etl-exporter/3.5.11-SNAPSHOT/dcc-etl-exporter-3.5.11-SNAPSHOT-dist.tar.gz"
 
 ################################################################################
 # DCC ETL 

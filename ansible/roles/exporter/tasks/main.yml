@@ -6,17 +6,13 @@
   with_items:
     - "/u/dcc_dev"
     - "{{ exporter_root }}"
-    - "{{ exporter_root }}/exporter/logs"
+    - "{{ exporter_root }}/logs"
 
-
-# FIXME: should use artifactory
-- name: Upload dcc-exporter
-  copy: src="/Users/dchang/workspace/dcc/dcc-downloader/target/dcc-downloader-3.5.2-SNAPSHOT-dist.tar.gz" dest="/tmp/dcc-exporter.tar.gz" mode=644
+- name: get dcc-annotator tarball from artifactory
+  get_url: url="{{ dcc_exporter_tarball }}" dest="/tmp/dcc-exporter.tar.gz" mode=644
 
 - name: Extract dcc-exporter
   shell: "tar xzf /tmp/dcc-exporter.tar.gz --strip 1 -C {{ exporter_root }}"
-
-
 
 # Make up HDFS directories 
 - name: Make downloader directory
@@ -28,24 +24,24 @@
   ignore_errors: yes
 
 
-
 # Patch overarching script FIXME: should be parameterized in overarch
 - name: Patch export facade
-  lineinfile: dest="{{ repo_dir }}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/exporter-facade.sh" regexp="^exporter_bin_dir" line="exporter_bin_dir={{ exporter_root }}/exporter/bin"
+  lineinfile: dest="{{ repo_dir }}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/exporter-facade.sh" regexp="^exporter_bin_dir" line="exporter_bin_dir={{ exporter_root }}/bin"
 
 
 # Patch configurations: FIXME: should be parameterized in overarch
 - name: Patch zookeeper location
-  lineinfile: dest="{{ exporter_root }}/exporter/scripts/pig/bucket.pig" regexp="^set hbase.zookeeper.quorum" line="set hbase.zookeeper.quorum '{{ zookeeper_quorum }}'"
+  lineinfile: dest="{{ exporter_root }}/scripts/pig/bucket.pig" regexp="^set hbase.zookeeper.quorum" line="set hbase.zookeeper.quorum '{{ zookeeper_quorum }}'"
   ignore_errors: yes
 
 - name: Patch zookeeper location
-  lineinfile: dest="{{ exporter_root }}/exporter/scripts/core.py" regexp="hbase.zookeeper.quorum" line="Pig.set('hbase.zookeeper.quorum', '{{ zookeeper_quorum }}')"
+  lineinfile: dest="{{ exporter_root }}/scripts/core.py" regexp="hbase.zookeeper.quorum" line="Pig.set('hbase.zookeeper.quorum', '{{ zookeeper_quorum }}')"
   ignore_errors: yes
 
 
 # Patch environment: FIXME: should probably be parameterized by overarch
 - name: Patch setenv
-  lineinfile: dest="{{ exporter_root }}/exporter/bin/setenv.sh" regexp="^export HBASE_CONF_DIR" line="export HBASE_CONF_DIR=/etc/hbase/conf"
+  lineinfile: dest="{{ exporter_root }}/bin/setenv.sh" regexp="^export HBASE_CONF_DIR" line="export HBASE_CONF_DIR=/etc/hbase/conf"
+  ignore_errors: yes
 
 

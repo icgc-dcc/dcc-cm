@@ -6,4 +6,4 @@
   - name: get ClouderaManager repo list
     get_url: url=http://archive.cloudera.com/cm5/ubuntu/precise/amd64/cm/cloudera.list dest=/etc/apt/sources.list.d/cloudera-manager.list
   - name: update the repositories
-    shell: apt-get update
+    apt: update_cache=yes

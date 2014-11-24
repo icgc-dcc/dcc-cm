@@ -9,14 +9,11 @@
     - "/u/dcc_dev"
     - "{{ downloader_root }}"
 
-
-# FIXME: should use artifactory when ready
-- name: Upload dcc-downloader
-  copy: src="/Users/dchang/workspace/dcc/dcc-downloader/target/dcc-downloader-3.5.2-SNAPSHOT-dist.tar.gz" dest="/tmp/dcc-downloader.tar.gz" mode=644
+- name: get dcc-downloader tarball from artifactory
+  get_url: url="{{ dcc_downloader_tarball }}" dest="/tmp/dcc-downloader.tar.gz" mode=644
 
 - name: Extract dcc-downloader
   shell: "tar xzf /tmp/dcc-downloader.tar.gz --strip 1 -C {{ downloader_root }}"
-
 
 
 # Patch oozie workflow configurations
@@ -48,19 +45,24 @@
 
 - name: Copy archive
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal -p {{ downloader_root }}/workflows/archive /user/downloader/workflows/archive"
+  ignore_errors: yes
 
 - name: Copy archive-main
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal -p {{ downloader_root }}/workflows/archive-main /user/downloader/workflows/archive-main"
+  ignore_errors: yes
 
 - name: Copy archivecleaner
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal -p {{ downloader_root }}/workflows/archivecleaner /user/downloader/workflows/archivecleaner"
+  ignore_errors: yes
 
 - name: Copy archivecleaner-main
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal -p {{ downloader_root }}/workflows/archivecleaner-main /user/downloader/workflows/archivecleaner-main"
+  ignore_errors: yes
 
 - name: Change ownership
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -chown -R downloader /user/downloader/workflows"
- 
+  ignore_errors: yes
+
 - name: Create dynamic lib directory
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir -p /hbase_lib"
   ignore_errors: yes
@@ -81,7 +83,7 @@
   ignore_errors: yes
 
 - name: Copy lib to hdfs
-  shell: "hadoop fs -copyFromLocal {{ downloader_root }}/exporter/lib/dcc-downloader.jar /user/downloader/workflows/{{ item }}/lib/dcc-downloader.jar"
+  shell: "hadoop fs -copyFromLocal {{ downloader_root }}/workflows/archive/lib/dcc-downloader.jar /user/downloader/workflows/{{ item }}/lib/dcc-downloader.jar"
   with_items:
     - "archive"
     - "archivecleaner"
