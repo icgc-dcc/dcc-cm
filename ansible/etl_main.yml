@@ -374,19 +374,21 @@
   tasks:
     - name: Setup CDH repositories
       include: tasks/install-cdh-repository.yml
-    - name: update apt repositories
-      action: shell apt-get update ; true
+    - name: Update apt-get 
+      apt:  update_cache=yes
     - name: install python-apt
-      raw: "apt-get install -y python-apt"
+      raw:  "apt-get install -y python-apt"
     - name: install ntp
-      action: apt pkg=ntp state=latest
-      notify: start ntp
-    - name: install sudo
-      action: apt pkg=sudo state=latest
-    - name: install tree
-      action: apt pkg=tree state=latest
-    - name: install curl
-      action: apt pkg=curl state=latest
+      apt:  pkg=ntp 
+            state=latest
+      notify: start ntp    
+    - name: Install apt packages
+      apt:  pkg={{ item }} 
+            state=latest
+      with_items:
+        - sudo
+        - tree
+        - curl
     - name: Install Java
       include: tasks/install-java.yml
     - name: Install Cloudera Manager Server
@@ -395,14 +397,16 @@
         - cloudera-manager-daemons
         - cloudera-manager-server-db
         - cloudera-manager-server
-    - name: Start CM service
-      action: service name={{ item }} state=running
+    - name: Start CM services
+      service:  name={{ item }} 
+                state=running
       with_items:
         - cloudera-scm-server-db
         - cloudera-scm-server
   handlers:
     - name: start ntp
-      action: service name=ntp state=started
+      service:  name=ntp 
+                state=started
   tags:
     - provision
 
@@ -414,17 +418,22 @@
     - "vars/main.yml"
   tasks:
     - name: Get liblzo2-2
-      apt: pkg="liblzo2-2" state=installed
-    #- name: Get extra repo
-    #  get_url: url="http://archive.cloudera.com/gplextras5/ubuntu/precise/amd64/gplextras/cloudera.list" dest="/etc/apt/sources.list.d/gplextras.list"
+      apt:  pkg="liblzo2-2" 
+            state=installed
     - name: Get extra repo
-      copy: src="files/gplextras.list" dest="/etc/apt/sources.list.d/gplextras.list" mode=0644 force=yes
+      copy: src="files/gplextras.list" 
+            dest="/etc/apt/sources.list.d/gplextras.list" 
+            mode=0644 
+            force=yes
     - name: Update apt-get 
-      shell: apt-get update
+      apt:  update_cache=yes
     - name: Get hadoop lzo
-      apt: pkg="hadoop-lzo" state=installed force=yes
+      apt:  pkg="hadoop-lzo" 
+            state=installed 
+            force=yes
     - name: Just to test, get lzop
-      apt: pkg="lzop" state=installed
+      apt:  pkg="lzop" 
+            state=installed
   tags:
     - provision
     - debug
@@ -472,7 +481,7 @@
       get_url: "url={{ reference_genome_url }} 
                 dest={{ data_dir }}/{{ reference_genome_archive }} 
                 mode=0777"
-    - name: Extract the reference genome 
+    - name: Extract the reference genome
       command: "tar xzf {{ data_dir }}/{{ reference_genome_archive }} -C {{ data_dir }}"
   tags:
     - config
