@@ -25,14 +25,14 @@
     - "vars/main.yml"
   tasks:
     - name: Add Host
-      add_host: name="dchang-submission-cm" groups=group_01
+      add_host: name="{{ server_prefix }}-submission-cm" groups=group_01
     - name: Add Host
       add_host: name={{ item }} groups=group_02
-      with_sequence: count=3 format="dchang-submission-worker-%02x"
+      with_sequence: count=3 format="{{ server_prefix }}-submission-worker-%02x"
     - name: Add Host
-      add_host: name="dchang-submission-mongo" groups=group_03
+      add_host: name="{{ server_prefix }}-submission-mongo" groups=group_03
     - name: Add Host
-      add_host: name="dchang-submission-main" groups=group_04
+      add_host: name="{{ server_prefix }}-submission-main" groups=group_04
 
 
 - name: Create Openstack host file
@@ -229,9 +229,9 @@
     host_key_checking: False
     ansible_ssh_user: ubuntu
     ansible_ssh_private_key_file: ~/.ssh/id_rsa
-    fs_url: "hdfs://dchang-submission-worker-01"
-    job_tracker: "dchang-submission-worker-01:8021"
-    mongo_host: "dchang-submissionl-mongo"
+    fs_url: "hdfs://{{ server_prefix }}-submission-worker-01"
+    job_tracker: "{{ server_prefix }}-submission-worker-01:8021"
+    mongo_host: "{{ server_prefix }}-submissionl-mongo"
   vars_files:
     - "vars/main.yml"
   pre_tasks:
