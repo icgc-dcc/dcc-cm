@@ -40,7 +40,7 @@ Create a new file, `vars/main.yml` using `vars/main.yml.template` as template, p
 
 #### 5. Edit ssh config
 
-Edit `/etc/ssh_config` and all the following to avoid having to accept connecting to each server.
+Edit `/etc/ssh_config` and add the following to avoid having to accept connecting to each server.
 
 ```
 Host 10.5.74.*

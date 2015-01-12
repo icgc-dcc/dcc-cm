@@ -35,9 +35,9 @@
 
 # Copy to HDFS
 # FIXME: Need to take care of coordinator jobs
-- name: Remove workflow dir
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -rm -r -skipTrash /user/downloader/workflows"
-  ignore_errors: yes
+# - name: Remove workflow dir
+#   shell: "HADOOP_USER_NAME=hdfs hadoop fs -rm -r -skipTrash /user/downloader/workflows"
+#   ignore_errors: yes
 
 - name: Create workflow dir
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir /user/downloader/workflows"
@@ -77,7 +77,7 @@
 - name: Create lib dir
   shell: "hadoop fs -mkdir /user/downloader/workflows/{{ item }}/lib"
   with_items:
-    - "archive"
+    #- "archive"
     - "archivecleaner"
   environment: env
   ignore_errors: yes
@@ -85,7 +85,7 @@
 - name: Copy lib to hdfs
   shell: "hadoop fs -copyFromLocal {{ downloader_root }}/workflows/archive/lib/dcc-downloader.jar /user/downloader/workflows/{{ item }}/lib/dcc-downloader.jar"
   with_items:
-    - "archive"
+    #- "archive"
     - "archivecleaner"
   environment: env
   ignore_errors: yes

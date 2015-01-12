@@ -36,9 +36,9 @@
     - "sendemail"
 
 
-- name: Unmount FUSE
-  shell: "umount {{ fuse_root_dir }}"
-  ignore_errors: yes
+# - name: Unmount FUSE
+#   shell: "umount {{ fuse_root_dir }}"
+#   ignore_errors: yes
 
 
 - name: Mount FUSE
