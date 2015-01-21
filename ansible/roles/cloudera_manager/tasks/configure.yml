@@ -1,0 +1,12 @@
+---
+
+- name: exeuting command
+  debug: msg="python files/cluster_setup.py -p {{ ansible_ssh_private_key_file }} -h {{ hostvars['dcc-etl-cm']['cm_host'] }}"
+
+- name: Provision Hadoop Cluster using Cloudera Manager API
+  connection: local
+  shell: "python files/cluster_setup.py -p {{ ansible_ssh_private_key_file }} -h {{ hostvars['dcc-etl-cm']['cm_host'] }}"
+  register: python_script
+
+- name: output of cluster_setup
+  debug: msg="{{ python_script.stdout }}"

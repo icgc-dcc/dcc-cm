@@ -1,0 +1,17 @@
+---
+
+- name: Update apt-get 
+  apt:  update_cache=yes
+- name: install python-apt
+  raw:  "apt-get install -y python-apt"
+- name: install ntp
+  apt:  pkg=ntp 
+        state=latest
+  notify: start ntp    
+- name: Install apt packages
+  apt:  pkg={{ item }}
+        state=latest
+  with_items:
+    - sudo
+    - tree
+    - curl
