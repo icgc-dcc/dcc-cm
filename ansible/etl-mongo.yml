@@ -1,0 +1,9 @@
+---
+# file: etl-mongo.yml
+
+- hosts: etl-mongo
+  gather_facts: True
+  sudo: yes
+
+  roles: 
+    - mongodb

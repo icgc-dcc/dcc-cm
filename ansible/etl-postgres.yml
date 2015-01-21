@@ -1,0 +1,9 @@
+---
+# file: etl-postgres.yml
+
+- hosts: etl-postgres
+  gather_facts: True
+  sudo: yes
+
+  roles: 
+    - postgres

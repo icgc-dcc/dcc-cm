@@ -1,0 +1,14 @@
+---
+# file: etl-main.yml
+
+- hosts: etl-main
+  gather_facts: True
+  sudo: yes
+
+  roles: 
+    - lzo
+    - mongodb
+    - etl
+    - annotator
+    - exporter
+    - downloader

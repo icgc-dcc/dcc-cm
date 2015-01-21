@@ -1,5 +1,6 @@
 ---
 # file: site.yml
-- include: etl_main.yml
-- include: submission_main.yml
-- include: portal_main.yml
+
+- include: etl.yml
+#- include: submission.yml
+#- include: portal.yml

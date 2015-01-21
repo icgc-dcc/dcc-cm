@@ -1,0 +1,9 @@
+---
+# file: etl-cm.yml
+
+- hosts: etl-cm
+  gather_facts: True
+  sudo: yes
+
+  roles: 
+    - cloudera_manager

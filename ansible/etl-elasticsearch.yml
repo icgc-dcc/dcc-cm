@@ -1,0 +1,9 @@
+---
+# file: etl-elasticsearch.yml
+
+- hosts: etl-elasticsearch
+  gather_facts: True
+  sudo: yes
+
+  roles: 
+    - elasticsearch

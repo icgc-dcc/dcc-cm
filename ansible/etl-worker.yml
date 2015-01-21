@@ -1,0 +1,10 @@
+---
+# file: etl-worker.yml
+
+- hosts: etl-worker
+  gather_facts: True
+  sudo: yes
+
+  roles: 
+    - worker
+    - lzo

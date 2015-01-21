@@ -1,0 +1,9 @@
+---
+# file: etl-identifier.yml
+
+- hosts: etl-identifier
+  gather_facts: True
+  sudo: yes
+
+  roles: 
+    - identifier
