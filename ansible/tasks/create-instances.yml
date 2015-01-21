@@ -18,7 +18,7 @@
       group: ansible
     user_data: "#cloud-config\nmanage_etc_hosts: true"
   delegate_to: localhost
-  register: data
+  register: creation_data
 
 - name: Assign IP address to cluster VM
   quantum_floating_ip:
@@ -31,6 +31,6 @@
     instance_name: "{{ inventory_hostname }}"
     internal_network_name: "dcc"
   delegate_to: localhost
-  register: data
+  register: ip_data
 
 

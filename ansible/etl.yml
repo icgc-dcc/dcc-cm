@@ -12,9 +12,6 @@
 # - Copy reference data to worker nodes
 # - Install LZO on worker nodes
 # - Provision Cloudera Manager
-#
-# - >>> Manually provision the cluster through Cloudera Manager <<<
-#
 # - Install packages on main ETL Node
 # - Install etl scripts, reference data on ETL node
 # - Install annotator on main ETL node
@@ -28,11 +25,8 @@
 # Note the playbook makes assumptions of which one of hadoop nodes
 # is the jobtracker, name-node, quorum..etc
 #
-# Usage:
-#   ./runAnsible etl_main.yml <tags>
 #
 ################################################################################
-
 
 
 ################################################################################
@@ -89,7 +83,7 @@
       add_host: name=etl-elasticsearch
                 groups=group_07
 
-- name: Create Openstack host file
+- name: Create the host file to be uploaded to instances
   hosts: localhost
   gather_facts: False
   tasks:
@@ -113,8 +107,8 @@
   tasks:
     - include: tasks/create-instances.yml
     - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} 
-                groups=postgres,all_instances 
+      add_host: name={{ ip_data.public_ip }} 
+                groups=postgres,etl-all 
                 hostname={{ inventory_hostname }}
 
 - name: Provision OpenStack Instance for identifier
@@ -126,8 +120,8 @@
   tasks:
     - include: tasks/create-instances.yml
     - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} 
-                groups=identifier,all_instances 
+      add_host: name={{ ip_data.public_ip }} 
+                groups=identifier,etl-all 
                 hostname={{ inventory_hostname }}
 
 - name: Provision OpenStack Instance for manager
@@ -139,11 +133,11 @@
   tasks:
     - include: tasks/create-instances.yml
     - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} 
-                groups=manager,all_instances 
+      add_host: name={{ ip_data.public_ip }} 
+                groups=manager,etl-all 
                 hostname={{ inventory_hostname }}
     - name: Save manager's public IP for later
-      set_fact: cm_host={{ data.public_ip }}
+      set_fact: cm_host={{ ip_data.public_ip }}
 
 - name: Provision OpenStack Instance for workers
   hosts: group_04
@@ -155,8 +149,8 @@
   tasks:
     - include: tasks/create-instances.yml
     - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} 
-                groups=workers,all_instances 
+      add_host: name={{ ip_data.public_ip }} 
+                groups=workers,etl-all 
                 hostname={{ inventory_hostname }}
 
 - name: Provision OpenStack Instance for mongo
@@ -168,8 +162,8 @@
   tasks:
     - include: tasks/create-instances.yml
     - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} 
-                groups=mongo,all_instances 
+      add_host: name={{ ip_data.public_ip }} 
+                groups=mongo,etl-all 
                 hostname={{ inventory_hostname }}
 
 - name: Provision OpenStack Instance for etl-main
@@ -181,8 +175,8 @@
   tasks:
     - include: tasks/create-instances.yml
     - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} 
-                groups=main,all_instances 
+      add_host: name={{ ip_data.public_ip }} 
+                groups=main,etl-all 
                 hostname={{ inventory_hostname }}
 
 - name: Provision OpenStack Instance for elasticsearch
@@ -194,8 +188,8 @@
   tasks:
     - include: tasks/create-instances.yml
     - name: Add public ip to hostgroup
-      add_host: name={{ data.public_ip }} 
-                groups=elasticsearch,all_instances 
+      add_host: name={{ ip_data.public_ip }} 
+                groups=elasticsearch,etl-all 
                 hostname={{ inventory_hostname }}
 
 ################################################################################
@@ -203,7 +197,7 @@
 ################################################################################
 
 - name: Check if SSH is ready on servers
-  hosts: all_instances
+  hosts: etl-all
   gather_facts: False
   tasks:
     - name: Wait for ssh
@@ -213,7 +207,7 @@
       delegate_to: localhost
 
 - name: Grab openstack node's internal IPs
-  hosts: all_instances
+  hosts: etl-all
   gather_facts: True
   serial: 1
   vars_files:
@@ -227,7 +221,7 @@
       delegate_to: localhost
 
 - name: Replace /etc/hosts with bootstrapped hosts file
-  hosts: all_instances
+  hosts: etl-all
   sudo: True
   serial: 1
   vars_files:
