@@ -2,17 +2,30 @@
 # Setup basic ETL node packages
 ################################################################################
 
-- name: Create dcc_dev user
-  user: name="dcc_dev" groups="ubuntu,adm,dialout,netdev,admin" append=yes shell=/bin/bash
+- name: ensure groups exist
+  group:  name={{ item }}
+          state=present
+  with_items:
+    - ubuntu
+    - adm
+    - dialout
+    - netdev
+    - admin
 
+- name: Create dcc_dev user
+  user: name="dcc_dev" 
+        groups="ubuntu,adm,dialout,netdev,admin"
+        append=yes
+        shell=/bin/bash
 
 - name: Wipe out the scripts to get clean install
   shell: "rm -rf {{ repo_dir }}"
   ignore_errors: yes
 
-
 - name: Create directories
-  file: path="{{ item }}" state="directory" owner="dcc_dev"
+  file: path="{{ item }}" 
+        state="directory" 
+        owner="dcc_dev"
   with_items:
     - "{{ keys_dir }}"
     - "{{ repo_dir }}"
@@ -21,50 +34,50 @@
     - "{{ lib_dir }}"
     - "/nfs"
 
-
 - name: Create directories
-  file: path="{{ item }}" state="directory"
+  file: path="{{ item }}" 
+        state="directory"
   with_items:
     - "{{ fuse_root_dir }}"
 
-
 - name: Install helper packages
-  action: apt pkg={{ item }} state=latest
+  action: apt pkg={{ item }} 
+              state=latest
   with_items:
     - "hadoop-hdfs-fuse"
     - "tree"
     - "sendemail"
 
-
 # - name: Unmount FUSE
 #   shell: "umount {{ fuse_root_dir }}"
 #   ignore_errors: yes
-
 
 - name: Mount FUSE
   shell: "hadoop-fuse-dfs ro {{ default_fs }} {{ fuse_root_dir }}"
   ignore_errors: yes
 
-
-
 # FIXME: this is dchang's github key
 - name: Copy github key
-  copy: src="github-keys/id_rsa" dest="{{ keys_dir }}/id_rsa" mode=600
+  copy: src="github-keys/id_rsa" 
+        dest="{{ keys_dir }}/id_rsa"
+        mode=600
 
 - name: Install git
-  action: apt pkg=git state=latest
+  action: apt pkg=git 
+              state=latest
 
 - name: Git configuration
   shell: "git config --global color.ui true"
   ignore_errors: yes
 
-
-
 # TODO: Might want to do sparse checkout
 # FIXME: Use biternay's group account?
 # See: http://stackoverflow.com/questions/600079/is-there-any-way-to-clone-a-git-repositorys-sub-directory-only 
 - name: Download ETL scripts
-  git: repo=ssh://git@github.com/icgc-dcc/dcc.git dest={{ repo_dir }} accept_hostkey=True key_file={{ keys_dir }}/id_rsa
+  git:  repo=ssh://git@github.com/icgc-dcc/dcc.git 
+        dest={{ repo_dir }}
+        accept_hostkey=True
+        key_file={{ keys_dir }}/id_rsa
 
 
 # FIXME: use cdh5.1.0_migration branch to get Jerry's fixes 
@@ -74,38 +87,53 @@
 
 # FIXME: quickie fix for mongo on openstack
 - name: Patch mongo admin 
-  lineinfile: dest="{{ repo_dir}}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/lisi-facade.sh" regexp="\s+admin_database_user=" line="  admin_database_user=admin"
+  lineinfile: dest="{{ repo_dir}}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/lisi-facade.sh" 
+              regexp="\s+admin_database_user="
+              line="  admin_database_user=admin"
 
 - name: Patch mongo admin password
-  lineinfile: dest="{{ repo_dir}}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/lisi-facade.sh" regexp="\s+admin_database_user_passwd=" line="  admin_database_user_passwd=admin"
+  lineinfile: dest="{{ repo_dir}}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/lisi-facade.sh" 
+              regexp="\s+admin_database_user_passwd="
+              line="  admin_database_user_passwd=admin"
 
 - name: Patch mongo etl user
-  lineinfile: dest="{{ repo_dir}}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/lisi-facade.sh" regexp="\s+normal_database_user=" line="  normal_database_user=dcc"
+  lineinfile: dest="{{ repo_dir}}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/lisi-facade.sh" 
+              regexp="\s+normal_database_user="
+              line="  normal_database_user=dcc"
 
 - name: Patch mongo etl user password
-  lineinfile: dest="{{ repo_dir}}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/lisi-facade.sh" regexp="\s+normal_database_user_passwd=" line="  normal_database_user_passwd=dcc"
-
+  lineinfile: dest="{{ repo_dir}}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/lisi-facade.sh" 
+              regexp="\s+normal_database_user_passwd="
+              line="  normal_database_user_passwd=dcc"
 
 
 # Analogus to /u/dcc_dev/dcc-etl/data
 - name: Download the reference genome
-  get_url: "url={{ reference_genome_url }} dest={{ data_dir }}/{{ reference_genome_archive }} mode=0444"
+  get_url: "url={{ reference_genome_url }}
+            dest={{ data_dir }}/{{ reference_genome_archive }}
+            mode=0444"
 
 - name: Extract the reference genome 
   command: "tar xzf {{ data_dir }}/{{ reference_genome_archive }} -C {{ data_dir }}"
 
-
 - name: Download dcc-etl-cli
-  get_url: "url={{ dcc_etl_cli_jar }} dest={{ lib_dir }} mode=0444"
+  get_url: "url={{ dcc_etl_cli_jar }}
+            dest={{ lib_dir }}
+            mode=0444"
 
 - name: Download dcc-submission-validator
-  get_url: "url={{ dcc_submission_server_jar }} dest={{ lib_dir }}/dcc-validator.jar mode=0444"
+  get_url: "url={{ dcc_submission_server_jar }}
+            dest={{ lib_dir }}/dcc-validator.jar 
+            mode=0444"
 
 - name: Copy logging configuraiton
-  copy: src="logback.xml" dest="{{ config_dir }}/logback.xml" mode=644
+  copy: src="logback.xml" 
+        dest="{{ config_dir }}/logback.xml" 
+        mode=644
 
 - name: Prepare etl configuration
-  template: src=etl_prod.yaml.j2 dest="{{ config_dir }}/etl_prod.yaml"
+  template: src=etl_prod.yaml.j2 
+            dest="{{ config_dir }}/etl_prod.yaml"
 
 - name: Create icgc dir
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir /icgc"
@@ -114,7 +142,6 @@
 - name: Create dcc_root_dir dir
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir /icgc/dcc_root_dir"
   ignore_errors: yes
-
 
 - name: Give dcc_dev EVERYTHING!!!!!
   shell: "chown -R dcc_dev /dcc_etl"
