@@ -53,9 +53,5 @@ Host 10.5.74.*
 Execute the following command:
 
 ```bash
-$ ansible-playbook -i config/hosts etl_main.yml
+$ ansible-playbook -i config/hosts site.yml
 ```
-
-### Additional Notes
-
-`./portal` needs to be integrated into the rest of the configuration. It was copied from `dcc/dcc-portal/src/main/ansible`

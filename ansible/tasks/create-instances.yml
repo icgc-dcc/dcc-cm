@@ -33,6 +33,4 @@
   delegate_to: localhost
   register: data
 
-#- name: Add public ip to hostgroup
-#  add_host: name={{ data.public_ip }} groups={{ logical_group }} hostname={{ inventory_hostname }}
 
