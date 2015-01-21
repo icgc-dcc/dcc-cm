@@ -1,0 +1,8 @@
+- name: Fetch Elasticsearch
+  get_url: url={{ elasticsearch_download }}/{{ elasticsearch_package }} dest=/tmp  mode=644
+
+- name: Install Elasticsearch package
+  shell: dpkg -i -E --force-depends "/tmp/{{ elasticsearch_package }}"
+
+- name: make sure Elasticsearch is enabled and started
+  service: name=elasticsearch enabled=yes state=started
