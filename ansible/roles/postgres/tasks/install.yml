@@ -1,0 +1,24 @@
+- name: Install postgresql
+  apt:  pkg="postgresql-{{ postgresql_version }}" 
+        state=installed 
+        update_cache=yes
+
+- name: make sure postgres is enabled and started
+  service: name=postgresql enabled=yes state=started        
+
+- name: Install PostgreSQL config file
+  copy: src=postgresql.conf 
+        dest=/etc/postgresql/{{ postgresql_version }}/main/postgresql.conf 
+        force=yes
+  register: postgresql_conf
+
+- name: Install PostgreSQL hba file
+  copy: src=pg_hba.conf 
+        dest=/etc/postgresql/{{ postgresql_version }}/main/pg_hba.conf 
+        force=yes
+  register: pg_hba_conf
+
+- name: Restart postgres server
+  service: name=postgresql 
+           state=restarted
+  when: postgresql_conf|changed or pg_hba_conf|changed

@@ -1,0 +1,16 @@
+- name: Set kernel shared memory
+  sysctl: name=kernel.shmmax 
+          value=17179869184
+          state=present
+  register: shmmax
+
+- name: Set kerel shared memory
+  sysctl: name=kernel.shmall 
+          value=4194304
+          state=present
+  register: shmall
+
+- name: Restart postgres server
+  service: name=postgresql 
+           state=restarted
+  when: shmmax|changed or shmall|changed

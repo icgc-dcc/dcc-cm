@@ -1,0 +1,18 @@
+- name: Install development header files
+  apt:  pkg={{ item }}
+        state=installed
+        update_cache=yes
+  with_items:
+    - python-software-properties
+    - libpq-dev
+    - python-pip
+    - python-psycopg2
+
+
+- name: Add repository key
+  apt_key: data="{{ lookup('file', 'ACCC4CF8.asc') }}"  
+           state=present
+
+- name: Add PostgreSQL repository
+  apt_repository: repo="{{ postgresql_repo }}" 
+                  state=present
