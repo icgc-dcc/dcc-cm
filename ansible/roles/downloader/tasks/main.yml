@@ -4,33 +4,51 @@
 # to 'borrow' a node with hadoop capabilities to install it onto the cluster
 ################################################################################
 - name: Create directories
-  file: path="{{ item }}" state="directory" owner="dcc_dev"
+  file: path="{{ item }}" 
+        state="directory" 
+        owner="dcc_dev"
   with_items:
     - "/u/dcc_dev"
     - "{{ downloader_root }}"
 
 - name: get dcc-downloader tarball from artifactory
-  get_url: url="{{ dcc_downloader_tarball }}" dest="/tmp/dcc-downloader.tar.gz" mode=644
+  get_url:  url="{{ dcc_downloader_tarball }}" 
+            dest="/tmp/dcc-downloader.tar.gz" 
+            mode=644
 
 - name: Extract dcc-downloader
   shell: "tar xzf /tmp/dcc-downloader.tar.gz --strip 1 -C {{ downloader_root }}"
 
-
 # Patch oozie workflow configurations
 - name: Patch archive
-  template: src="archive/config-default.xml.j2" dest="{{ downloader_root}}/workflows/archive/config-default.xml" mode=644 force=yes
+  template: src="archive/config-default.xml.j2" 
+            dest="{{ downloader_root}}/workflows/archive/config-default.xml" 
+            mode=644 
+            force=yes
 
 - name: Patch archive-main
-  template: src="archive-main/config-default.xml.j2" dest="{{ downloader_root}}/workflows/archive-main/config-default.xml" mode=644 force=yes
+  template: src="archive-main/config-default.xml.j2" 
+            dest="{{ downloader_root}}/workflows/archive-main/config-default.xml" 
+            mode=644 
+            force=yes
 
 - name: Patch archivecleaner
-  template: src="archivecleaner/config-default.xml.j2" dest="{{ downloader_root}}/workflows/archivecleaner/config-default.xml" mode=644 force=yes
+  template: src="archivecleaner/config-default.xml.j2" 
+            dest="{{ downloader_root}}/workflows/archivecleaner/config-default.xml" 
+            mode=644 
+            force=yes
 
 - name: Patch archivecleaner-main
-  template: src="archivecleaner-main/config-default.xml.j2" dest="{{ downloader_root}}/workflows/archivecleaner-main/config-default.xml" mode=644 force=yes
+  template: src="archivecleaner-main/config-default.xml.j2" 
+            dest="{{ downloader_root}}/workflows/archivecleaner-main/config-default.xml" 
+            mode=644 
+            force=yes
 
 - name: Patch archivecleaner-main job property (for installing)
-  template: src="archivecleaner-main/job.properties.j2" dest="{{ downloader_root}}/workflows/archivecleaner-main/job.properties" mode=644 force=yes
+  template: src="archivecleaner-main/job.properties.j2" 
+            dest="{{ downloader_root}}/workflows/archivecleaner-main/job.properties" 
+            mode=644 
+            force=yes
 
 
 # Copy to HDFS
