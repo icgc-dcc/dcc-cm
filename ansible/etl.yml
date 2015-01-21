@@ -66,34 +66,28 @@
   gather_facts: False
   tasks:
     - name: "Adding host"
-      add_host: name="{{ server_prefix }}-etl-postgres" 
+      add_host: name=etl-postgres
                 groups=group_01
     - name: "Adding host"
-      add_host: name="{{ server_prefix }}-etl-identifier" 
+      add_host: name=etl-identifier
                 groups=group_02
     - name: "Adding host"
-      add_host: name="{{ server_prefix }}-etl-cm" 
+      add_host: name=etl-cm
                 groups=group_03
     - name: "Adding host"
-      add_host: name="{{ item }}" 
+      add_host: name="{{ item }}"
                 groups=group_04
-      with_sequence: count=4 
-                     format="{{ server_prefix }}-etl-worker-%02x"
+      with_sequence: count=2 
+                     format=etl-worker-%02x
     - name: "Adding host"
-      add_host: name="{{ server_prefix }}-etl-mongo" 
+      add_host: name=etl-mongo
                 groups=group_05
     - name: "Adding host"
-      add_host: name="{{ server_prefix }}-etl-main" 
+      add_host: name=etl-main
                 groups=group_06
     - name: "Adding host"
-      add_host: name="{{ server_prefix }}-etl-elasticsearch" 
+      add_host: name=etl-elasticsearch
                 groups=group_07
-    - name: "Adding host"
-      add_host: name="{{ server_prefix }}-etl-test" 
-                groups=group_08
-  tags:
-    - launch
-    - debug
 
 - name: Create Openstack host file
   hosts: localhost
@@ -105,10 +99,6 @@
     - name: "Create new host file with localhost entry"
       shell: echo "127.0.0.1 localhost" > bootstrap_hosts
       delegate_to: localhost
-  tags:
-    - launch
-    - debug
-
 
 ################################################################################
 #           Start creating OpenStack instances.                                #
@@ -126,10 +116,6 @@
       add_host: name={{ data.public_ip }} 
                 groups=postgres,all_instances 
                 hostname={{ inventory_hostname }}
-  tags:
-    - launch
-    - debug
-
 
 - name: Provision OpenStack Instance for identifier
   hosts: group_02
@@ -143,10 +129,6 @@
       add_host: name={{ data.public_ip }} 
                 groups=identifier,all_instances 
                 hostname={{ inventory_hostname }}
-  tags:
-    - launch
-    - debug
-
 
 - name: Provision OpenStack Instance for manager
   hosts: group_03
@@ -162,10 +144,6 @@
                 hostname={{ inventory_hostname }}
     - name: Save manager's public IP for later
       set_fact: cm_host={{ data.public_ip }}
-  tags:
-    - launch
-    - debug
-
 
 - name: Provision OpenStack Instance for workers
   hosts: group_04
@@ -180,10 +158,6 @@
       add_host: name={{ data.public_ip }} 
                 groups=workers,all_instances 
                 hostname={{ inventory_hostname }}
-  tags:
-    - launch
-    - debug
-
 
 - name: Provision OpenStack Instance for mongo
   hosts: group_05
@@ -197,10 +171,6 @@
       add_host: name={{ data.public_ip }} 
                 groups=mongo,all_instances 
                 hostname={{ inventory_hostname }}
-  tags:
-    - launch
-    - debug
-
 
 - name: Provision OpenStack Instance for etl-main
   hosts: group_06
@@ -214,10 +184,6 @@
       add_host: name={{ data.public_ip }} 
                 groups=main,all_instances 
                 hostname={{ inventory_hostname }}
-  tags:
-    - launch
-    - debug
-
 
 - name: Provision OpenStack Instance for elasticsearch
   hosts: group_07
@@ -231,10 +197,6 @@
       add_host: name={{ data.public_ip }} 
                 groups=elasticsearch,all_instances 
                 hostname={{ inventory_hostname }}
-  tags:
-    - launch
-    - debug
-
 
 ################################################################################
 #           Getting around openstack quirkyness of not having                  #
@@ -249,8 +211,6 @@
                 port=22 
                 timeout=900
       delegate_to: localhost
-  tags:
-    - launch
 
 - name: Grab openstack node's internal IPs
   hosts: all_instances
@@ -265,8 +225,6 @@
     - name: Writing IPs to host file
       shell: echo "{{ ansible_all_ipv4_addresses[0] }} {{ ansible_hostname }}" >> bootstrap_hosts
       delegate_to: localhost
-  tags:
-    - launch
 
 - name: Replace /etc/hosts with bootstrapped hosts file
   hosts: all_instances
@@ -283,9 +241,6 @@
             dest=/etc/hosts 
             owner=root 
             group=root
-  tags:
-    - launch
-
 
 ################################################################################
 #                           Provision each host.                               #
