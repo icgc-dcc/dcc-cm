@@ -2,7 +2,7 @@
 # file: etl-worker.yml
 
 - hosts: etl-worker
-  gather_facts: True
+  gather_facts: False
   sudo: yes
   vars_files:
     - "vars/main.yml"
