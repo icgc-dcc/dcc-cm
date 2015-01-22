@@ -10,7 +10,3 @@
           state=present
   register: shmall
 
-- name: Restart postgres server
-  service: name=postgresql 
-           state=restarted
-  when: shmmax|changed or shmall|changed

@@ -1,4 +1,4 @@
 - include: dependencies.yml
-- include: install.yml
 - include: configure.yml
+- include: install.yml
 - include: seed.yml

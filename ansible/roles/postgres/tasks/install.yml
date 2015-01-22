@@ -4,7 +4,7 @@
         update_cache=yes
 
 - name: make sure postgres is enabled and started
-  service: name=postgresql enabled=yes state=started        
+  service: name=postgresql enabled=yes state=started
 
 - name: Install PostgreSQL config file
   copy: src=postgresql.conf 
