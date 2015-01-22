@@ -1,0 +1,20 @@
+---
+# file: roles/worker/tasks/main.yml
+
+# FIXME: Production uses /u/dcc_dev/ as a shared directory, we don't have this on openstack
+# Copy reference genome to worker ndoes
+
+- name: Ensure data directory
+  file: path="{{ item }}" 
+        state="directory" 
+        mode=0777 
+  with_items:
+    - "{{ data_dir }}"
+
+- name: Copy genome
+  get_url: "url={{ reference_genome_url }}
+            dest={{ data_dir }}/{{ reference_genome_archive }}
+            mode=0777"
+
+- name: Extract the reference genome
+  command: "tar xzf {{ data_dir }}/{{ reference_genome_archive }} -C {{ data_dir }}"

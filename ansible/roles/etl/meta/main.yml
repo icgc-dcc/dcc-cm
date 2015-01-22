@@ -1,0 +1,5 @@
+---
+
+dependencies:
+  # - { role: cdh_repo}
+  - { role: jdk}

@@ -1,0 +1,20 @@
+---
+# file: roles/lzo/tasks/main.yml
+
+- name: Get liblzo2-2
+  apt:  pkg="liblzo2-2" 
+        state=installed
+- name: Get extra repo
+  copy: src="gplextras.list" 
+        dest="/etc/apt/sources.list.d/gplextras.list"
+        mode=0644
+        force=yes
+- name: Update apt-get 
+  apt:  update_cache=yes
+- name: Get hadoop lzo
+  apt:  pkg="hadoop-lzo" 
+        state=installed
+        force=yes
+- name: Just to test, get lzop
+  apt:  pkg="lzop" 
+        state=installed

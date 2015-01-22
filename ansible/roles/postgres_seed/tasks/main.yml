@@ -1,0 +1,47 @@
+- name: Creating script dir
+  file: dest="/tmp/scripts" state="directory"
+
+- name: Copy identifier script
+  copy: src="{{ item }}" dest="/tmp/scripts/{{ item }}" mode=0744
+  with_items:
+    - "identifier_schema.sql"
+    - "fathmm_schema.sql"
+ 
+- name: Create identifier database
+  postgresql_db: name="dcc_identifier" state=present
+
+- name: Create fathmm database
+  postgresql_db: name="fathmm" state=present
+
+- name: Create DCC User
+  postgresql_user: db="dcc_identifier" name="dcc" login_password="dcc"
+
+- name: Create DCC User
+  postgresql_user: db="fathmm" name="dcc" login_password="dcc"
+
+
+# Explicit set password, otherwise have to use hash above
+- name: Set password
+  shell: psql -d dcc_identifier -c "ALTER USER dcc with PASSWORD 'dcc'"
+  ignore_errors: yes
+
+- name: Set password
+  shell: psql -d fathmm -c "ALTER USER dcc with PASSWORD 'dcc'"
+  ignore_errors: yes
+
+
+
+# Schema and privileges
+- name: Initialize identifier
+  command: psql -d dcc_identifier -f {{ item }}
+  with_items:
+    - "/tmp/scripts/identifier_schema.sql"
+
+- name: Initialize schemas
+  command: psql -d fathmm -f {{ item }}
+  with_items:
+    - "/tmp/scripts/fathmm_schema.sql"
+
+
+
+
