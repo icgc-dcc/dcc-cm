@@ -55,34 +55,6 @@
 #
 ################################################################################
 
-- name: Generate initial hosts
-  hosts: localhost
-  gather_facts: False
-  tasks:
-    - name: "Adding host"
-      add_host: name=etl-postgres
-                groups=group_01
-    - name: "Adding host"
-      add_host: name=etl-identifier
-                groups=group_02
-    - name: "Adding host"
-      add_host: name=etl-cm
-                groups=group_03
-    - name: "Adding host"
-      add_host: name="{{ item }}"
-                groups=group_04
-      with_sequence: count=2 
-                     format=etl-worker-%02x
-    - name: "Adding host"
-      add_host: name=etl-mongo
-                groups=group_05
-    - name: "Adding host"
-      add_host: name=etl-main
-                groups=group_06
-    - name: "Adding host"
-      add_host: name=etl-elasticsearch
-                groups=group_07
-
 - name: Create the host file to be uploaded to instances
   hosts: localhost
   gather_facts: False
@@ -94,53 +66,8 @@
       shell: echo "127.0.0.1 localhost" > bootstrap_hosts
       delegate_to: localhost
 
-################################################################################
-#           Start creating OpenStack instances.                                #
-################################################################################
-
-- name: Provision OpenStack Instance for postgres
-  hosts: group_01
-  user: root
-  gather_facts: False
-  vars_files:
-    - "vars/main.yml"
-  tasks:
-    - include: tasks/create-instances.yml
-    - name: Add public ip to hostgroup
-      add_host: name={{ ip_data.public_ip }} 
-                groups=postgres,etl-all 
-                hostname={{ inventory_hostname }}
-
-- name: Provision OpenStack Instance for identifier
-  hosts: group_02
-  user: root
-  gather_facts: False
-  vars_files:
-    - "vars/main.yml"
-  tasks:
-    - include: tasks/create-instances.yml
-    - name: Add public ip to hostgroup
-      add_host: name={{ ip_data.public_ip }} 
-                groups=identifier,etl-all 
-                hostname={{ inventory_hostname }}
-
-- name: Provision OpenStack Instance for manager
-  hosts: group_03
-  user: root
-  gather_facts: False
-  vars_files:
-    - "vars/main.yml"
-  tasks:
-    - include: tasks/create-instances.yml
-    - name: Add public ip to hostgroup
-      add_host: name={{ ip_data.public_ip }} 
-                groups=manager,etl-all 
-                hostname={{ inventory_hostname }}
-    - name: Save manager's public IP for later
-      set_fact: cm_host={{ ip_data.public_ip }}
-
-- name: Provision OpenStack Instance for workers
-  hosts: group_04
+- name: Create OpenStack Instances
+  hosts: etl-all
   user: root
   gather_facts: False
   serial: 1
@@ -149,55 +76,18 @@
   tasks:
     - include: tasks/create-instances.yml
     - name: Add public ip to hostgroup
-      add_host: name={{ ip_data.public_ip }} 
-                groups=workers,etl-all 
+      # this hack allows adding each hostname to a group that will be used downstream. the regex strips "dcc-" from beginning
+      # and potential "-xx" from the end of hostname and uses that as a group name, allowing us to use group names 
+      # like etl-postgres or etl-worker in include statements. ex. dcc-etl-worker-01 -> etl-worker
+      add_host: name={{ ip_data.public_ip }}
+                groups={{ inventory_hostname | regex_replace('^dcc-(etl-\w*)(-\d*$)?', '\\1') }},all_instances
                 hostname={{ inventory_hostname }}
-
-- name: Provision OpenStack Instance for mongo
-  hosts: group_05
-  user: root
-  gather_facts: False
-  vars_files:
-    - "vars/main.yml"
-  tasks:
-    - include: tasks/create-instances.yml
-    - name: Add public ip to hostgroup
-      add_host: name={{ ip_data.public_ip }} 
-                groups=mongo,etl-all 
-                hostname={{ inventory_hostname }}
-
-- name: Provision OpenStack Instance for etl-main
-  hosts: group_06
-  user: root
-  gather_facts: False
-  vars_files:
-    - "vars/main.yml"
-  tasks:
-    - include: tasks/create-instances.yml
-    - name: Add public ip to hostgroup
-      add_host: name={{ ip_data.public_ip }} 
-                groups=main,etl-all 
-                hostname={{ inventory_hostname }}
-
-- name: Provision OpenStack Instance for elasticsearch
-  hosts: group_07
-  user: root
-  gather_facts: False
-  vars_files:
-    - "vars/main.yml"
-  tasks:
-    - include: tasks/create-instances.yml
-    - name: Add public ip to hostgroup
-      add_host: name={{ ip_data.public_ip }} 
-                groups=elasticsearch,etl-all 
-                hostname={{ inventory_hostname }}
-
-################################################################################
-#           Getting around openstack quirkyness of not having                  #
-################################################################################
+    - name: Writing private IPs to host file
+      shell: echo "{{ creation_data.private_ip }} {{ inventory_hostname }}" >> bootstrap_hosts
+      delegate_to: localhost
 
 - name: Check if SSH is ready on servers
-  hosts: etl-all
+  hosts: all_instances
   gather_facts: False
   tasks:
     - name: Wait for ssh
@@ -206,22 +96,8 @@
                 timeout=900
       delegate_to: localhost
 
-- name: Grab openstack node's internal IPs
-  hosts: etl-all
-  gather_facts: True
-  serial: 1
-  vars_files:
-    - "vars/main.yml"
-  vars:
-    host_key_checking: False
-    ansible_ssh_user: ubuntu
-  tasks:
-    - name: Writing IPs to host file
-      shell: echo "{{ ansible_all_ipv4_addresses[0] }} {{ ansible_hostname }}" >> bootstrap_hosts
-      delegate_to: localhost
-
 - name: Replace /etc/hosts with bootstrapped hosts file
-  hosts: etl-all
+  hosts: all_instances
   sudo: True
   serial: 1
   vars_files:
@@ -235,10 +111,6 @@
             dest=/etc/hosts 
             owner=root 
             group=root
-
-################################################################################
-#                           Provision each host.                               #
-################################################################################
 
 
 - include: etl-elasticsearch.yml
