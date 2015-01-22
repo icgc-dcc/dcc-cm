@@ -9,3 +9,7 @@
 
 - name: Install CDH
   shell: cd /tmp;sudo ./run_cdh_installer
+  register: run_cdh_installer_result
+
+- name: output of run_cdh_installer
+  debug: msg="{{ run_cdh_installer_result }}"

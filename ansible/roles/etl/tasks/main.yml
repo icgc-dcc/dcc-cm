@@ -43,6 +43,7 @@
 - name: Install helper packages
   action: apt pkg={{ item }} 
               state=latest
+              force=yes
   with_items:
     - "hadoop-hdfs-fuse"
     - "tree"

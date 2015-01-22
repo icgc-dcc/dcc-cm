@@ -4,8 +4,10 @@
   debug: msg="python files/cluster_setup.py -p {{ ansible_ssh_private_key_file }} -h {{ hostvars['dcc-etl-cm']['cm_host'] }}"
 
 - name: Provision Hadoop Cluster using Cloudera Manager API
+  sudo: no
   connection: local
-  shell: "python files/cluster_setup.py -p {{ ansible_ssh_private_key_file }} -h {{ hostvars['dcc-etl-cm']['cm_host'] }}"
+  shell: "python roles/cloudera_manager/files/cluster_setup.py -p {{ ansible_ssh_private_key_file }} -h {{ hostvars['dcc-etl-cm']['cm_host'] }}"
+  delegate_to: localhost
   register: python_script
 
 - name: output of cluster_setup
