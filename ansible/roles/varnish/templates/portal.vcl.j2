@@ -52,26 +52,17 @@ sub vcl_recv {
         }
 
         if (req.request == "GET" && req.url ~ "^/api/.*/download.*$") {
-		/* Don't reuse connection. See https://www.varnish-cache.org/docs/3.0/tutorial/vcl.html#actions pipe paragraph */
-		set req.http.Connection = "close";
-
                 /* Never cache downloads */
                 return(pipe);
         }
 
-        if (req.url ~ "^/api/.*/auth.*$") {
-		/* Don't reuse connection. See https://www.varnish-cache.org/docs/3.0/tutorial/vcl.html#actions pipe paragraph */
-		set req.http.Connection = "close";
-
+        if (req.request == "GET" && req.url ~ "^/api/.*/auth.*$") {
                 /* Never cache login related*/
                 return(pipe);
         }
 
 	if (req.request == "GET" && req.url ~ "^/api/short\?.*$") {
-		/* Don't reuse connection. See https://www.varnish-cache.org/docs/3.0/tutorial/vcl.html#actions pipe paragraph */
-		set req.http.Connection = "close";
-
-		/* Never cache short URL API */
+	/* Never cache short URL API */
 		return(pipe);
 	}
 

@@ -1,7 +1,7 @@
 # Copyright 2014(c) The Ontario Institute for Cancer Research. All rights reserved.
 
 user www-data;
-worker_processes auto;
+worker_processes {{ worker_processes }};
 pid /var/run/nginx.pid;
 
 events {
@@ -10,8 +10,6 @@ events {
 }
 
 http {
-	ssl_session_cache shared:SSL:10m;
-	ssl_session_timeout 10m;
 
 	##
 	# Basic Settings
@@ -92,7 +90,7 @@ http {
 
 	# web cluster nodes
 	upstream web-cluster {
-	{% for host in groups.varnish %}
+	{% for host in groups.portal %}
 		server {{ host }}:{{ portal_port }}; 
 	{% endfor %}
 	}
