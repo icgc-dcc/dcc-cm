@@ -1,4 +1,4 @@
 ---
 
 dependencies:
-  - { role: jdk}
+  - { role: jdk7}
