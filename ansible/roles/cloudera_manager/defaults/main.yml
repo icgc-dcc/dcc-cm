@@ -1,3 +1,5 @@
+# Binary Installer version and location
+# http://archive.cloudera.com/cm5/installer/5.3.0/cloudera-manager-installer.bin
 cdh_version: 5.3.0
 cdh_installer: cloudera-manager-installer.bin
 cdh_download: http://archive.cloudera.com/cm5/installer/{{ cdh_version }}/{{ cdh_installer }}

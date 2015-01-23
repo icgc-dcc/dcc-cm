@@ -1,5 +1,6 @@
 ---
 
- - include: dependencies.yml
- - include: install.yml
- - include: configure.yml
+# - include: dependencies.yml
+# - include: install.yml
+- include: installer.yml
+- include: configure.yml
