@@ -1,0 +1,3 @@
+fs_url: "hdfs://{{ server_prefix }}-submission-worker-01"
+job_tracker: "{{ server_prefix }}-submission-worker-01:8021"
+mongo_host: "{{ server_prefix }}-submissionl-mongo"

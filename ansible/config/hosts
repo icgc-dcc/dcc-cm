@@ -1,15 +1,6 @@
 [localhost]
 127.0.0.1
 
-[varnish]
-127.0.0.1
-
-[nginx]
-127.0.0.1
-
-[portal]
-127.0.0.1
-
 [etl-all]
 dcc-etl-elasticsearch
 dcc-etl-main
@@ -22,11 +13,11 @@ dcc-etl-cm
 dcc-etl-identifier
 dcc-etl-postgres
 
-[all-submission]
-submission-main
-submission-mongo
-submission-worker-01
-submission-worker-02
-submission-worker-03
-submission-worker-04
-submission-cm
+[submission-all]
+dcc-submission-main
+dcc-submission-mongo
+dcc-submission-worker-01
+dcc-submission-worker-02
+dcc-submission-worker-03
+dcc-submission-worker-04
+dcc-submission-cm

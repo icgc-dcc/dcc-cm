@@ -2,5 +2,5 @@
 # file: site.yml
 
 - include: etl.yml
-#- include: submission.yml
+- include: submission.yml
 #- include: portal.yml

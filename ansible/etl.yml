@@ -60,10 +60,10 @@
   gather_facts: False
   tasks:
     - name: "Remove previous host file if exist"
-      shell: rm -f bootstrap_hosts
+      shell: rm -f etl_bootstrap_hosts
       delegate_to: localhost
     - name: "Create new host file with localhost entry"
-      shell: echo "127.0.0.1 localhost" > bootstrap_hosts
+      shell: echo "127.0.0.1 localhost" > etl_bootstrap_hosts
       delegate_to: localhost
 
 - name: Create OpenStack Instances
@@ -83,7 +83,7 @@
                 groups={{ inventory_hostname | regex_replace('^dcc-(etl-\w*)(-\d*$)?', '\\1') }},all_instances
                 hostname={{ inventory_hostname }}
     - name: Writing private IPs to host file
-      shell: echo "{{ creation_data.private_ip }} {{ inventory_hostname }}" >> bootstrap_hosts
+      shell: echo "{{ creation_data.private_ip }} {{ inventory_hostname }}" >> etl_bootstrap_hosts
       delegate_to: localhost
     - name: Save manager's public IP for later
       set_fact: cm_host={{ ip_data.public_ip }}
@@ -110,16 +110,15 @@
     ansible_ssh_user: ubuntu
   tasks:
     - name: Copying... 
-      copy: src=bootstrap_hosts 
+      copy: src=etl_bootstrap_hosts 
             dest=/etc/hosts 
             owner=root 
             group=root
-
 
 - include: etl-elasticsearch.yml
 - include: etl-postgres.yml
 - include: etl-identifier.yml
 - include: etl-mongo.yml
+- include: etl-worker.yml
 - include: etl-cm.yml
 - include: etl-main.yml
-- include: etl-worker.yml
