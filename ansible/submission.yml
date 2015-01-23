@@ -46,7 +46,7 @@
                 groups={{ inventory_hostname | regex_replace('^dcc-(submission-\w*)(-\d*$)?', '\\1') }},all_instances
                 hostname={{ inventory_hostname }}
     - name: Writing private IPs to host file
-      shell: echo "{{ creation_data.private_ip }} {{ inventory_hostname }}" >> bootstrap_hosts
+      shell: echo "{{ creation_data.private_ip }} {{ inventory_hostname }}" >> submission_bootstrap_hosts
       delegate_to: localhost
     - name: Save manager's public IP for later
       set_fact: cm_host={{ ip_data.public_ip }}

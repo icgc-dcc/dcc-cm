@@ -94,8 +94,8 @@
   gather_facts: False
   tasks:
     - name: Wait for ssh
-      wait_for: host={{ inventory_hostname }} 
-                port=22 
+      wait_for: host={{ inventory_hostname }}
+                port=22
                 timeout=900
       delegate_to: localhost
 
@@ -111,8 +111,8 @@
   tasks:
     - name: Copying... 
       copy: src=etl_bootstrap_hosts 
-            dest=/etc/hosts 
-            owner=root 
+            dest=/etc/hosts
+            owner=root
             group=root
 
 - include: etl-elasticsearch.yml
