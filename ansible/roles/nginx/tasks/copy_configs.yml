@@ -7,6 +7,9 @@
 - name: Copy dcc_portal
   template: src=dcc_portal.j2 dest=/etc/nginx/sites-available/dcc_portal mode=0644
 
+- name: Make a dcc ssl directory
+  file: path=/etc/ssl/dcc/ state=directory
+
 - name: Copy portal.crt
   copy: src=portal.crt dest=/etc/ssl/dcc/portal.crt mode=0644
 
