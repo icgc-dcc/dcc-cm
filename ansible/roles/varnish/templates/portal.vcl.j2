@@ -1,7 +1,7 @@
 # Copyright 2014(c) The Ontario Institute for Cancer Research. All rights reserved.
 
 # Backend servers
-{% for host in groups.portal %}
+{% for host in groups.portal_main %}
 backend www{{ loop.index }} {
 	.host = "{{ host }}";
         .port = "{{ backend_port }}";
@@ -18,7 +18,7 @@ backend www{{ loop.index }} {
 
 # Round-robin director
 director www round-robin {
-{% for host in groups.portal %}
+{% for host in groups.portal_main %}
 	{ .backend = www{{ loop.index }}; }
 {% endfor %}
 }

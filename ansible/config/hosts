@@ -19,7 +19,7 @@ dcc-submission-worker-02
 dcc-submission-cm
 
 [portal-all]
-dcc-portal-01
-dcc-portal-02
-dcc-portal-varnish
-dcc-portal-nginx
+dcc_portal_main_01
+dcc_portal_main_02
+dcc_portal_varnish
+dcc_portal_nginx
