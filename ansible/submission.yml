@@ -1,7 +1,7 @@
 ################################################################################
 #
 # Submission playbook
-# 1) Hadoop
+# 1) Instances
 # 2) CDH Manager
 # 3) MongoDB
 # 4) Submission Node
@@ -10,7 +10,6 @@
 #   - System (.system) need to be set in place
 #   - Need to clear root_dir on HDFS
 #   - Better injection of mongo_uri, job_tracker
-#   - CDH API for provisioning cluster
 #
 # Hacks
 #   - Codelists and Dictionary should not use /ws/seed
@@ -18,67 +17,8 @@
 #
 ################################################################################
 
-- name: Create the host file to be uploaded to instances
-  hosts: localhost
-  gather_facts: False
-  tasks:
-    - name: "Remove previous host file if exist"
-      shell: rm -f submission_bootstrap_hosts
-      delegate_to: localhost
-    - name: "Create new host file with localhost entry"
-      shell: echo "127.0.0.1 localhost" > submission_bootstrap_hosts
-      delegate_to: localhost
-
-- name: Create OpenStack Instances
-  hosts: submission-all
-  user: root
-  gather_facts: False
-  serial: 1
-  vars_files:
-    - "vars/main.yml"
-  tasks:
-    - include: tasks/create-instances.yml
-    - name: Add public ip to hostgroup
-      # this hack allows adding each hostname to a group that will be used downstream. the regex strips "dcc-" from beginning
-      # and potential "-xx" from the end of hostname and uses that as a group name, allowing us to use group names 
-      # like submission-mongo or submission-worker in include statements. ex. dcc-submission-worker-01 -> submission-worker
-      add_host: name={{ ip_data.public_ip }}
-                groups={{ inventory_hostname | regex_replace('^dcc-(submission-\w*)(-\d*$)?', '\\1') }},all_instances
-                hostname={{ inventory_hostname }}
-    - name: Writing private IPs to host file
-      shell: echo "{{ creation_data.private_ip }} {{ inventory_hostname }}" >> submission_bootstrap_hosts
-      delegate_to: localhost
-    - name: Save manager's public IP for later
-      set_fact: cm_host={{ ip_data.public_ip }}
-      when: inventory_hostname == "dcc-submission-cm"
-
-- name: Check if SSH is ready on servers
-  hosts: all_instances
-  gather_facts: False
-  tasks:
-    - name: Wait for ssh
-      wait_for: host={{ inventory_hostname }}
-                port=22
-                timeout=900
-      delegate_to: localhost
-
-- name: Replace /etc/hosts with bootstrapped hosts file
-  hosts: all_instances
-  sudo: True
-  serial: 1
-  vars_files:
-    - "vars/main.yml"
-  vars:
-    host_key_checking: False
-    ansible_ssh_user: ubuntu
-  tasks:
-    - name: Copying... 
-      copy: src=submission_bootstrap_hosts 
-            dest=/etc/hosts
-            owner=root
-            group=root
-
-- include: submission-mongo.yml
-- include: submission-cm.yml
-- include: submission-main.yml
+- include: tasks/setup.yml group=submission
+- include: tasks/submission-cm.yml
+- include: tasks/submission-mongo.yml
+- include: tasks/submission-main.yml
 
