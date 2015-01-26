@@ -1,5 +1,5 @@
 - name: Ensure directories
-  file: path="{{ portal_root }}" state="directory"
+  file: path="{{ portal_root }}/conf" state="directory"
 
 - name: Download dcc-portal
   get_url: url="https://seqwaremaven.oicr.on.ca/artifactory/dcc-release/org/icgc/dcc/dcc-portal-api/{{ portal_version }}/dcc-portal-api-{{ portal_version }}-dist.tar.gz" dest="/tmp/portal.tgz"
