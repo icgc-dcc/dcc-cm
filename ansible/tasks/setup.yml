@@ -1,0 +1,59 @@
+- name: Create the host file to be uploaded to instances
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: "Remove previous host file if exist"
+      shell: "rm -f {{ group }}_bootstrap_hosts"
+      delegate_to: localhost
+    - name: "Remove previous debug file if exist"
+      shell: "rm -f {{ group }}_bootstrap_hosts_debug"
+      delegate_to: localhost
+    - name: "Create new host file with localhost entry"
+      shell: "echo '127.0.0.1 localhost' > {{ group }}_bootstrap_hosts"
+      delegate_to: localhost
+
+- name: Creates OpenStack instances of all the hosts in group parameter, defined in hosts file.
+  hosts: "{{ group }}"
+  user: root
+  gather_facts: False
+  serial: 1
+  vars_files:
+    - "../vars/main.yml"
+  tasks:
+    - include: create-openstack-instances.yml
+    - name: Add public ip to hostgroup
+      # This hack allows adding each hostname to a group that will be used downstream. The regex strips "dcc-" from beginning
+      # and potential "-xx" from the end of hostname and uses that as a group name, allowing us to use group names 
+      # like portal-varnish or portal-01 in include statements. ex. dcc-portal-01 -> portal-01
+      add_host: name={{ ip_data.public_ip }}
+                groups={{ inventory_hostname | regex_replace('^dcc_([a-z]+_[a-z]+)(_\d*$)?', '\\1') }},{{ group }}_all_instances
+                hostname={{ inventory_hostname }}
+    - name: Writing private IPs to host file
+      shell: echo "{{ creation_data.private_ip }} {{ inventory_hostname }}" >> {{ group }}_bootstrap_hosts
+      delegate_to: localhost
+    - name: Writing some debug information about hosts
+      shell: echo "{{ inventory_hostname }} | {{ ip_data.public_ip }} | {{ creation_data.private_ip }} | {{ inventory_hostname | regex_replace('^dcc_([a-z]+_[a-z]+)(_\d*$)?', '\\1') }}" >> {{ group }}_bootstrap_hosts_debug
+      delegate_to: localhost
+
+- name: Check if SSH is ready on hosts
+  hosts: "{{ group }}_all_instances"
+  gather_facts: False
+  tasks:
+    - name: Wait for ssh
+      wait_for: host={{ inventory_hostname }}
+                port=22
+                timeout=900
+      delegate_to: localhost
+
+- name: Replace /etc/hosts with bootstrapped hosts file
+  hosts: "{{ group }}_all_instances"
+  sudo: yes
+  serial: 1
+  vars_files:
+    - "../vars/main.yml"
+  tasks:
+    - name: Copying... 
+      copy: src={{ group }}_bootstrap_hosts 
+            dest=/etc/hosts
+            owner=root
+            group=root
