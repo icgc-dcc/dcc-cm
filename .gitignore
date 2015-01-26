@@ -1,3 +1,3 @@
 vagrant
-ansible/*_bootstrap_hosts*
+ansible/tasks/*_bootstrap_hosts*
 ansible/vars/main.yml

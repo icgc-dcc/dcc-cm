@@ -1,35 +1,16 @@
 ################################################################################
-# Brings up DCC ETL pipeline:
 #
-# - Initial hosts allocation
-# - Provision Openstack instances and divide into logical groups
-# - Create and distribute custom host files for openstack
-# - Install Postgresql database server
-# - Install ICGC DCC schemas
+# ETL playbook
+#
+# - Provision ElasticSearch server
+# - Provision Postgresql server
+# - Seed Postgresql server with ICGC schemas
 # - Provision DCC Identifier
 # - Provision MongoDB server
-# - Provision ElasticSearch server
-# - Copy reference data to worker nodes
-# - Install LZO on worker nodes
+# - Provision ETL Worker Nodes
 # - Provision Cloudera Manager
-# - Install packages on main ETL Node
-# - Install etl scripts, reference data on ETL node
-# - Install annotator on main ETL node
-# - Install reference data for annotator
-# - Patch scripts and configuration files for openstack environment
-# - Bootstrap dcc-genome on mongodb server
-# - Install exporter on main ETL node
-# - Install downloader and its workflows into the cluster
+# - Provision ETL Main Node#
 #
-#
-# Note the playbook makes assumptions of which one of hadoop nodes
-# is the jobtracker, name-node, quorum..etc
-#
-#
-################################################################################
-
-
-################################################################################
 #
 # Post provisioning steps: Do these before starting an ETL run 
 #
@@ -38,28 +19,84 @@
 # - Download the dictionary for the ETL run
 # - Download codelist for the ETL run??
 # 
-# 
-# FIXME: not a good way to handle this
-# 1) Patch exporter setenv.sh 
-#   - The datatype declaration should only contain the data types that we have, otherwise 
-#     the dynamic exporter will throw an exception and halt the overarching script. This
-#     is difficult to do programmatically as we don't know that projects have what types.
-#
-# 2) (Re)create oozie workflow for coordinator (archivecleaner)
-#   - Goto a oozie server
-#   - Copy job.properties from HDFS     hadoop fs -copyToLocal /user/downloader/workflows/archivecleaner-main/job.properties job.properties
-#   - Get job id if exists     oozie jobs -oozie http://localhost:11000/oozie -jobtype coordinator
-#   - Kill job if exists       oozie job -oozie http://localhost:11000/oozie -kill <Coordinator job_id from above>
-#   - Install coordinator      oozie job -oozie http://localhost:11000/oozie -config job.properties -submit
-#   - Start coordinator        oozie job -oozie http://localhost:11000/oozie -start <New coordinator job_id>
-#
 ################################################################################
 
 - include: tasks/setup.yml group=etl
-- include: tasks/etl-elasticsearch.yml
-- include: tasks/etl-postgres.yml
-- include: tasks/etl-identifier.yml
-- include: tasks/etl-mongo.yml
-- include: tasks/etl-worker.yml
-- include: tasks/etl-cm.yml
-- include: tasks/etl-main.yml
+
+- hosts: etl_elasticsearch
+  gather_facts: no
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+  roles: 
+    - elasticsearch
+
+- hosts: etl-postgres
+  gather_facts: no
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+
+  roles: 
+    - postgres
+
+- hosts: etl_postgres
+  gather_facts: no
+  sudo_user: postgres
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+
+  roles: 
+    - postgres_seed
+
+- hosts: etl_identifier
+  gather_facts: no
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+
+  roles: 
+    - identifier
+
+- hosts: etl_mongo
+  gather_facts: no
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+
+  roles: 
+    - mongodb
+
+- hosts: etl_worker
+  gather_facts: False
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+
+  roles: 
+    - worker
+    - lzo
+
+- hosts: etl_cm
+  gather_facts: no
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+
+  roles: 
+    - cloudera_manager
+
+- hosts: etl_main
+  gather_facts: no
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+
+  roles: 
+    - lzo
+    - mongodb
+    - etl
+    - annotator
+    - exporter
+    - downloader

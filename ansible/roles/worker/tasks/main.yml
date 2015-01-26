@@ -1,8 +1,13 @@
----
-# file: roles/worker/tasks/main.yml
-
-# FIXME: Production uses /u/dcc_dev/ as a shared directory, we don't have this on openstack
-# Copy reference genome to worker ndoes
+################################################################################
+#
+# ETL Worker Role
+# - Copy reference data to worker nodes
+#
+# TODO
+#   - FIXME: Production uses /u/dcc_dev/ as a shared directory, 
+#			 we don't have this on openstack
+#
+################################################################################
 
 - name: Ensure data directory
   file: path="{{ item }}" 

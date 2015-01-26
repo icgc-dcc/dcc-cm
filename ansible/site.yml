@@ -3,4 +3,4 @@
 
 - include: etl.yml
 - include: submission.yml
-#- include: portal.yml
+- include: portal.yml

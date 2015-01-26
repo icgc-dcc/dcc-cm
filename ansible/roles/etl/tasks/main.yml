@@ -1,5 +1,35 @@
 ################################################################################
-# Setup basic ETL node packages
+#
+# ETL Main Role
+#
+# - Install packages on main ETL Node
+# - Install etl scripts, reference data on ETL node
+# - Install annotator on main ETL node
+# - Install reference data for annotator
+# - Patch scripts and configuration files for openstack environment
+# - Bootstrap dcc-genome on mongodb server
+# - Install exporter on main ETL node
+# - Install downloader and its workflows into the cluster
+#
+#
+# Note this role makes assumptions of which one of hadoop nodes
+# is the jobtracker, name-node, quorum..etc
+# 
+# TODO:
+# FIXME: not a good way to handle this
+# 1) Patch exporter setenv.sh 
+#   - The datatype declaration should only contain the data types that we have, otherwise 
+#     the dynamic exporter will throw an exception and halt the overarching script. This
+#     is difficult to do programmatically as we don't know that projects have what types.
+#
+# 2) (Re)create oozie workflow for coordinator (archivecleaner)
+#   - Goto a oozie server
+#   - Copy job.properties from HDFS     hadoop fs -copyToLocal /user/downloader/workflows/archivecleaner-main/job.properties job.properties
+#   - Get job id if exists     oozie jobs -oozie http://localhost:11000/oozie -jobtype coordinator
+#   - Kill job if exists       oozie job -oozie http://localhost:11000/oozie -kill <Coordinator job_id from above>
+#   - Install coordinator      oozie job -oozie http://localhost:11000/oozie -config job.properties -submit
+#   - Start coordinator        oozie job -oozie http://localhost:11000/oozie -start <New coordinator job_id>
+#
 ################################################################################
 
 - name: ensure groups exist

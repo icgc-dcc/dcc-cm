@@ -2,21 +2,21 @@
 127.0.0.1
 
 [etl]
-dcc-etl-elasticsearch
-dcc-etl-main
-dcc-etl-mongo
-dcc-etl-worker-01
-dcc-etl-worker-02
-dcc-etl-cm
-dcc-etl-identifier
-dcc-etl-postgres
+dcc_etl_elasticsearch
+dcc_etl_main
+dcc_etl_mongo
+dcc_etl_worker_01
+dcc_etl_worker_02
+dcc_etl_cm
+dcc_etl_identifier
+dcc_etl_postgres
 
 [submission]
-dcc-submission-main
-dcc-submission-mongo
-dcc-submission-worker-01
-dcc-submission-worker-02
-dcc-submission-cm
+dcc_submission_main
+dcc_submission_mongo
+dcc_submission_worker_01
+dcc_submission_worker_02
+dcc_submission_cm
 
 [portal]
 dcc_portal_main_01

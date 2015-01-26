@@ -1,3 +1,6 @@
+---
+# file: create-openstack-instances.yml
+
 - name: Create VM instances
   nova_compute:
     auth_url: "{{ auth_url }}"
