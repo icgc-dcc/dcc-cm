@@ -5,21 +5,25 @@
 dcc_etl_elasticsearch
 dcc_etl_main
 dcc_etl_mongo
-dcc_etl_worker_01
-dcc_etl_worker_02
-dcc_etl_cm
 dcc_etl_identifier
 dcc_etl_postgres
+dcc_cloudera_manager
+dcc_hadoop_worker_1
+dcc_hadoop_worker_2
+dcc_hadoop_worker_3
+dcc_hadoop_worker_4
 
 [submission]
 dcc_submission_main
 dcc_submission_mongo
-dcc_submission_worker_01
-dcc_submission_worker_02
-dcc_submission_cm
+dcc_cloudera_manager
+dcc_hadoop_worker_1
+dcc_hadoop_worker_2
+dcc_hadoop_worker_3
+dcc_hadoop_worker_4
 
 [portal]
-dcc_portal_main_01
-dcc_portal_main_02
+dcc_portal_main_1
+dcc_portal_main_2
 dcc_portal_varnish
 dcc_portal_nginx

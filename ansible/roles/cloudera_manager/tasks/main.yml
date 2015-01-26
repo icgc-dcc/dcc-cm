@@ -10,4 +10,4 @@
 - include: installer.yml
   when: cm_started.stderr.find('unrecognized service') != -1
 
-- include: configure.yml
+- include: configure.yml host='cloudera_manager'

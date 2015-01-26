@@ -34,6 +34,9 @@
     - name: Writing some debug information about hosts
       shell: echo "{{ inventory_hostname }} | {{ ip_data.public_ip }} | {{ creation_data.private_ip }} | {{ inventory_hostname | regex_replace('^dcc_([a-z]+_[a-z]+)(_\d*$)?', '\\1') }}" >> {{ group }}_bootstrap_hosts_debug
       delegate_to: localhost
+    - name: Save cloudera manager's public IP for later
+      set_fact: cm_host={{ ip_data.public_ip }}
+      when: inventory_hostname == "cloudera_manager"
 
 - name: Check if SSH is ready on hosts
   hosts: "{{ group }}_all_instances"
