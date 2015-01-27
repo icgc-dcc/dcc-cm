@@ -19,7 +19,7 @@
 
 - include: tasks/setup.yml group=submission
 
-- hosts: cloudera_manager
+- hosts: hadoop_manager
   gather_facts: no
   sudo: yes
   vars_files:
@@ -28,7 +28,7 @@
   roles:
     - cloudera_manager
 
-- hosts: submission_mongo
+- hosts: mongo
   gather_facts: no
   sudo: yes
   vars_files:

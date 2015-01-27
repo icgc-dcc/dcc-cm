@@ -3,6 +3,7 @@
 - name: Check Java existence and version
   command:  java -version
   register: java_version
+  ignore_errors: True
 
 - include: install.yml
   when: java_version.stderr.find('{{ jdk_version }}') == -1

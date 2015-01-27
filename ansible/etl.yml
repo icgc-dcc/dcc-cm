@@ -23,7 +23,7 @@
 
 - include: tasks/setup.yml group=etl
 
-- hosts: etl_elasticsearch
+- hosts: elasticsearch
   gather_facts: no
   sudo: yes
   vars_files:
@@ -40,7 +40,7 @@
   roles: 
     - postgres
 
-- hosts: etl_postgres
+- hosts: postgres
   gather_facts: no
   sudo_user: postgres
   sudo: yes
@@ -50,7 +50,7 @@
   roles: 
     - postgres_seed
 
-- hosts: etl_identifier
+- hosts: identifier
   gather_facts: no
   sudo: yes
   vars_files:
@@ -59,7 +59,7 @@
   roles: 
     - identifier
 
-- hosts: etl_mongo
+- hosts: mongo
   gather_facts: no
   sudo: yes
   vars_files:
@@ -78,7 +78,7 @@
     - worker
     - lzo
 
-- hosts: cloudera_manager
+- hosts: hadoop_manager
   gather_facts: no
   sudo: yes
   vars_files:

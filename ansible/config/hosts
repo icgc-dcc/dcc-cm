@@ -2,12 +2,12 @@
 127.0.0.1
 
 [etl]
-dcc_etl_elasticsearch
 dcc_etl_main
-dcc_etl_mongo
-dcc_etl_identifier
-dcc_etl_postgres
-dcc_cloudera_manager
+dcc_elasticsearch
+dcc_mongo
+dcc_identifier
+dcc_postgres
+dcc_hadoop_manager
 dcc_hadoop_worker_1
 dcc_hadoop_worker_2
 dcc_hadoop_worker_3
@@ -15,8 +15,8 @@ dcc_hadoop_worker_4
 
 [submission]
 dcc_submission_main
-dcc_submission_mongo
-dcc_cloudera_manager
+dcc_mongo
+dcc_hadoop_manager
 dcc_hadoop_worker_1
 dcc_hadoop_worker_2
 dcc_hadoop_worker_3
