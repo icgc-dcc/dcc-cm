@@ -1,4 +1,5 @@
 ---
 
+# dependency on jdk is needed if not using cdh_installer.
 dependencies:
   #- { role: jdk}

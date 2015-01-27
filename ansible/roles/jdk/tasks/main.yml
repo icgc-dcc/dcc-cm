@@ -2,9 +2,9 @@
 
 - name: Check Java existence and version
   command:  java -version
-  register: java_version
-  ignore_errors: True
+  register: java_result
+  ignore_errors: yes
 
 - include: install.yml
-  when: java_version.stderr.find('{{ jdk_version }}') == -1
+  when: java_result.rc != 0 or ("{{ jdk_version }}" not in java_result.stderr)
 

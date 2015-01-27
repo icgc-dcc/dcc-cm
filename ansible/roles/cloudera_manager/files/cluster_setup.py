@@ -28,7 +28,7 @@ import ConfigParser
 
 # Prep for reading config props from external file
 config = ConfigParser.ConfigParser()
-config.read("clouderaconfig.ini")
+config.read("roles/cloudera_manager/files/clouderaconfig.ini")
 
 zookeeper_service_name = "ZOOKEEPER"
 hdfs_service_name = "HDFS"
@@ -73,19 +73,25 @@ host_username = config.get("CM", "host_username")
 
 def setup_cluster(cm_host, private_key_path):
     # get a handle on the instance of CM that we have running
-    api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=7)
+    api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=9)
 
     # get the CM instance
     cm = ClouderaManager(api)
 
     # activate the CM trial license
-    # TODO check for existence
-    cm.begin_trial()
+    try:
+        cm.begin_trial()
+    except:
+        print 'Trial has been used already.'
+        pass
 
     # create the management service
     # TODO check for existence
     service_setup = ApiServiceSetupInfo(name=cm_service_name, type="MGMT")
-    cm.create_mgmt_service(service_setup)
+    try:
+        cm.create_mgmt_service(service_setup)
+    except:
+        pass
 
     # read private key
     private_key = open(private_key_path, 'rb').read()
@@ -344,6 +350,7 @@ def configure_cluster(cm_host, private_key_path):
 def main(argv):
     cm_host = ''
     private_key_path = ''
+    setting_file_path = ''
     try:
         opts, args = getopt.getopt(argv, "p:h:", ["private_key_path=", "cloudera_manager_host="])
     except getopt.GetoptError:
@@ -355,8 +362,8 @@ def main(argv):
         elif opt in ("-h", "--cloudera_manager_host"):
             cm_host = arg
     
-    print "using private_key_path: " + private_key_path
-    print "using cloudera manager host: " + cm_host
+    print "private_key_path = \"" + private_key_path + "\""
+    print "cm_host = \"" + cm_host + "\""
     setup_cluster(cm_host, private_key_path)
     configure_cluster(cm_host, private_key_path)
 
