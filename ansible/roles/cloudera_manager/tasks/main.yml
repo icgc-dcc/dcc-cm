@@ -8,6 +8,6 @@
   ignore_errors: True
 
 - include: installer.yml
-  when: cm_started.stderr.find('unrecognized service') != -1
+  when: cm_started.stdout.find('cloudera-scm-server is running') == -1
 
-- include: configure.yml host='cloudera_manager'
+- include: configure.yml

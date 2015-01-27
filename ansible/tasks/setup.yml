@@ -36,7 +36,7 @@
       delegate_to: localhost
     - name: Save cloudera manager's public IP for later
       set_fact: cm_host={{ ip_data.public_ip }}
-      when: inventory_hostname == "cloudera_manager"
+      when: inventory_hostname == "dcc_hadoop_manager"
 
 - name: Check if SSH is ready on hosts
   hosts: "{{ group }}_all_instances"
