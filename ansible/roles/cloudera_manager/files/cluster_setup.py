@@ -28,7 +28,7 @@ import ConfigParser
 
 # Prep for reading config props from external file
 config = ConfigParser.ConfigParser()
-config.read("roles/cloudera_manager/files/clouderaconfig.ini")
+config.read("roles/cloudera_manager/files/cloudera_config.ini")
 
 zookeeper_service_name = "ZOOKEEPER"
 hdfs_service_name = "HDFS"
