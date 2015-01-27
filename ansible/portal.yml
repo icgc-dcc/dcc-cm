@@ -4,7 +4,7 @@
 - include: tasks/setup.yml group=portal
 
 - name: Configure and deploy varnish
-  hosts: portal_varnish
+  hosts: varnish
   gather_facts: no
   user: ubuntu
   sudo: yes
@@ -13,7 +13,7 @@
     - varnish
 
 - name: Configure and deploy nginx
-  hosts: portal_nginx
+  hosts: nginx
   gather_facts: no
   user: ubuntu
   sudo: yes
@@ -22,7 +22,7 @@
     - nginx
 
 - name: Configure and deploy portal
-  hosts: portal_main
+  hosts: portal-main
   gather_facts: no
   user: ubuntu
   sudo: yes

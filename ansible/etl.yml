@@ -31,7 +31,7 @@
   roles: 
     - elasticsearch
 
-- hosts: etl-postgres
+- hosts: postgres
   gather_facts: no
   sudo: yes
   vars_files:
@@ -68,7 +68,7 @@
   roles: 
     - mongodb
 
-- hosts: hadoop_worker
+- hosts: hadoop-worker
   gather_facts: False
   sudo: yes
   vars_files:
@@ -78,7 +78,7 @@
     - worker
     - lzo
 
-- hosts: hadoop_manager
+- hosts: hadoop-manager
   gather_facts: no
   sudo: yes
   vars_files:
@@ -87,7 +87,7 @@
   roles:
     - cloudera_manager
 
-- hosts: etl_main
+- hosts: etl-main
   gather_facts: no
   sudo: yes
   vars_files:

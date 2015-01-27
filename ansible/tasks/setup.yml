@@ -22,21 +22,21 @@
   tasks:
     - include: create-openstack-instances.yml
     - name: Add public ip to hostgroup
-      # This hack allows adding each hostname to a group that will be used downstream. The regex strips "dcc-" from beginning
+      # This hack allows adding each hostname to a group that will be used downstream. The regex strips "prefix-" from beginning
       # and potential "-xx" from the end of hostname and uses that as a group name, allowing us to use group names 
-      # like portal-varnish or portal-01 in include statements. ex. dcc-portal-01 -> portal-01
+      # like postgres or hadoop-worker in include statements. ex. dcc-hadoop-worker-1 -> hadoop-worker
       add_host: name={{ ip_data.public_ip }}
-                groups={{ inventory_hostname | regex_replace('^dcc_([a-z]+_[a-z]+)(_\d*$)?', '\\1') }},{{ group }}_all_instances
+                groups={{ inventory_hostname | regex_replace('^[a-z]*-([a-z]*-?\w*)(-\d*$)?', '\\1') }},{{ group }}_all_instances
                 hostname={{ inventory_hostname }}
     - name: Writing private IPs to host file
       shell: echo "{{ creation_data.private_ip }} {{ inventory_hostname }}" >> {{ group }}_bootstrap_hosts
       delegate_to: localhost
     - name: Writing some debug information about hosts
-      shell: echo "{{ inventory_hostname }} | {{ ip_data.public_ip }} | {{ creation_data.private_ip }} | {{ inventory_hostname | regex_replace('^dcc_([a-z]+_[a-z]+)(_\d*$)?', '\\1') }}" >> {{ group }}_bootstrap_hosts_debug
+      shell: echo "{{ inventory_hostname }} | {{ ip_data.public_ip }} | {{ creation_data.private_ip }} | {{ inventory_hostname | regex_replace('^[a-z]*-([a-z]*-?\w*)(-\d*$)?', '\\1') }}" >> {{ group }}_bootstrap_hosts_debug
       delegate_to: localhost
     - name: Save cloudera manager's public IP for later
       set_fact: cm_host={{ ip_data.public_ip }}
-      when: inventory_hostname == "dcc_hadoop_manager"
+      when: inventory_hostname == "dcc-hadoop-manager"
 
 - name: Check if SSH is ready on hosts
   hosts: "{{ group }}_all_instances"
