@@ -30,6 +30,12 @@ import ConfigParser
 config = ConfigParser.ConfigParser()
 config.read("roles/hadoop_node/files/cloudera_config.ini")
 
+zookeeper_service_name = "ZOOKEEPER"
+hdfs_service_name = "HDFS"
+mapred_service_name = "MAPRED"
+hbase_service_name = "HBASE"
+oozie_service_name = "OOZIE"
+
 # Cluster name
 cluster_name = config.get("CDH", "cluster.name")
 

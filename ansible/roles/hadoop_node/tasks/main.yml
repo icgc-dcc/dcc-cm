@@ -1,14 +1,15 @@
 ---
 
 - name: exeuting command
-  debug: msg="python roles/hadoop_node/files/setup_host.py -p {{ ansible_ssh_private_key_file }} -c {{ hostvars['dcc-hadoop-manager']['cm_host'] }} -h {{ inventory_hostname }}"
+  debug: msg="python roles/hadoop_node/files/setup_host.py -p {{ ansible_ssh_private_key_file }} -c {{ hostvars['dcc-hadoop-manager']['cm_host'] }} -h dcc-etl-main"
 
 - name: Setup Host using Cloudera Manager API
   sudo: no
   connection: local
-  shell: "python roles/hadoop_node/files/setup_host.py -p {{ ansible_ssh_private_key_file }} -c {{ hostvars['dcc-hadoop-manager']['cm_host'] }} -h {{ inventory_hostname }}"
+  shell: "python roles/hadoop_node/files/setup_host.py -p {{ ansible_ssh_private_key_file }} -c {{ hostvars['dcc-hadoop-manager']['cm_host'] }} -h dcc-etl-main"
   delegate_to: localhost
   register: python_script
+  failed_when: "'failed' in python_script.stdout"
 
 - name: output of setup_host
   debug: msg="{{ python_script.stdout }}"
