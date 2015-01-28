@@ -14,3 +14,7 @@
 
 #- name: Patch elasticsearch yml
 #  lineinfile: dest="/etc/elasticsearch/elasticsearch.yml" regexp="bootstrap.mlockall" line="bootstrap.mlockall:true"
+
+- name: Restart Elastic search
+  service: name=elasticsearch state=restarted
+
