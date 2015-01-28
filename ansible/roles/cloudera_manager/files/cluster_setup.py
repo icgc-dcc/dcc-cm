@@ -252,121 +252,23 @@ def setup_cluster(cm_host, private_key_path):
     print "First run successfully executed. Cluster has been set up!"
 
 
-def configure_cluster(cm_host, private_key_path):
-
-    # get a handle on the instance of CM that we have running
-    api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=7)
-
-    # get the CM instance
-    cm = ClouderaManager(api)
-
-    # read private key
-    private_key = open(private_key_path, 'rb').read()
-
-    # install hosts on etl-main
-    cmd = cm.host_install(host_username, [main_host], private_key=private_key, cm_repo_url=cm_repo_url)
-    print "Installing main_host. This will take a while."
-    while cmd.success is None:
-        sleep(30)
-        cmd = cmd.fetch()
-
-    if cmd.success is not True:
-        print "cm_host_install failed: " + cmd.resultMessage
-        exit(0)
-
-    print "cm_host_install succeeded."
-
-    cluster = api.get_cluster(cluster_name)
-
-    print "adding main_host to cluster"
-    cluster.add_hosts([main_host])
-
-    print "adding gateway role to main_host for hbase, hdfs and mapreduce"
-
-    # install HDFS client on etl main node so it can access HDFS
-    hdfs_service = cluster.get_service(hdfs_service_name)
-    hdfs_service.create_role("{0}-gw-1".format(hdfs_service_name), "GATEWAY", main_host)
-
-    # install MapReduce client on the etl main node so it can run exporter
-    mapred_service = cluster.get_service(mapred_service_name)
-    mapred_service.create_role("{0}-gw-1".format(mapred_service_name), "GATEWAY", main_host)
-
-    # install HBase client on etl main node
-    hbase_service = cluster.get_service(hbase_service_name)
-    hbase_service.create_role("{0}-gw-1".format(hbase_service_name), "GATEWAY", main_host)
-
-    print "deploying client configurations"
-    cluster.deploy_client_config()
-
-    print "Updating configurations for HBASE"
-    # See hbase.dynamic.jars.dir in http://hbase.apache.org/book.html
-    config_value = '<property><name>hbase.dynamic.jars.dir</name><value>/hbase_lib</value></property>'
-    hbase_service_config = {
-      'hbase_service_config_safety_valve' : config_value
-    }
-    hbase_service.update_config(hbase_service_config)
-
-    # Edit /etc/hbase/conf/hbase-site.xml in the main ETL node to get around hbase max hfile limitation
-    # See: http://stackoverflow.com/questions/24950393/trying-to-load-more-than-32-hfiles-to-one-family-of-one-region
-    gw = hbase_service.get_role_config_group("{0}-GATEWAY-BASE".format(hbase_service_name))
-    hbase_gw_config = {
-      'hbase_client_config_safety_valve' : '<property><name>hbase.mapreduce.bulkload.max.hfiles.perRegion.perFamily</name><value>5000</value></property>'
-    }
-    gw.update_config(hbase_gw_config)
-    # deploy client config again.
-    cluster.deploy_client_config()
-
-    print "Updating configurations for MAPREDUCE"
-    # Configure compression codecs for TaskTracker, a comma separated list
-    config_value = 'org.apache.hadoop.io.compress.DefaultCodec,' \
-            'org.apache.hadoop.io.compress.GzipCodec,'\
-            'org.apache.hadoop.io.compress.BZip2Codec,'\
-            'com.hadoop.compression.lzo.LzoCodec,'\
-            'com.hadoop.compression.lzo.LzopCodec,'\
-            'org.apache.hadoop.io.compress.SnappyCodec'
-    mapred_tt_config = {
-      'override_io_compression_codecs' : config_value
-    }
-    tt = mapred_service.get_role_config_group("{0}-TASKTRACKER-BASE".format(mapred_service_name))
-    tt.update_config(mapred_tt_config)
-
-    config_value = 'HADOOP_CLASSPATH=$HADOOP_CLASSPATH:/usr/lib/hadoop/lib/*\n' \
-            'JAVA_LIBRARY_PATH=$JAVA_LIBRARY_PATH:/usr/lib/hadoop/lib/native'
-    mapred_service_config = {
-      'mapreduce_service_env_safety_valve' : config_value
-    }
-    mapred_service.update_config(mapred_service_config)
-
-    # Now restart the cluster for changes to take effect.
-    print "About to restart cluster"
-    cluster.stop().wait()
-    cluster.start().wait()
-    print "Done restarting cluster"
-
-    # deploy client config again.
-    cluster.deploy_client_config()
-
-
 def main(argv):
     cm_host = ''
     private_key_path = ''
-    setting_file_path = ''
     try:
-        opts, args = getopt.getopt(argv, "p:h:", ["private_key_path=", "cloudera_manager_host="])
+        opts, args = getopt.getopt(argv, "p:c:", ["private_key_path=", "cloudera_manager_host="])
     except getopt.GetoptError:
-        print 'cluster_setup.py -p <private_key_path> -h <cloudera_manager_host>'
+        print 'cluster_setup.py -p <private_key_path> -c <cloudera_manager_host>'
         sys.exit(2)
     for opt, arg in opts:
         if opt in ("-p", "--private_key_path"):
             private_key_path = arg
-        elif opt in ("-h", "--cloudera_manager_host"):
+        elif opt in ("-c", "--cloudera_manager_host"):
             cm_host = arg
     
     print "private_key_path = \"" + private_key_path + "\""
     print "cm_host = \"" + cm_host + "\""
     setup_cluster(cm_host, private_key_path)
-    configure_cluster(cm_host, private_key_path)
-
 
 if __name__ == "__main__":
     main(sys.argv[1:])
