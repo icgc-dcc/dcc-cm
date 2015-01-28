@@ -65,4 +65,10 @@ fuse_root_dir: "/hdfs/dcc"
 ################################################################################
 es_index_name: "openstack-test"
 
+# Hadoop Settings
+fs_url: "hdfs://{{ server_prefix }}-hadoop-worker-1"
+job_tracker: "{{ server_prefix }}-hadoop-worker-1:8021"
+
+mongo_host: dcc-mongo
+
 

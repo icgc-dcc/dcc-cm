@@ -1,6 +1,6 @@
 - name: Create the host file to be uploaded to instances
   hosts: localhost
-  gather_facts: False
+  gather_facts: no
   tasks:
     - name: "Remove previous host file if exist"
       shell: "rm -f {{ group }}_bootstrap_hosts"
@@ -15,7 +15,7 @@
 - name: Creates OpenStack instances of all the hosts in group parameter, defined in hosts file.
   hosts: "{{ group }}"
   user: root
-  gather_facts: False
+  gather_facts: no
   serial: 1
   vars_files:
     - "../vars/main.yml"
@@ -40,7 +40,7 @@
 
 - name: Check if SSH is ready on hosts
   hosts: "{{ group }}_all_instances"
-  gather_facts: False
+  gather_facts: no
   tasks:
     - name: Wait for ssh
       wait_for: host={{ inventory_hostname }}

@@ -22,7 +22,7 @@ shiro_url: "http://repo1.maven.org/maven2/org/apache/shiro/tools/shiro-tools-has
 
 # === Copied over from default ===
 # The version of the dcc-submission-server to install
-dist_version: 3.4.1
+dist_version: 3.7.4.1
 
 # Admin SFTP / HTTP username / password for the submission system which gets hashed and stored in ream.ini
 admin_username: admin
@@ -35,7 +35,7 @@ sftp_port: 5322
 
 
 # === Copied over from reference ===
-reference_genome_version: GRCh37
+reference_genome_version: GRCh37.75.v1
 target_dir: /tmp
 reference_genome_name: dcc-reference-genome
 reference_genome_archive: "{{ reference_genome_name }}-{{ reference_genome_version }}.tar.gz"

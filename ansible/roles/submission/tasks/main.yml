@@ -7,8 +7,6 @@
   file: "path={{ item }} state=directory"
   with_items:
     - "{{ install_dir }}"
-    #- "{{ root_dir }}"
-
 
 # Download from central repository
 - name: Download the reference genome

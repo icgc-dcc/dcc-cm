@@ -64,7 +64,7 @@ exportVCF: true
 # Hadoop configuration
 loaderHadoop:
   #fs.defaultFS: "***REMOVED***"
-  fs.defaultFS: "{{ default_fs }}"
+  fs.defaultFS: "{{ fs_url }}"
 
   # temporarily lower the replication factor manually
   #dfs.replication: 2
@@ -95,7 +95,7 @@ loaderHadoop:
 
 indexerHadoop:
   #fs.defaultFS: "***REMOVED***"
-  fs.defaultFS: "{{ default_fs }}"
+  fs.defaultFS: "{{ fs_url }}"
 
   # temporarily lower the replication factor manually
   #dfs.replication: 2

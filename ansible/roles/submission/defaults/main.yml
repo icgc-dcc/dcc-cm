@@ -1,3 +1,7 @@
-fs_url: "hdfs://{{ server_prefix }}-submission-worker-01"
-job_tracker: "{{ server_prefix }}-submission-worker-01:8021"
-mongo_host: "{{ server_prefix }}-submissionl-mongo"
+smtp_host: ***REMOVED***
+from_email: no-reply@oicr.on.ca
+from_name: DCC Validator
+support_email: dcc-support@lists.oicr.on.ca
+support_name: DCC Support
+notification_email: se-notifications@lists.oicr.on.ca
+notification_name: SE Notifications

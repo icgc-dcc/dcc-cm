@@ -1,17 +1,13 @@
-#
 # Copyright 2013(c) The Ontario Institute for Cancer Research. All rights reserved.
 #
-# DCC Submission Server - Application configuration
+# DCC Submission Server - Application Configuration
 #
-# Note: 
-#   The CWD will always be the bin/ directory
-# See:
-#   http://wrapper.tanukisoftware.com/doc/english/prop-working-dir.html
+#  Note: The CWD will always be the bin/ directory
+#        See http://wrapper.tanukisoftware.com/doc/english/prop-working-dir.html
 
-# {{ ansible_managed }}
 http {
   listen: "0.0.0.0"
-  port: {{ http_port }}
+  port: 5380
   ssl: false
   ws {
     path: "/ws"
@@ -20,42 +16,43 @@ http {
     "../www/public/"
   ]
 }
+# Only using a single host for now. See DCC-1934
 mongo {
-  #uri: "mongodb://localhost/icgc-dev"
-  uri: "mongodb://{{ mongo_host }}/icgc-dev"
+  # Using "primary" as read preference, it's the default but we explicitely state it to make it clear what is being used
+  # (see details at https://jira.oicr.on.ca/browse/DCC-1934?focusedCommentId=59363&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-59363)
+  # uri: "mongodb://<%=mongo_user%>:<%=mongo_password%>@{{ mongo_host }}/icgc?readPreference=primary"
+    uri: "mongodb://{{ mongo_host }}/icgc-dev"
 }
 shiro {
   realm: "../conf/realm.ini"
 }
 fs {
   # Root directory of DCC filesystem
-  root : "{{ root_dir }}"
-  
-  # FileSystem Scheme. This sets hadoop's fs.defaultFS. For local use: "file:///"
-  #url: "file:///"
+  root : "/icgc/submission"
+  # FileSystem Scheme. This sets hadoop's fs.defaultFS
   url: "{{ fs_url }}"
 }
 sftp {
-  port : {{ sftp_port }}
+  port : 5322
   path : "../data/sshd.pem"
+  nio-workers: 20
 }
+# Everything set below this node ends up in the JobConf. All keys must be double quoted in this section.
 hadoop {
-  # Everything set below this node ends up in the JobConf
   "fs.defaultFS": ${fs.url}
 
   # Configure the job tracker
-  # mapred.job.tracker : "localhost:8021"
   "mapred.job.tracker" : "{{ job_tracker }}"
-  "mapred.job.shuffle.input.buffer.percent": 0.5
+  "mapred.job.shuffle.input.buffer.percent" : 0.5
+  "mapred.child.java.opts" : "-Xmx6g"
 }
 validator {
   max_simultaneous: 3
 }
-# validators: ["fpv", "pv", "kv", "rgv", "nv"]
-normalizer { # Configuration section for the normalizer component
-  error_threshold: 1.0 # Threshold above which the ratio of controlled to total number of observations is likely due to data errors
+normalizer {
+  error_threshold: 1.0
   masks {
-    enabled: true, # Can enable/disable any step that implements OptionalStep
+    enabled: true,
   },
   duplicates {
     enabled: true,
@@ -64,27 +61,27 @@ normalizer { # Configuration section for the normalizer component
 reference {
   # The reference genome assembly. Assumes the existence of a .fasta.fai file in the same directory. 
   # The filename is what will be reported to users as the assembly version.
-  # fasta: "../data/{{ reference_genome_version }}.fasta"
-  fasta: "{{ target_dir }}/{{ reference_genome_version }}.fasta"
+  fasta: "../data/GRCh37.fasta"
 }
 mail {
-  enabled: false
+  enabled: true
   smtp {
-    host: "localhost"
+    host: "{{ smtp_host }}"
   }
   from {
-    email: "validator@example.org"
-    name: "Validator"
+    email: "{{ from_email }}"
+    name: "{{ from_name }}"
   }
   support {
-    email: "notifications@example.org"
-    name: "Support"
+    email: "{{ support_email }}"
+    name: "{{ support_name }}"
   }
   notification {
-    email: "notifications@example.org"
-    name: "Notifications"
-  }  
+    email: "{{ notification_email }}"
+    name: "{{ notification_name }}"
+  }
   subject:"[DCC] Validation Finished for %s - %s!"
+  not_validated_body: "Dear ICGC member\n\nWe have processed your submission for the project %s and the state is: %s.\n\nThis mean that there is at least one file in your submission that has not been validated and you should now examine the summary reports on our submission site and validate the remaining files. You can find the summary reports at: https://submissions.dcc.icgc.org/releases/%s/submissions/%s. \n\nThe DCC team\n\nNote: this email is not monitored, for help with your submission please email dcc-support@oicr.on.ca"
   valid_body: "Dear ICGC member\n\nWe have processed your submission for the project %s and the state is: %s.\n\nSince your submission is valid it is compliant with the current ICGC data format specification. At this point you can see the summary reports at https://submissions.dcc.icgc.org/releases/%s/submissions/%s and, when ready, you can click "signoff" on the submission portal to indicate your submission is ready for inclusion in the ICGC DCC release. If you need to make modifications to your current submission please re-upload your data and trigger the validation process again. \n\nThe DCC team\n\nNote: this email is not monitored, for help with your submission please email dcc-support@oicr.on.ca"
   invalid_body: "Dear ICGC member\n\nWe have processed your submission for the project %s and the state is: %s.\n\nThis mean that there are errors in your data and you should now examine the error reports on our submission site, fix the errors in your local submission files, re-upload these files, and try your validation again. You can find the detailed error reports at: https://submissions.dcc.icgc.org/releases/%s/submissions/%s. \n\nThe DCC team\n\nNote: this email is not monitored, for help with your submission please email dcc-support@oicr.on.ca"
   signoff_body: "Dear DCC administrator,\n\nUser %s has just signed off the submission for the project %s. This submission is ready for inclusion in the %s Data Portal release.\n\nThis message is sent out by the data validator application."

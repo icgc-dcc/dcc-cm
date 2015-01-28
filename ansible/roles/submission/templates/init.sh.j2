@@ -21,9 +21,7 @@ project_alias=$3 && project_alias=${project_alias:=${project_key?}}
 
 
 tmp_dir="{{ target_dir }}/dcc" && mkdir -p ${tmp_dir?}
-dcc_root_dir="{{ root_dir }}"
 mongodb_host="{{ mongo_host }}"
-
 
 dictionary_file="${tmp_dir?}/dictionary.json"
 codelists_file="${tmp_dir?}/codelists.json"
@@ -54,11 +52,6 @@ function extract_version() {
 # Drop database, if it exists
 echo "dropping mongo icgc-dev database"
 /usr/bin/mongo --host ${mongodb_host} icgc-dev --eval "db.dropDatabase()"
-
-
-# Clean file system, if it exists #TODO: This is in HDFS!!!!!
-#echo "removing /mnt/dcc-portal/dcc_root_dir/*"
-#rm -rvf ${dcc_root_dir?}
 
 # download origin dictionary and ensure state is OPENED
 echo "getting dictionary"
