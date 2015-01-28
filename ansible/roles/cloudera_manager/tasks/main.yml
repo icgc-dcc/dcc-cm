@@ -1,13 +1,11 @@
 ---
 
-# - include: dependencies.yml
-# - include: install.yml
 - name: Check CM service existence and state
   command:  service cloudera-scm-server status
   register: cm_started
-  ignore_errors: True
+  ignore_errors: yes
 
+# - include: install.yml
 - include: installer.yml
   when: cm_started.stdout.find('cloudera-scm-server is running') == -1
 
-- include: configure.yml

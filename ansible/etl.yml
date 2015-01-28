@@ -85,7 +85,7 @@
     - "vars/main.yml"
 
   roles:
-    - cloudera_manager
+    - hadoop_cluster
 
 - hosts: etl-main
   gather_facts: no
@@ -93,7 +93,8 @@
   vars_files:
     - "vars/main.yml"
 
-  roles: 
+  roles:
+    - hadoop_node 
     - lzo
     - mongodb
     - etl

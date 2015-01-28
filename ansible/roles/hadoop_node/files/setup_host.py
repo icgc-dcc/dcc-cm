@@ -28,20 +28,16 @@ import ConfigParser
 
 # Prep for reading config props from external file
 config = ConfigParser.ConfigParser()
-config.read("roles/cloudera_manager/files/cloudera_config.ini")
+config.read("roles/hadoop_node/files/cloudera_config.ini")
 
 # Cluster name
 cluster_name = config.get("CDH", "cluster.name")
-
-# This is the main ETL node which will need several clients and gateways.
-host = config.get("ETL", "etl.main")
 
 cm_port = 7180
 cm_username = "admin"
 cm_password = "admin"
 
 host_username = config.get("CM", "host_username")
-
 
 def configure_host(cm_host, private_key_path, hostname):
 
@@ -141,20 +137,24 @@ def configure_host(cm_host, private_key_path, hostname):
 def main(argv):
     cm_host = ''
     private_key_path = ''
+    hostname = ''
     try:
-        opts, args = getopt.getopt(argv, "p:h:", ["private_key_path=", "cloudera_manager_host="])
+        opts, args = getopt.getopt(argv, "p:c:h:", ["private_key_path=", "cloudera_manager_host=", "hostname="])
     except getopt.GetoptError:
-        print 'cluster_setup.py -p <private_key_path> -h <cloudera_manager_host>'
+        print 'cluster_setup.py -p <private_key_path> -c <cloudera_manager_host> -h <hostname>'
         sys.exit(2)
     for opt, arg in opts:
         if opt in ("-p", "--private_key_path"):
             private_key_path = arg
-        elif opt in ("-h", "--cloudera_manager_host"):
+        elif opt in ("-c", "--cloudera_manager_host"):
             cm_host = arg
+        elif opt in ("-h", "--hostname"):
+            hostname = arg
     
     print "private_key_path = \"" + private_key_path + "\""
     print "cm_host = \"" + cm_host + "\""
-    configure_host(cm_host, private_key_path, host)
+    print "hostname = \"" + hostname + "\""
+    configure_host(cm_host, private_key_path, hostname)
 
 
 if __name__ == "__main__":

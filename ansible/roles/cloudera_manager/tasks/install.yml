@@ -1,5 +1,6 @@
 ---
 
+- include: dependencies.yml
 - name: Install Cloudera Manager Server
   action: apt pkg={{ item }} state=latest
   with_items:
