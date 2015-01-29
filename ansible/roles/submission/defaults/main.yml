@@ -1,9 +1,0 @@
-smtp_host: ***REMOVED***
-from_email: no-reply@oicr.on.ca
-from_name: DCC Validator
-support_email: dcc-support@lists.oicr.on.ca
-support_name: DCC Support
-notification_email: se-notifications@lists.oicr.on.ca
-notification_name: SE Notifications
-http_port: 5380
-sftp_port: 5322
