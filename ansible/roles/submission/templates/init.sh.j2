@@ -20,7 +20,7 @@ project_name=$2 && project_name=${project_name:=${project_key?}}
 project_alias=$3 && project_alias=${project_alias:=${project_key?}}
 
 
-tmp_dir="{{ target_dir }}/dcc" && mkdir -p ${tmp_dir?}
+tmp_dir="{{ staging_dir }}/dcc" && mkdir -p ${tmp_dir?}
 mongodb_host="{{ mongo_host }}"
 
 dictionary_file="${tmp_dir?}/dictionary.json"
@@ -56,7 +56,7 @@ echo "dropping mongo icgc-dev database"
 # download origin dictionary and ensure state is OPENED
 echo "getting dictionary"
 echo "[" > ${dictionary_file?}
-curl ${origin_host?}/ws/nextRelease/dictionary   -H "Accept: application/json" | ensure_open >> ${dictionary_file?} && echo "OK" || echo "KO"
+curl -v -XGET ${origin_host?}/ws/nextRelease/dictionary -H "Accept: application/json" | ensure_open >> ${dictionary_file?} && echo "OK" || echo "KO"
 echo "]" >> ${dictionary_file?}
 
 # download origin codelists

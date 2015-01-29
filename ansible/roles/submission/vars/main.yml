@@ -6,7 +6,8 @@ web_dir: "{{ install_dir }}/www"
 data_dir: "{{ install_dir }}/data"
 bin_dir: "{{ install_dir }}/bin"
 conf_dir: "{{ install_dir }}/conf"
-root_dir: "/tmp/dcc_root_dir"
+root_dir: /tmp/dcc_root_dir
+staging_dir: /tmp
 
 # Distribution
 dist_name: "dcc-submission-server"
@@ -18,9 +19,6 @@ dist_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ dist_name }}/{{ dist_ve
 shiro_version: 1.2.1
 shiro_url: "http://repo1.maven.org/maven2/org/apache/shiro/tools/shiro-tools-hasher/{{ shiro_version }}/shiro-tools-hasher-{{ shiro_version }}-cli.jar"
 
-
-
-# === Copied over from default ===
 # The version of the dcc-submission-server to install
 dist_version: 3.7.4.1
 
@@ -31,14 +29,3 @@ admin_password: password
 # Application ports
 http_port: 5380
 sftp_port: 5322
-
-
-
-# === Copied over from reference ===
-reference_genome_version: GRCh37.75.v1
-target_dir: /tmp
-reference_genome_name: dcc-reference-genome
-reference_genome_archive: "{{ reference_genome_name }}-{{ reference_genome_version }}.tar.gz"
-reference_genome_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ reference_genome_name }}/{{ reference_genome_version }}/{{ reference_genome_archive }}"
-
-

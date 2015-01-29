@@ -7,36 +7,32 @@
   file: "path={{ item }} state=directory"
   with_items:
     - "{{ install_dir }}"
+    - "{{ data_dir }}"
+    - "{{ staging_dir }}"
 
-# Download from central repository
 - name: Download the reference genome
   get_url: "url={{ reference_genome_url }} dest={{ staging_dir }}/{{ reference_genome_archive }} mode=0444"
 
-# Ensure target dir exists
-- name: Creating target dir
-  file: "dest={{ target_dir }} state=directory"
+- name: Extract the reference genome
+  unarchive: src={{ staging_dir }}/{{ reference_genome_archive }} dest={{ data_dir }} copy=no
 
-# Install the FASTA files to the specified location
-- name: Extract the reference genome 
-  command: "tar xzf {{ staging_dir }}/{{ reference_genome_archive }} -C {{ target_dir }} creates={{ target_dir }}/{{ reference_genome_version }}.fasta" 
+- name: Symlink the reference genome files
+  file: src="{{ data_dir }}/{{ reference_genome_filename }}.{{ item }}"
+        dest="{{ data_dir }}/{{ reference_genome_basename }}.{{ item }}"
+        state=link
+  with_items:
+    - "dict"
+    - "fasta"
 
-
-# Install the distribution
-# FIXME: Use artifactory
 - name: Download the distribution
   get_url: "url={{ dist_url }} dest={{ staging_dir }}/{{ dist_archive }} mode=0444"
 
 - name: Extract the dist 
   command: "tar xzf {{ staging_dir }}/{{ dist_archive }} --strip 1 -C {{ install_dir }}" 
-  sudo: yes
 
-
-# Configure the application
 - name: Configure application
   template: src=application.conf.j2 dest="{{ conf_dir }}/application.conf"
 
-
-# Setup authentication and authorization
 - name: Download Shiro password utility
   get_url: "url={{ shiro_url }} dest={{ staging_dir }}/password.jar"
 
@@ -48,15 +44,11 @@
 - name: Create users, passwords and roles
   template: src=realm.ini.j2 dest="{{ conf_dir }}/realm.ini"
 
-
-# Install and start service
 - name: Install service
   command: "{{ bin_dir }}/dcc-submission-server install creates=/etc/init.d/dcc-submission-server"
   
 - name: Ensure daemon is running
   service: name=dcc-submission-server state=started
-
-
 
 ################################################################################
 # Bootstrap submission to have a release environment
@@ -66,7 +58,6 @@
 
 - name: Interpolate and copy script
   template: src=init.sh.j2 dest={{ bin_dir }}/init.sh mode=0744
-  #copy: "src=init.sh dest={{ bin_dir}}/init.sh mode=0744"
 
 - name: Assign init command to variable
   set_fact: init_command="{{ bin_dir }}/init.sh {{ external_submission_url }} http://localhost:{{ http_port }} {{ admin_username }} {{ admin_password }} Release1 project1 Project1 Project1"

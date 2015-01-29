@@ -137,15 +137,14 @@
               regexp="\s+normal_database_user_passwd="
               line="  normal_database_user_passwd=dcc"
 
-
 # Analogus to /u/dcc_dev/dcc-etl/data
 - name: Download the reference genome
   get_url: "url={{ reference_genome_url }}
             dest={{ data_dir }}/{{ reference_genome_archive }}
             mode=0444"
 
-- name: Extract the reference genome 
-  command: "tar xzf {{ data_dir }}/{{ reference_genome_archive }} -C {{ data_dir }}"
+- name: Extract the reference genome
+  unarchive: src={{ data_dir }}/{{ reference_genome_archive }} dest={{ data_dir }} copy=no
 
 - name: Download dcc-etl-cli
   get_url: "url={{ dcc_etl_cli_jar }}
