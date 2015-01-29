@@ -50,9 +50,6 @@ cluster_name = config.get("CDH", "cluster.name")
 # These include hosts that will run NameNode, DataNode, JobTracker, TaskTracker, etc as well as things like gateways and zookeeper nodes
 host_list = config.get("CDH", "cluster.hosts").split(',')
 
-# This is the main ETL node which will need several clients and gateways.
-main_host = config.get("ETL", "etl.main")
-
 cdh_version = "CDH5"
 cdh_version_number = "5"
 
