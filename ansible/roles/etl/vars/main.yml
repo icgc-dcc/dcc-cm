@@ -7,3 +7,23 @@ dcc_validator_version: 3.4.1
 dcc_validator_name: dcc-submission-validator
 dcc_validator_archive: "{{ dcc_validator_name }}-{{ dcc_validator_version }}.jar"
 dcc_validator_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ dcc_validator_name }}/{{ dcc_validator_version }}/{{ dcc_validator_archive }}"
+
+################################################################################
+# DCC ETL 
+#
+# /dcc_etl
+#    /keys
+#    /etl_script (The git repository)
+#    /config
+#    /data
+#    /lib
+################################################################################
+
+nfs_dir: /nfs
+fuse_root_dir: /hdfs/dcc
+etl_root_dir: /dcc_etl
+keys_dir: "{{ etl_root_dir }}/keys" 
+repo_dir: "{{ etl_root_dir }}/etl_script"   
+config_dir: "{{ etl_root_dir }}/config"
+data_dir: "{{ etl_root_dir }}/data"
+lib_dir: "{{ etl_root_dir }}/lib"
