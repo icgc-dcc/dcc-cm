@@ -1,3 +1,18 @@
+################################################################################
+#
+# Setup Task: 
+#
+# - Creates the instances defined in inventory file using create-openstack-instances task.
+# - Creates and uploades the host file for above instances to all hosts
+#
+#
+# Note this role makes assumptions of which one of hadoop nodes
+# is the jobtracker, name-node, quorum..etc
+# 
+# TODO: Parametrize the hardcoded "dcc-hadoop-manager" hostname.
+#
+################################################################################
+
 - name: Create the host file to be uploaded to instances
   hosts: localhost
   gather_facts: no
