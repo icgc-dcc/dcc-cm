@@ -60,7 +60,7 @@
   template: src=init.sh.j2 dest={{ bin_dir }}/init.sh mode=0744
 
 - name: Assign init command to variable
-  set_fact: init_command="{{ bin_dir }}/init.sh {{ external_submission_url }} http://localhost:{{ http_port }} {{ admin_username }} {{ admin_password }} Release1 project1 Project1 Project1"
+  set_fact: init_command="{{ bin_dir }}/init.sh {{ external_submission_url }} http://localhost:{{ http_port }} {{ webhdfs_url }} {{ admin_username }} {{ admin_password }} Release1 project1 Project1 Project1"
   
 - name: Initialize the system
   shell: "{{ init_command }}"

@@ -38,3 +38,15 @@ admin_password: password
 # Application ports
 http_port: 5380
 sftp_port: 5322
+
+# Web HDFS url
+webhdfs_port: 50070
+webhdfs_url: "{{ name_node_host }}:{{ webhdfs_port }}"
+
+# DCC System Files
+system_files_name:  dcc-system-files
+system_files_basename: dcc-system-files
+system_files_version: 1
+system_files_filename: "{{ system_files_basename}}-{{ system_files_version }}"
+system_files_archive: "{{ system_files_name }}-{{ system_files_filename }}.tar.gz"
+system_files_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ system_files_name }}/{{ system_files_version }}/{{ system_files_archive }}"

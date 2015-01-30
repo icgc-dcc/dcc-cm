@@ -1,8 +1,0 @@
-postgresql_uri: "jdbc:postgresql://{{ server_prefix }}-postgres/fathmm?user=dcc&password=dcc"
-mongo_base_uri: "mongodb://{{ server_prefix }}-mongo"
-identifier_uri: "http://{{ server_prefix }}-identifier:6381"
-elasticsearch_uri: "es://{{ server_prefix }}-elasticsearch:9300"
-name_node: "hdfs://{{ server_prefix }}-hadoop-worker-1:8020"
-zookeeper_quorum: "{{ server_prefix }}-hadoop-worker-1"
-env:
-      HADOOP_USER_NAME: hdfs
