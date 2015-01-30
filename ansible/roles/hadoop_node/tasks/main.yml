@@ -1,12 +1,23 @@
----
+################################################################################
+#
+# Sets up a host as Hadoop client : 
+#
+# - Adds the host to hadoop cluster and sets it up as gateway for various services.
+#
+# 
+# TODO: 
+#     - Find a way to make this idempotent. (it will be hard and tedious)
+#     - Parametrize the hardcoded "dcc-hadoop-manager" and "dcc-etl-main" hostname.
+#
+################################################################################
 
-- name: exeuting command
-  debug: msg="python roles/hadoop_node/files/setup_host.py -p {{ ansible_ssh_private_key_file }} -c {{ hostvars['dcc-hadoop-manager']['cm_host'] }} -h dcc-etl-main"
-
+- name: Assign command to variable
+  set_fact: command="python roles/hadoop_node/files/setup_host.py -p {{ ansible_ssh_private_key_file }} -c {{ hostvars['dcc-hadoop-manager']['cm_host'] }} -h dcc-etl-main"
+  
 - name: Setup Host using Cloudera Manager API
   sudo: no
   connection: local
-  shell: "python roles/hadoop_node/files/setup_host.py -p {{ ansible_ssh_private_key_file }} -c {{ hostvars['dcc-hadoop-manager']['cm_host'] }} -h dcc-etl-main"
+  shell: "{{ command }}"
   delegate_to: localhost
   register: python_script
   failed_when: "'failed' in python_script.stdout"
