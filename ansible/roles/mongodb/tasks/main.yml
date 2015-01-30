@@ -1,8 +1,7 @@
 # Copyright 2013(c) The Ontario Institute for Cancer Research. All rights reserved.
 # Install MongoDB
 - name: Fetch 10Gen signing key
-  command: apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
-  changed_when: False
+  apt_key: keyserver=keyserver.ubuntu.com id=7F0CEB10
 
 - name: Add 10Gen repository
   shell: 

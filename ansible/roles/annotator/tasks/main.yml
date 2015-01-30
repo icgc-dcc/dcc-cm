@@ -18,7 +18,9 @@
             mode=644
 
 - name: Extract dcc-annotator ==> /u/dcc_dev/dcc_annotator
-  shell: "tar xzf /tmp/dcc-annotator.tar.gz --strip 1 -C /u/dcc_dev/dcc-annotator"
+  unarchive:  src="{{ staging_dir }}/{{ annotator_dist_filename }}"
+              dest="{{ annotator_root }}"
+              copy=no
 
 - name: Download Reference Genome
   include:  ../../../tasks/reference-genome.yml 
@@ -60,15 +62,10 @@
   ignore_errors: yes
 
 # FIXME: Comply with overarch's annotator hack
-- name: Annotator hack directory #1
-  shell: "mkdir -p /nfs/hadoop/workspace/annotator-fs-hack"
-  ignore_errors: yes
-
-# FIXME: Comply with overarch's annotator hack
 - name: Annotator hack directory #2
-  file: path="/nfs/hadoop/workspace/annotator-fs-hack" 
+  file: path="/nfs/hadoop/workspace/annotator-fs-hack"
+        state=directory
         owner={{ dcc_user }}
-        recusre=yes
   ignore_errors: yes
 
 ################################################################################
