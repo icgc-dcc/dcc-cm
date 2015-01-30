@@ -49,8 +49,8 @@
         shell=/bin/bash
 
 - name: Wipe out the scripts to get clean install
-  shell: "rm -rf {{ repo_dir }}"
-  ignore_errors: yes
+  file: path="{{ repo_dir }}"
+        state=abset
 
 - name: Create directories
   file: path="{{ item }}" 
@@ -62,7 +62,7 @@
     - "{{ config_dir }}"
     - "{{ data_dir }}"
     - "{{ lib_dir }}"
-    - "/nfs"
+    - "{{ nfs_dir }}"
 
 - name: Create directories
   file: path="{{ item }}" 
@@ -137,14 +137,11 @@
               regexp="\s+normal_database_user_passwd="
               line="  normal_database_user_passwd=dcc"
 
-# Analogus to /u/dcc_dev/dcc-etl/data
-- name: Download the reference genome
-  get_url: "url={{ reference_genome_url }}
-            dest={{ data_dir }}/{{ reference_genome_archive }}
-            mode=0444"
 
-- name: Extract the reference genome
-  unarchive: src={{ data_dir }}/{{ reference_genome_archive }} dest={{ data_dir }} copy=no
+- name: Download Reference Genome
+  include:  ../../../tasks/reference-genome.yml 
+            staging_dir={{ staging_dir }} 
+            data_dir={{ data_dir }}
 
 - name: Download dcc-etl-cli
   get_url: "url={{ dcc_etl_cli_jar }}

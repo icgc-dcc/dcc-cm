@@ -10,19 +10,10 @@
     - "{{ data_dir }}"
     - "{{ staging_dir }}"
 
-- name: Download the reference genome
-  get_url: "url={{ reference_genome_url }} dest={{ staging_dir }}/{{ reference_genome_archive }} mode=0444"
-
-- name: Extract the reference genome
-  unarchive: src={{ staging_dir }}/{{ reference_genome_archive }} dest={{ data_dir }} copy=no
-
-- name: Symlink the reference genome files
-  file: src="{{ data_dir }}/{{ reference_genome_filename }}.{{ item }}"
-        dest="{{ data_dir }}/{{ reference_genome_basename }}.{{ item }}"
-        state=link
-  with_items:
-    - "dict"
-    - "fasta"
+- name: Download Reference Genome
+  include:  ../../../tasks/reference-genome.yml 
+            staging_dir={{ staging_dir }} 
+            data_dir={{ data_dir }}
 
 - name: Download the distribution
   get_url: "url={{ dist_url }} dest={{ staging_dir }}/{{ dist_archive }} mode=0444"

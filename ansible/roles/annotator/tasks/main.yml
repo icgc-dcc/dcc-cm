@@ -21,15 +21,13 @@
   shell: "tar xzf /tmp/dcc-annotator.tar.gz --strip 1 -C /u/dcc_dev/dcc-annotator"
 
 - name: Download Reference Genome
-  get_url:  url="{{ reference_genome_url }}" 
-            dest={{ annotator_reference_dir }}
+  include:  ../../../tasks/reference-genome.yml 
+            staging_dir={{ staging_dir }} 
+            data_dir={{annotator_reference_dir}}
 
 - name: Download SnpEff database
   get_url:  url="{{ snpeff_url }}" 
             dest={{ annotator_snpeff_dir}}
-
-- name: Extract the reference genome 
-  shell: "tar xzf {{ annotator_reference_dir}}/{{ reference_genome_archive }} -C {{ annotator_reference_dir }}"
 
 - name: Rename reference genome for snpEff
   shell: "mv {{ annotator_reference_dir }}/GRCh37.fasta {{ annotator_reference_dir }}/GRCh37.75.fasta"
