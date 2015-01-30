@@ -1,18 +1,17 @@
+# OpenStack Settings
 auth_url: http://10.5.73.21:5000/v2.0
+login_tenant_name: sweng
 login_username: <username>
 login_password: <password>
-login_tenant_name: sweng
 keypair_name: <key>
 private_net: 2abdf48d-aa9a-4677-89fa-ae982f7db274
 # image_id: 08afecce-6f61-4c82-b793-7f154692116c #Ubuntu 12.04 amd64
 # image_id: 5eecedd0-0f15-414e-88f1-74ecb4271d19 #Ubuntu 14.04 amd64
 image_id: 0d22ce84-59c7-48e4-87d0-31d4c8360689 #Ubuntu 12.04 amd64 (2014-07-17)
-# flavor_id: 5
-flavor_id: 5e1407ce-1982-4351-9b7f-60b163c87763 # x2-large 32GZB ram
+flavor_id: 5 # m1.xlarge | 16GB RAM | 8 VCPU | 160.0GB Disk
+#flavor_id: 5e1407ce-1982-4351-9b7f-60b163c87763 # x2-large 32GZB ram
 
+# Ansible Settings
 host_key_checking: False
 ansible_ssh_user: <ssh_user>
 ansible_ssh_private_key_file: <ssh_key_file>
-
-# Which java
-java_name: oracle-java7
