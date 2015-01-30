@@ -1,0 +1,28 @@
+#
+# DCC ETL Annotator - Configuration
+#
+
+# Spring
+spring:
+
+# SnpEff
+snpEff:
+   resourceDir: {{ snpEff_resource_dir }}
+   resourceUrl: {{ snpEff_resource_url }}
+   databaseVersion: {{ snpeff_version}} 
+   referenceGenomeVersion: {{ snpeff_reference_genome_version }}
+   geneBuildVersion: {{ snpeff_gene_build_version }}
+
+# Hadoop         
+hadoop:
+   username: {{ hadoop_username }}
+   properties:
+      fs.defaultFS: file:///
+      mapred.min.split.size: 104857600
+      
+      # fs.defaultFS: hdfs://hcn50***REMOVED***
+      # mapred.job.tracker: ***REMOVED***:8021
+      
+      # dfs.client.use.legacy.blockreader: true
+      # hadoop.socks.server: localhost:1080
+      # hadoop.rpc.socket.factory.class.default: org.apache.hadoop.net.SocksSocketFactory

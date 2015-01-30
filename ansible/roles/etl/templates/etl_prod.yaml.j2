@@ -4,13 +4,6 @@ smtpServer: "***REMOVED***"
 sender: "noreply@oicr.on.ca"
 recipients: "a@b.c" # ';' separated
 
-
-# URI to the submission system web app
-submissionWebAppUri: "http://hwww2-dcc.oicr.on.ca:5380"
-
-# Root directory of DCC loader filesystem
-fsLoaderRoot: "/icgc/etl" #FIXME: Remove
-
 # Specify compression type for the output of the loader to be consumed by the exporter
 fileSystemOutputCompression: "LZO"
 
@@ -27,9 +20,6 @@ esUri: "{{ elasticsearch_uri }}"
 
 # ElasticSearch bulk insert batch size
 esBulkSize: 10000
-
-# Submission MongoDB URI
-submissionMongoUri: "{{ mongo_base_uri }}/icgc"
 
 # Release MongoDB URI (do not specify a database)
 releaseMongoUri: "{{ mongo_base_uri }}"
@@ -54,9 +44,6 @@ filterAllControlled: false
 fastaFile: "{{ data_dir }}/GRCh37.fasta"
 
 fathmmPostgresqlUri: "{{ postgresql_uri }}"
-
-# ES archive output directory
-archiveDir: "/tmp" #FIXME: Remove
 
 # Export mutation VCF file
 exportVCF: true
@@ -137,6 +124,6 @@ icgc:
   accessToken: "***REMOVED***"
   accessSecret: "***REMOVED***"
   cudAppId: "b2ljcl93ZWJkZXY6b3UzbGwzdHQzMjAxMg=="
-  strictSSLCertificates: true
+  strictSSLCertificates: false
   requestLoggingEnabled: true
 

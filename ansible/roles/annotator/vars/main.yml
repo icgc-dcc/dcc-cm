@@ -4,11 +4,16 @@ annotator_root: "/u/dcc_dev/dcc-annotator"
 annotator_snpeff_dir:  "{{ annotator_root }}/data/snpeff/GRCh37.75"
 annotator_reference_dir: "{{ annotator_root }}/data/genome"
 
+
 annotator_import_fs: LOCAL
 annotator_export_fs: LOCAL
 annotator_work_dir: "/tmp/work"
 
-snpeff_version: 3.3-GRCh37.75
+snpeff_version: 3.6c-GRCh37.75
 snpeff_name: dcc-snpeff
 snpeff_archive: "{{ snpeff_name }}-{{ snpeff_version }}.bin"
 snpeff_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ snpeff_name }}/{{ snpeff_version }}/{{ snpeff_archive }}"
+snpEff_resource_dir: /tmp/dcc-etl-annotator
+snpEff_resource_url: https://seqwaremaven.oicr.on.ca/artifactory/simple/dcc-dependencies/org/icgc/dcc
+snpeff_reference_genome_version: GRCh37.75.v1
+snpeff_gene_build_version: 75

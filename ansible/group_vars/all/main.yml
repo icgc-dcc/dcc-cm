@@ -49,8 +49,7 @@ job_tracker: "{{ server_prefix }}-hadoop-worker-1:8021"
 name_node_host: "{{ server_prefix }}-hadoop-worker-1"
 name_node: "hdfs://{{ server_prefix }}-hadoop-worker-1:8020"
 zookeeper_quorum: "{{ server_prefix }}-hadoop-worker-1"
-env:
-      HADOOP_USER_NAME: hdfs
+hadoop_username: hdfs
 
 postgresql_user: dcc
 postgresql_password: dcc
