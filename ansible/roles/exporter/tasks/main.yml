@@ -4,19 +4,21 @@
 - name: Create directories
   file: path="{{ item }}" 
         state="directory" 
-        owner="dcc_dev"
+        owner="{{ dcc_user }}"
   with_items:
-    - "/u/dcc_dev"
+    - "{{ dcc_user_directory }}"
     - "{{ exporter_root }}"
     - "{{ exporter_root }}/logs"
 
-- name: get dcc-annotator tarball from artifactory
-  get_url:  url="{{ dcc_exporter_tarball }}" 
-            dest="/tmp/dcc-exporter.tar.gz" 
+- name: get exporter tarball from artifactory
+  get_url:  url="{{ exporter_dist_url }}" 
+            dest="{{ staging_dir }}/{{ exporter_dist_filename }}" 
             mode=644
 
 - name: Extract dcc-exporter
-  shell: "tar xzf /tmp/dcc-exporter.tar.gz --strip 1 -C {{ exporter_root }}"
+  unarchive:  src="{{ staging_dir }}/{{ exporter_dist_filename }}"
+              dest="{{ exporter_root }}"
+              copy=no
 
 # Make up HDFS directories 
 - name: Make downloader directory
@@ -26,7 +28,6 @@
 - name: Give downloader ownership
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -chown -R downloader /user/downloader"
   ignore_errors: yes
-
 
 # Patch overarching script FIXME: should be parameterized in overarch
 - name: Patch export facade
@@ -46,7 +47,6 @@
               regexp="hbase.zookeeper.quorum" 
               line="Pig.set('hbase.zookeeper.quorum', '{{ zookeeper_quorum }}')"
   ignore_errors: yes
-
 
 # Patch environment: FIXME: should probably be parameterized by overarch
 - name: Patch setenv

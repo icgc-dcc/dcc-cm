@@ -42,7 +42,6 @@ dcc_etl_cli_jar: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-etl-cli/3.5.11
 dcc_submission_server_jar: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-submission-server/3.5.11-SNAPSHOT/dcc-submission-server-3.5.11-SNAPSHOT.jar"
 dcc_submission_server_tarball_artifactory_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-submission-server/3.5.11-SNAPSHOT/dcc-submission-server-3.5.11-SNAPSHOT-dist.tar.gz"
 dcc_downloader_tarball: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-downloader/3.6.1.2-SNAPSHOT/dcc-downloader-3.6.1.2-SNAPSHOT-dist.tar.gz"
-dcc_exporter_tarball: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-etl-exporter/3.5.11-SNAPSHOT/dcc-etl-exporter-3.5.11-SNAPSHOT-dist.tar.gz"
 
 # Hadoop Settings
 fs_url: "hdfs://{{ server_prefix }}-hadoop-worker-1"
