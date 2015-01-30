@@ -3,10 +3,12 @@
 ################################################################################
 
 # Server name prefix
-server_prefix: "dcc"
+server_prefix: dcc
+dcc_user: dcc_dev
+dcc_user_directory: "/u/{{dcc_user}}"
 
 # Directories
-staging_dir: "/tmp"
+staging_dir: /tmp
 
 
 ################################################################################
@@ -36,7 +38,6 @@ reference_genome_filename: "{{ reference_genome_basename}}.{{ reference_genome_v
 reference_genome_archive: "{{ reference_genome_name }}-{{ reference_genome_filename }}.tar.gz"
 reference_genome_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ reference_genome_name }}/{{ reference_genome_filename }}/{{ reference_genome_archive }}"
 
-dcc_etl_annotator_tarball: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-etl-annotator/3.5.11-SNAPSHOT/dcc-etl-annotator-3.5.11-SNAPSHOT-dist.tar.gz"
 dcc_etl_cli_jar: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-etl-cli/3.5.11-SNAPSHOT/dcc-etl-cli-3.5.11-SNAPSHOT.jar"
 dcc_submission_server_jar: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-submission-server/3.5.11-SNAPSHOT/dcc-submission-server-3.5.11-SNAPSHOT.jar"
 dcc_submission_server_tarball_artifactory_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-submission-server/3.5.11-SNAPSHOT/dcc-submission-server-3.5.11-SNAPSHOT-dist.tar.gz"

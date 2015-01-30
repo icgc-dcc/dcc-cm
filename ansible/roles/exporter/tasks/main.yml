@@ -2,14 +2,18 @@
 # Setting up exporter 
 ################################################################################
 - name: Create directories
-  file: path="{{ item }}" state="directory" owner="dcc_dev"
+  file: path="{{ item }}" 
+        state="directory" 
+        owner="dcc_dev"
   with_items:
     - "/u/dcc_dev"
     - "{{ exporter_root }}"
     - "{{ exporter_root }}/logs"
 
 - name: get dcc-annotator tarball from artifactory
-  get_url: url="{{ dcc_exporter_tarball }}" dest="/tmp/dcc-exporter.tar.gz" mode=644
+  get_url:  url="{{ dcc_exporter_tarball }}" 
+            dest="/tmp/dcc-exporter.tar.gz" 
+            mode=644
 
 - name: Extract dcc-exporter
   shell: "tar xzf /tmp/dcc-exporter.tar.gz --strip 1 -C {{ exporter_root }}"
@@ -26,22 +30,29 @@
 
 # Patch overarching script FIXME: should be parameterized in overarch
 - name: Patch export facade
-  lineinfile: dest="{{ repo_dir }}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/exporter-facade.sh" regexp="^exporter_bin_dir" line="exporter_bin_dir={{ exporter_root }}/bin"
-
+  lineinfile: dest="{{ repo_dir }}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/exporter-facade.sh" 
+              regexp="^exporter_bin_dir" 
+              line="exporter_bin_dir={{ exporter_root }}/bin"
 
 # Patch configurations: FIXME: should be parameterized in overarch
 - name: Patch zookeeper location
-  lineinfile: dest="{{ exporter_root }}/scripts/pig/bucket.pig" regexp="^set hbase.zookeeper.quorum" line="set hbase.zookeeper.quorum '{{ zookeeper_quorum }}'"
+  lineinfile: dest="{{ exporter_root }}/scripts/pig/bucket.pig" 
+              regexp="^set hbase.zookeeper.quorum" 
+              line="set hbase.zookeeper.quorum '{{ zookeeper_quorum }}'"
   ignore_errors: yes
 
 - name: Patch zookeeper location
-  lineinfile: dest="{{ exporter_root }}/scripts/core.py" regexp="hbase.zookeeper.quorum" line="Pig.set('hbase.zookeeper.quorum', '{{ zookeeper_quorum }}')"
+  lineinfile: dest="{{ exporter_root }}/scripts/core.py" 
+              regexp="hbase.zookeeper.quorum" 
+              line="Pig.set('hbase.zookeeper.quorum', '{{ zookeeper_quorum }}')"
   ignore_errors: yes
 
 
 # Patch environment: FIXME: should probably be parameterized by overarch
 - name: Patch setenv
-  lineinfile: dest="{{ exporter_root }}/bin/setenv.sh" regexp="^export HBASE_CONF_DIR" line="export HBASE_CONF_DIR=/etc/hbase/conf"
+  lineinfile: dest="{{ exporter_root }}/bin/setenv.sh" 
+              regexp="^export HBASE_CONF_DIR" 
+              line="export HBASE_CONF_DIR=/etc/hbase/conf"
   ignore_errors: yes
 
 

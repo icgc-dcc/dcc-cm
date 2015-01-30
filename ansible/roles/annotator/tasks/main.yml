@@ -1,20 +1,20 @@
 - name: Clean copy
-  shell: "rm -rf /u/dcc_dev/dcc-annotator"
-  ignore_errors: yes
+  file: path="{{ annotator_root }}"
+        state=abset
 
 - name: Create directories
   file: path="{{ item }}" 
         state="directory" 
-        owner="dcc_dev"
+        owner="{{ dcc_user }}"
   with_items:
-    - "/u/dcc_dev"
+    - "{{ dcc_user_directory }}"
     - "{{ annotator_root }}"
     - "{{ annotator_snpeff_dir }}"
     - "{{ annotator_reference_dir }}"
 
 - name: get dcc-annotator tarball from artifactory
-  get_url:  url="{{ dcc_etl_annotator_tarball }}" 
-            dest="/tmp/dcc-annotator.tar.gz" 
+  get_url:  url="{{ annotator_dist_url }}" 
+            dest="{{ staging_dir }}/{{ annotator_dist_filename }}" 
             mode=644
 
 - name: Extract dcc-annotator ==> /u/dcc_dev/dcc_annotator
@@ -54,7 +54,9 @@
             mode=0755
 
 - name: Make sure dcc_dev owns everything
-  shell: "chown -R dcc_dev /u/dcc_dev"
+  file: path="{{ dcc_user_directory }}" 
+        owner={{ dcc_user }}
+        recusre=yes
   ignore_errors: yes
 
 # FIXME: Comply with overarch's annotator hack
@@ -64,7 +66,9 @@
 
 # FIXME: Comply with overarch's annotator hack
 - name: Annotator hack directory #2
-  shell: "chown -R dcc_dev /nfs/hadoop/workspace/annotator-fs-hack"
+  file: path="/nfs/hadoop/workspace/annotator-fs-hack" 
+        owner={{ dcc_user }}
+        recusre=yes
   ignore_errors: yes
 
 ################################################################################

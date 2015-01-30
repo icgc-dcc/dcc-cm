@@ -18,18 +18,18 @@ conf_dir: "{{ install_dir }}/conf"
 root_dir: /tmp/dcc_root_dir
 staging_dir: /tmp
 
+
 # Distribution
 dist_name: "dcc-submission-server"
-dist_name_version: "{{ dist_name }}-{{ dist_version }}"
-dist_archive: "{{ dist_name_version }}-dist.tar.gz"
-dist_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ dist_name }}/{{ dist_version }}/{{ dist_archive }}"
+dist_version: 3.7.4.1
+dist_filename: "{{ dist_name }}-{{ dist_version }}-dist.tar.gz"
+dist_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ dist_name }}/{{ dist_version }}/{{ dist_filename }}"
 
 # Shiro password utility
 shiro_version: 1.2.1
 shiro_url: "http://repo1.maven.org/maven2/org/apache/shiro/tools/shiro-tools-hasher/{{ shiro_version }}/shiro-tools-hasher-{{ shiro_version }}-cli.jar"
 
-# The version of the dcc-submission-server to install
-dist_version: 3.7.4.1
+
 
 # Admin SFTP / HTTP username / password for the submission system which gets hashed and stored in ream.ini
 admin_username: admin

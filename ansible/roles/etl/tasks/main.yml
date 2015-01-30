@@ -43,7 +43,7 @@
     - admin
 
 - name: Create dcc_dev user
-  user: name="dcc_dev" 
+  user: name="{{dcc_user}}" 
         groups="ubuntu,adm,dialout,netdev,admin"
         append=yes
         shell=/bin/bash
@@ -55,7 +55,7 @@
 - name: Create directories
   file: path="{{ item }}" 
         state="directory" 
-        owner="dcc_dev"
+        owner="{{dcc_user}}"
   with_items:
     - "{{ keys_dir }}"
     - "{{ repo_dir }}"
@@ -171,4 +171,6 @@
   ignore_errors: yes
 
 - name: Give dcc_dev EVERYTHING!!!!!
-  shell: "chown -R dcc_dev /dcc_etl"
+  file: path="{{ etl_root_dir }}" 
+        owner={{ dcc_user }} recusre=yes
+  
