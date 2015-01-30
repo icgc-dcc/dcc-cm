@@ -54,7 +54,8 @@ hadoop_username: hdfs
 
 postgresql_user: dcc
 postgresql_password: dcc
-postgresql_uri: "jdbc:postgresql://{{ server_prefix }}-postgres/fathmm?user={{postgresql_user}}&password={{postgresql_password}}"
+postgresql_uri: "jdbc:postgresql://{{ server_prefix }}-postgres"
+fathmm_uri: "{{ postgresql_uri }}/fathmm?user={{postgresql_user}}&password={{postgresql_password}}"
 mongo_base_uri: "mongodb://{{ server_prefix }}-mongo"
 identifier_uri: "http://{{ server_prefix }}-identifier:6381"
 elasticsearch_uri: "es://{{ server_prefix }}-elasticsearch:9300"

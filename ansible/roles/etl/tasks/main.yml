@@ -50,7 +50,7 @@
 
 - name: Wipe out the scripts to get clean install
   file: path="{{ repo_dir }}"
-        state=abset
+        state=absent
 
 - name: Create directories
   file: path="{{ item }}" 
@@ -75,7 +75,7 @@
               state=latest
               force=yes
   with_items:
-    - "hadoop-hdfs-fuse"
+#    - "hadoop-hdfs-fuse"
     - "tree"
     - "sendemail"
 
@@ -83,9 +83,9 @@
 #   shell: "umount {{ fuse_root_dir }}"
 #   ignore_errors: yes
 
-- name: Mount FUSE
-  shell: "hadoop-fuse-dfs ro {{ default_fs }} {{ fuse_root_dir }}"
-  ignore_errors: yes
+# - name: Mount FUSE
+#   shell: "hadoop-fuse-dfs ro {{ default_fs }} {{ fuse_root_dir }}"
+#   ignore_errors: yes
 
 # FIXME: this is dchang's github key
 - name: Copy github key

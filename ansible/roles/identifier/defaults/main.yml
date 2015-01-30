@@ -1,1 +1,0 @@
-identifier_url: "jdbc:postgresql://{{ server_prefix }}-etl-postgres:5432/dcc_identifier"

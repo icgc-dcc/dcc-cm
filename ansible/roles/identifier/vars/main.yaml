@@ -1,3 +1,5 @@
+identifier_url: "{{postgresql_uri}}:5432/dcc_identifier"
+
 install_dir: /srv/dcc-identifier
 bin_dir: "{{ install_dir }}/bin"
 conf_dir: "{{ install_dir }}/conf"
