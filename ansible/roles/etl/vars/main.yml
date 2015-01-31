@@ -5,7 +5,7 @@ cli_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ cli_name }}/{{ cli_versi
 
 nfs_dir: /nfs
 fuse_root_dir: /hdfs/dcc
-etl_root_dir: "{{ dcc_user_directory }}"/dcc-etl
+etl_root_dir: "{{ dcc_user_directory }}/dcc-etl"
 keys_dir: "{{ etl_root_dir }}/keys" 
 repo_dir: "{{ etl_root_dir }}/git"   
 config_dir: "{{ etl_root_dir }}/conf"
