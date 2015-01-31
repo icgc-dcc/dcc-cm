@@ -1,7 +1,7 @@
-cli_version: 3.5.11-SNAPSHOT
+cli_version: 3.7.5.1
 cli_name: dcc-etl-cli
-cli_archive: "{{ cli_name }}-{{ cli_version }}.jar"
-cli_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ cli_name }}/{{ cli_version }}/{{ cli_archive }}"
+cli_jar_filename: "{{ cli_name }}-{{ cli_version }}.jar"
+cli_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ cli_name }}/{{ cli_version }}/{{ cli_jar_filename }}"
 
 nfs_dir: /nfs
 fuse_root_dir: /hdfs/dcc
@@ -12,5 +12,5 @@ config_dir: "{{ etl_root_dir }}/conf"
 jobs_dir: "{{ etl_root_dir }}/jobs"
 data_dir: "{{ etl_root_dir }}/data"
 lib_dir: "{{ etl_root_dir }}/lib"
-
-
+overarch_dir: "{{ repo_dir}}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch"
+lisi_script: "{{ overarch_dir}}/facades/lisi-facade.sh"

@@ -118,22 +118,22 @@
 
 # FIXME: quickie fix for mongo on openstack
 - name: Patch mongo admin 
-  lineinfile: dest="{{ repo_dir}}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/lisi-facade.sh" 
+  lineinfile: dest="{{ lisi_script }}" 
               regexp="\s+admin_database_user="
               line="  admin_database_user=admin"
 
 - name: Patch mongo admin password
-  lineinfile: dest="{{ repo_dir}}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/lisi-facade.sh" 
+  lineinfile: dest="{{ lisi_script }}" 
               regexp="\s+admin_database_user_passwd="
               line="  admin_database_user_passwd=admin"
 
 - name: Patch mongo etl user
-  lineinfile: dest="{{ repo_dir}}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/lisi-facade.sh" 
+  lineinfile: dest="{{ lisi_script }}" 
               regexp="\s+normal_database_user="
               line="  normal_database_user=dcc"
 
 - name: Patch mongo etl user password
-  lineinfile: dest="{{ repo_dir}}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/lisi-facade.sh" 
+  lineinfile: dest="{{ lisi_script }}" 
               regexp="\s+normal_database_user_passwd="
               line="  normal_database_user_passwd=dcc"
 
@@ -150,7 +150,7 @@
 
 - name: Download dcc-submission-validator
   get_url: "url={{ submission_server_jar_url }}
-            dest={{ lib_dir }}/dcc-validator.jar 
+            dest={{ lib_dir }} 
             mode=0444"
 
 - name: Copy logging configuraiton
