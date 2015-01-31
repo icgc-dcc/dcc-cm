@@ -4,9 +4,9 @@ install_dir: /srv/dcc-identifier
 bin_dir: "{{ install_dir }}/bin"
 conf_dir: "{{ install_dir }}/conf"
 
-dist_version: 3.4.1
-dist_name: "dcc-identifier"
-dist_name_version: "{{ dist_name }}-{{ dist_version }}"
-dist_archive: "{{ dist_name_version }}-dist.tar.gz"
-dist_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ dist_name }}/{{ dist_version }}/{{ dist_archive }}"
+identifier_dist_version: 3.4.1
+identifier_dist_name: "dcc-identifier"
+identifier_dist_name_version: "{{ identifier_dist_name }}-{{ identifier_dist_version }}"
+identifier_dist_archive: "{{ identifier_dist_name_version }}-dist.tar.gz"
+identifier_dist_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ identifier_dist_name }}/{{ identifier_dist_version }}/{{ identifier_dist_archive }}"
 
