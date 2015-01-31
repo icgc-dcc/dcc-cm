@@ -1,12 +1,7 @@
-dcc_etl_version: 3.4.1
-dcc_etl_name: dcc-etl-cli
-dcc_etl_archive: "{{ dcc_etl_name }}-{{ dcc_etl_version }}.jar"
-dcc_etl_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ dcc_etl_name }}/{{ dcc_etl_version }}/{{ dcc_etl_archive }}"
-
-dcc_validator_version: 3.4.1
-dcc_validator_name: dcc-submission-validator
-dcc_validator_archive: "{{ dcc_validator_name }}-{{ dcc_validator_version }}.jar"
-dcc_validator_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ dcc_validator_name }}/{{ dcc_validator_version }}/{{ dcc_validator_archive }}"
+cli_version: 3.5.11-SNAPSHOT
+cli_name: dcc-etl-cli
+cli_archive: "{{ cli_name }}-{{ cli_version }}.jar"
+cli_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ cli_name }}/{{ cli_version }}/{{ cli_archive }}"
 
 nfs_dir: /nfs
 fuse_root_dir: /hdfs/dcc
@@ -17,3 +12,5 @@ config_dir: "{{ etl_root_dir }}/conf"
 jobs_dir: "{{ etl_root_dir }}/jobs"
 data_dir: "{{ etl_root_dir }}/data"
 lib_dir: "{{ etl_root_dir }}/lib"
+
+

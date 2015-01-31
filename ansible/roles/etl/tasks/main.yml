@@ -144,12 +144,12 @@
             data_dir={{ data_dir }}
 
 - name: Download dcc-etl-cli
-  get_url: "url={{ dcc_etl_cli_jar }}
+  get_url: "url={{ cli_url }}
             dest={{ lib_dir }}
             mode=0444"
 
 - name: Download dcc-submission-validator
-  get_url: "url={{ dcc_submission_server_jar }}
+  get_url: "url={{ submission_server_jar_url }}
             dest={{ lib_dir }}/dcc-validator.jar 
             mode=0444"
 

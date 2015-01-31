@@ -16,10 +16,10 @@
             data_dir={{ data_dir }}
 
 - name: Download the distribution
-  get_url: "url={{ dist_url }} dest={{ staging_dir }}/{{ dist_archive }} mode=0444"
+  get_url: "url={{ submission_server_dist_url }} dest={{ staging_dir }}/{{ submission_server_dist_filename }} mode=0444"
 
 - name: Extract the dist 
-  command: "tar xzf {{ staging_dir }}/{{ dist_archive }} --strip 1 -C {{ install_dir }}" 
+  command: "tar xzf {{ staging_dir }}/{{ submission_server_dist_filename }} --strip 1 -C {{ install_dir }}" 
 
 - name: Configure application
   template: src=application.conf.j2 dest="{{ conf_dir }}/application.conf"

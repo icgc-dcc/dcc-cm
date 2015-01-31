@@ -6,9 +6,9 @@
 - name: Create directories
   file: path="{{ item }}" 
         state="directory" 
-        owner="dcc_dev"
+        owner="{{ dcc_user }}"
   with_items:
-    - "/u/dcc_dev"
+    - "{{ dcc_user_directory }}"
     - "{{ downloader_root }}"
 
 - name: get dcc-downloader tarball from artifactory

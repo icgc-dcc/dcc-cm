@@ -23,6 +23,14 @@ proxy_env:
 external_submission_url: http://hwww2-dcc.oicr.on.ca:5380
 external_docs_url: http://docs.icgc.org
 
+# Submission Server
+submission_server_dist_name: dcc-submission-server
+submission_server_dist_version: 3.7.4.1
+submission_server_dist_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}-dist.tar.gz"
+submission_server_jar_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}.jar"
+submission_server_dist_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ submission_server_dist_name }}/{{ submission_server_dist_version }}/{{ submission_server_dist_filename }}"
+submission_server_jar_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ submission_server_dist_name }}/{{ submission_server_dist_version }}/{{ submission_server_jar_filename }}"
+
 # Artifactory URLS
 artifactory_url: http://seqwaremaven.oicr.on.ca/artifactory
 artifactory_release_url: "{{ artifactory_url }}/dcc-release" 
@@ -37,11 +45,6 @@ reference_genome_version: 75.v1
 reference_genome_filename: "{{ reference_genome_basename}}.{{ reference_genome_version }}"
 reference_genome_archive: "{{ reference_genome_name }}-{{ reference_genome_filename }}.tar.gz"
 reference_genome_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ reference_genome_name }}/{{ reference_genome_filename }}/{{ reference_genome_archive }}"
-
-dcc_etl_cli_jar: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-etl-cli/3.5.11-SNAPSHOT/dcc-etl-cli-3.5.11-SNAPSHOT.jar"
-dcc_submission_server_jar: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-submission-server/3.5.11-SNAPSHOT/dcc-submission-server-3.5.11-SNAPSHOT.jar"
-dcc_submission_server_tarball_artifactory_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-submission-server/3.5.11-SNAPSHOT/dcc-submission-server-3.5.11-SNAPSHOT-dist.tar.gz"
-dcc_downloader_tarball: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-downloader/3.6.1.2-SNAPSHOT/dcc-downloader-3.6.1.2-SNAPSHOT-dist.tar.gz"
 
 # Hadoop Settings
 fs_url: "hdfs://{{ server_prefix }}-hadoop-worker-1"
