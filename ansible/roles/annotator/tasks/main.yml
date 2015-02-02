@@ -1,6 +1,6 @@
 - name: Clean copy
   file: path="{{ annotator_root }}"
-        state=abset
+        state=absent
 
 - name: Create directories
   file: path="{{ item }}" 
@@ -9,8 +9,6 @@
   with_items:
     - "{{ dcc_user_directory }}"
     - "{{ annotator_root }}"
-    - "{{ annotator_snpeff_dir }}"
-    - "{{ annotator_reference_dir }}"
 
 - name: get dcc-annotator tarball from artifactory
   get_url:  url="{{ annotator_dist_url }}" 
@@ -22,66 +20,12 @@
               dest="{{ annotator_root }}"
               copy=no
 
-- name: Download Reference Genome
-  include:  ../../../tasks/reference-genome.yml 
-            staging_dir={{ staging_dir }} 
-            data_dir={{annotator_reference_dir}}
-
-- name: Download SnpEff database
-  get_url:  url="{{ snpeff_url }}" 
-            dest={{ annotator_snpeff_dir}}
-
-- name: Rename reference genome for snpEff
-  shell: "mv {{ annotator_reference_dir }}/GRCh37.fasta {{ annotator_reference_dir }}/GRCh37.75.fasta"
-
-- name: Rename reference genome for snpEff
-  shell: "mv {{ annotator_reference_dir }}/GRCh37.fasta.fai {{ annotator_reference_dir }}/GRCh37.75.fasta.fai"
-
-- name: Rename snpEff
-  shell: "mv {{ annotator_snpeff_dir }}/{{ snpeff_archive }} {{ annotator_snpeff_dir }}/snpEffectPredictor.bin"
-
 - name: Copy over annotator configuration
-  template: src="annotator-config.sh.j2" 
-            dest="{{ annotator_root }}/bin/annotator-config.sh" 
-            mode=0755
-
-- name: Copy over snpEff configuration
-  template: src="snpEff.config.j2" 
-            dest="{{ annotator_root }}/conf/snpEff.config" 
-            mode=0755
-
-- name: Copy over workflow configuration
-  template: src="workflow.ini.j2" 
-            dest="{{ annotator_root }}/conf/workflow.ini" 
+  template: src="annotator.yml.j2" 
+            dest="{{ annotator_root }}/conf/annotator.yml" 
             mode=0755
 
 - name: Make sure dcc_dev owns everything
-  file: path="{{ dcc_user_directory }}" 
+  file: path="{{ annotator_root }}" 
         owner={{ dcc_user }}
         recusre=yes
-  ignore_errors: yes
-
-# FIXME: Comply with overarch's annotator hack
-- name: Annotator hack directory #2
-  file: path="/nfs/hadoop/workspace/annotator-fs-hack"
-        state=directory
-        owner={{ dcc_user }}
-  ignore_errors: yes
-
-################################################################################
-# FIXME: Need to hack up the overarch scripts, we do not want overarch to control
-# the variables
-################################################################################
-- name: Patch overarching script for annotator temp_parent_dir
-  lineinfile: dest="{{ repo_dir }}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/annotator-facade.sh" 
-              regexp="temp_parent_dir" 
-              state="absent"
-  ignore_errors: yes 
-
-- name: Patch overarching script for annotator parallel_runtime
-  lineinfile: dest="{{ repo_dir }}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/annotator-facade.sh" 
-              regexp="parallel_runtime" 
-              state="absent"
-  ignore_errors: yes 
-
-

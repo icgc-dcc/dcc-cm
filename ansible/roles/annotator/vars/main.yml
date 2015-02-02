@@ -1,23 +1,14 @@
 # Jerry said the snpeff directory name is dependent on the reference genome name
 
 annotator_root: "{{ dcc_user_directory }}/dcc-annotator"
-annotator_snpeff_dir:  "{{ annotator_root }}/data/snpeff/GRCh37.75"
-annotator_reference_dir: "{{ annotator_root }}/data/genome"
 
 annotator_dist_name: dcc-etl-annotator
 annotator_dist_version: 3.5.11-SNAPSHOT
 annotator_dist_filename: "{{ dist_name }}-{{ dist_version }}-dist.tar.gz"
 annotator_dist_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{annotator_dist_name}}/{{annotator_dist_version}}/{{annotator_dist_filename}}"
 
-annotator_import_fs: LOCAL
-annotator_export_fs: LOCAL
-annotator_work_dir: "/tmp/work"
-
-snpeff_version: 3.6c-GRCh37.75
-snpeff_name: dcc-snpeff
-snpeff_archive: "{{ snpeff_name }}-{{ snpeff_version }}.bin"
-snpeff_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ snpeff_name }}/{{ snpeff_version }}/{{ snpeff_archive }}"
 snpEff_resource_dir: /tmp/dcc-etl-annotator
-snpEff_resource_url: https://seqwaremaven.oicr.on.ca/artifactory/simple/dcc-dependencies/org/icgc/dcc
+snpEff_resource_url: "{{ artifactory_deps_url }}/org/icgc/dcc"
+snpeff_database_version: GRCh37.75.v1
 snpeff_reference_genome_version: GRCh37.75.v1
 snpeff_gene_build_version: 75
