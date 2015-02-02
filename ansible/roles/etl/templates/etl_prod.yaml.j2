@@ -9,7 +9,7 @@ fileSystemOutputCompression: "LZO"
 
 # FileSystem Scheme. This sets hadoop's fs.defaultFS
 #fsUrl: "***REMOVED***"
-fsUrl: "{{ default_fs }}"
+fsUrl: "{{ hadoop_fs_url }}"
 
 # Specifies the number of maximum concurrent flows in the loader phase 
 loaderMaxConcurrentFlows: 50 

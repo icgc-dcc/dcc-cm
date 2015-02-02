@@ -9,6 +9,7 @@
   with_items:
     - "{{ dcc_user_directory }}"
     - "{{ annotator_root }}"
+    - "{{ annotator_conf }}"
 
 - name: get dcc-annotator tarball from artifactory
   get_url:  url="{{ annotator_dist_url }}" 
@@ -22,10 +23,10 @@
 
 - name: Copy over annotator configuration
   template: src="annotator.yml.j2" 
-            dest="{{ annotator_root }}/conf/annotator.yml" 
+            dest="{{ annotator_conf }}/annotator.yml" 
             mode=0755
 
 - name: Make sure dcc_dev owns everything
   file: path="{{ annotator_root }}" 
         owner={{ dcc_user }}
-        recusre=yes
+        recurse=yes

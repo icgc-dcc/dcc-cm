@@ -2,6 +2,5 @@ exporter_root: "{{ dcc_user_directory }}/dcc-exporter"
 
 exporter_dist_name: dcc-etl-exporter
 exporter_dist_version: 3.5.11-SNAPSHOT
-exporter_dist_filename: "{{ dist_name }}-{{ dist_version }}-dist.tar.gz"
+exporter_dist_filename: "{{ exporter_dist_name }}-{{ exporter_dist_version }}-dist.tar.gz"
 exporter_dist_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{exporter_dist_name}}/{{exporter_dist_version}}/{{exporter_dist_filename}}"
-

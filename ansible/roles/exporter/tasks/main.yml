@@ -31,7 +31,7 @@
 
 # Patch overarching script FIXME: should be parameterized in overarch
 - name: Patch export facade
-  lineinfile: dest="{{ repo_dir }}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/exporter-facade.sh" 
+  lineinfile: dest="{{ repo_dir }}/dcc-etl-cli/src/main/scripts/overarch/facades/exporter-facade.sh" 
               regexp="^exporter_bin_dir" 
               line="exporter_bin_dir={{ exporter_root }}/bin"
 

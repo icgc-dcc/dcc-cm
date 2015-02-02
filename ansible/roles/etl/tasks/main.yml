@@ -96,9 +96,9 @@
         dest="{{ keys_dir }}/id_rsa"
         mode=600
 
-- name: Git configuration
-  shell: "git config --global color.ui true"
-  ignore_errors: yes
+# - name: Git configuration
+#   shell: "git config --global color.ui true"
+#   ignore_errors: yes
 
 # TODO: Might want to do sparse checkout
 # FIXME: Use biternay's group account?
@@ -168,5 +168,5 @@
 - name: Give dcc_user ownership.
   file: path="{{ etl_root_dir }}" 
         owner={{ dcc_user }} 
-        recusre=yes
+        recurse=yes
   

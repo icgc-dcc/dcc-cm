@@ -86,4 +86,4 @@
 - name: Make sure dcc_dev owns everything
   file: path="{{ downloader_root }}" 
         owner={{ dcc_user }}
-        recusre=yes
+        recurse=yes
