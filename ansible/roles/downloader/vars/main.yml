@@ -1,4 +1,10 @@
 downloader_root: "{{ dcc_user_directory }}/dcc-downloader"
+downloader_workflow_folder: "{{ downloader_root}}/workflows"
+
+downloader_user_folder: /user/downloader
+downloader_user_workflow_folder: "{{ downloader_user_folder }}/workflows"
+
+downloader_hbase_lib_folder: /hbase_lib
 
 downloader_dist_name: dcc-etl-downloader
 downloader_dist_version: 3.6.1.2-SNAPSHOT
