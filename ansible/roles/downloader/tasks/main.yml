@@ -1,8 +1,7 @@
-################################################################################
-# Setting up downloader
-# Note downloader is not specific to any node in the cluster, but we do need
-# to 'borrow' a node with hadoop capabilities to install it onto the cluster
-################################################################################
+- name: Clean copy
+  file: path="{{ downloader_root }}"
+        state=absent
+
 - name: Create directories
   file: path="{{ item }}" 
         state="directory" 
@@ -12,12 +11,14 @@
     - "{{ downloader_root }}"
 
 - name: get dcc-downloader tarball from artifactory
-  get_url:  url="{{ dcc_downloader_tarball }}" 
-            dest="/tmp/dcc-downloader.tar.gz" 
+  get_url:  url="{{ downloader_dist_url }}" 
+            dest="{{ staging_dir }}/{{ downloader_dist_filename }}" 
             mode=644
 
-- name: Extract dcc-downloader
-  shell: "tar xzf /tmp/dcc-downloader.tar.gz --strip 1 -C {{ downloader_root }}"
+- name: Extract dcc-downloader ==> /u/dcc_dev/dcc_downloader
+  unarchive:  src="{{ staging_dir }}/{{ downloader_dist_filename }}"
+              dest="{{ downloader_root }}"
+              copy=no
 
 # Patch oozie workflow configurations
 - name: Patch archive
@@ -107,8 +108,8 @@
     - "archivecleaner"
   environment: env
   ignore_errors: yes
-
   
-
-
-
+- name: Make sure dcc_dev owns everything
+  file: path="{{ downloader_root }}" 
+        owner={{ dcc_user }}
+        recusre=yes
