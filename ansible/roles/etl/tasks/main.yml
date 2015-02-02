@@ -104,7 +104,7 @@
 # FIXME: Use biternay's group account?
 # See: http://stackoverflow.com/questions/600079/is-there-any-way-to-clone-a-git-repositorys-sub-directory-only 
 - name: Download ETL scripts
-  git:  repo=ssh://git@github.com/icgc-dcc/dcc.git 
+  git:  repo=ssh://git@github.com/icgc-dcc/dcc-etl.git
         dest={{ repo_dir }}
         accept_hostkey=True
         key_file={{ keys_dir }}/id_rsa
