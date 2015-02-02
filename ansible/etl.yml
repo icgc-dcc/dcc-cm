@@ -75,6 +75,7 @@
     - "vars/main.yml"
 
   roles: 
+    - worker
     - lzo
 
 - hosts: hadoop-manager
@@ -98,5 +99,5 @@
     - mongodb
     - etl
     - annotator
-    - downloader
     - exporter
+    - downloader

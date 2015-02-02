@@ -1,0 +1,15 @@
+################################################################################
+#
+# ETL Worker Role
+# - Copy reference data to worker nodes
+#
+# TODO
+#   - FIXME: Production uses /u/dcc_dev/ as a shared directory, 
+#			 we don't have this on openstack
+#
+################################################################################
+
+- name: Download Reference Genome
+  include:  ../../../tasks/reference-genome.yml 
+            staging_dir={{ staging_dir }} 
+            data_dir={{ data_dir }}
