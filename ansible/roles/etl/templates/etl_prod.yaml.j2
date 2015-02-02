@@ -51,13 +51,13 @@ exportVCF: true
 # Hadoop configuration
 loaderHadoop:
   #fs.defaultFS: "***REMOVED***"
-  fs.defaultFS: "{{ fs_url }}"
+  fs.defaultFS: "{{ hadoop_fs_url }}"
 
   # temporarily lower the replication factor manually
   #dfs.replication: 2
 
   #mapred.job.tracker : "***REMOVED***:8021"
-  mapred.job.tracker : "{{ job_tracker }}"
+  mapred.job.tracker : "{{ hadoop_job_tracker }}"
   # mapred.job.shuffle.input.buffer.percent: 0.5
   mapred.child.java.opts: "-Xmx6g"
   mapred.reduce.tasks: 20
@@ -82,13 +82,13 @@ loaderHadoop:
 
 indexerHadoop:
   #fs.defaultFS: "***REMOVED***"
-  fs.defaultFS: "{{ fs_url }}"
+  fs.defaultFS: "{{ hadoop_fs_url }}"
 
   # temporarily lower the replication factor manually
   #dfs.replication: 2
 
   #mapred.job.tracker : "***REMOVED***:8021"
-  mapred.job.tracker : "{{ job_tracker }}"
+  mapred.job.tracker : "{{ hadoop_job_tracker }}"
   # mapred.job.shuffle.input.buffer.percent: 0.5
   mapred.child.java.opts: "-Xmx6g"
   mapred.reduce.tasks: 20

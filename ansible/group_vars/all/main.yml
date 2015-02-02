@@ -47,11 +47,11 @@ reference_genome_archive: "{{ reference_genome_name }}-{{ reference_genome_filen
 reference_genome_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ reference_genome_name }}/{{ reference_genome_filename }}/{{ reference_genome_archive }}"
 
 # Hadoop Settings
-fs_url: "hdfs://{{ server_prefix }}-hadoop-worker-1"
-job_tracker: "{{ server_prefix }}-hadoop-worker-1:8021"
-name_node_host: "{{ server_prefix }}-hadoop-worker-1"
-name_node: "hdfs://{{ server_prefix }}-hadoop-worker-1:8020"
-zookeeper_quorum: "{{ server_prefix }}-hadoop-worker-1"
+hadoop_fs_url: "hdfs://{{ server_prefix }}-hadoop-worker-1"
+hadoop_job_tracker: "{{ server_prefix }}-hadoop-worker-1:8021"
+hadoop_name_node_host: "{{ server_prefix }}-hadoop-worker-1"
+hadoop_name_node: "hdfs://{{ server_prefix }}-hadoop-worker-1:8020"
+hadoop_zookeeper_quorum: "{{ server_prefix }}-hadoop-worker-1"
 hadoop_username: hdfs
 
 postgresql_user: dcc

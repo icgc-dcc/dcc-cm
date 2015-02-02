@@ -9,7 +9,7 @@
 # TODO
 #   - System (.system) need to be set in place
 #   - Need to clear root_dir on HDFS
-#   - Better injection of mongo_uri, job_tracker
+#   - Better injection of mongo_uri, hadoop_job_tracker
 #
 # Hacks
 #   - Codelists and Dictionary should not use /ws/seed

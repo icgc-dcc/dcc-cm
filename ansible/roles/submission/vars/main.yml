@@ -32,7 +32,7 @@ sftp_port: 5322
 
 # Web HDFS url
 webhdfs_port: 50070
-webhdfs_url: "{{ name_node_host }}:{{ webhdfs_port }}"
+webhdfs_url: "{{ hadoop_name_node_host }}:{{ webhdfs_port }}"
 
 # DCC System Files
 system_files_name:  dcc-system-files
