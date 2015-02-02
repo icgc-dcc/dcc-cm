@@ -60,15 +60,17 @@
     - "{{ keys_dir }}"
     - "{{ repo_dir }}"
     - "{{ config_dir }}"
+    - "{{ config_project_dir }}"
+    - "{{ config_ditionaries_dir }}"
     - "{{ data_dir }}"
     - "{{ lib_dir }}"
     - "{{ nfs_dir }}"
 
-- name: Create directories
-  file: path="{{ item }}" 
-        state="directory"
-  with_items:
-    - "{{ fuse_root_dir }}"
+# - name: Create directories
+#   file: path="{{ item }}" 
+#         state="directory"
+#   with_items:
+#     - "{{ fuse_root_dir }}"
 
 - name: Install helper packages
   action: apt pkg={{ item }} 
@@ -78,6 +80,7 @@
 #    - "hadoop-hdfs-fuse"
     - "tree"
     - "sendemail"
+    - "git"
 
 # - name: Unmount FUSE
 #   shell: "umount {{ fuse_root_dir }}"
@@ -93,10 +96,6 @@
         dest="{{ keys_dir }}/id_rsa"
         mode=600
 
-- name: Install git
-  action: apt pkg=git 
-              state=latest
-
 - name: Git configuration
   shell: "git config --global color.ui true"
   ignore_errors: yes
@@ -110,48 +109,44 @@
         accept_hostkey=True
         key_file={{ keys_dir }}/id_rsa
 
-
-# FIXME: use cdh5.1.0_migration branch to get Jerry's fixes 
-- name: Switch to cdh5.1.0 branch
-  shell: "cd {{ repo_dir }} && git checkout feature/cdh5.1.0_migration"
-
-
 # FIXME: quickie fix for mongo on openstack
 - name: Patch mongo admin 
-  lineinfile: dest="{{ lisi_script }}" 
+  lineinfile: dest="{{ lisi_facade }}" 
               regexp="\s+admin_database_user="
               line="  admin_database_user=admin"
 
 - name: Patch mongo admin password
-  lineinfile: dest="{{ lisi_script }}" 
+  lineinfile: dest="{{ lisi_facade }}" 
               regexp="\s+admin_database_user_passwd="
               line="  admin_database_user_passwd=admin"
 
 - name: Patch mongo etl user
-  lineinfile: dest="{{ lisi_script }}" 
+  lineinfile: dest="{{ lisi_facade }}" 
               regexp="\s+normal_database_user="
               line="  normal_database_user=dcc"
 
 - name: Patch mongo etl user password
-  lineinfile: dest="{{ lisi_script }}" 
+  lineinfile: dest="{{ lisi_facade }}" 
               regexp="\s+normal_database_user_passwd="
               line="  normal_database_user_passwd=dcc"
 
-
-- name: Download Reference Genome
-  include:  ../../../tasks/reference-genome.yml 
-            staging_dir={{ staging_dir }} 
-            data_dir={{ data_dir }}
-
-- name: Download dcc-etl-cli
+- name: Download dcc-etl-cli and dcc-submission-validator
   get_url: "url={{ cli_url }}
             dest={{ lib_dir }}
             mode=0444"
+  with_items:
+    - "{{ cli_url }}"
+    - "{{ submission_server_jar_url }}"
 
-- name: Download dcc-submission-validator
-  get_url: "url={{ submission_server_jar_url }}
-            dest={{ lib_dir }} 
-            mode=0444"
+- name: Symlink dcc-etl-cli jar file
+  file: src="{{ cli_jar_filename }}"
+        dest="{{ lib_dir }}/dcc-etl.jar"
+        state=link
+
+- name: Symlink dcc-submission-validator jar file
+  file: src="{{ submission_server_jar_filename }}"
+        dest="{{ lib_dir }}/dcc-validator.jar"
+        state=link
 
 - name: Copy logging configuraiton
   copy: src="logback.xml" 
@@ -163,14 +158,15 @@
             dest="{{ config_dir }}/etl_prod.yaml"
 
 - name: Create icgc dir
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir /icgc"
+  shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir {{ hdfs_icgc_root_dir }}"
   ignore_errors: yes
 
 - name: Create dcc_root_dir dir
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir /icgc/dcc_root_dir"
+  shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir {{ hdfs_dcc_root_dir }}"
   ignore_errors: yes
 
-- name: Give dcc_dev EVERYTHING!!!!!
+- name: Give dcc_user ownership.
   file: path="{{ etl_root_dir }}" 
-        owner={{ dcc_user }} recusre=yes
+        owner={{ dcc_user }} 
+        recusre=yes
   
