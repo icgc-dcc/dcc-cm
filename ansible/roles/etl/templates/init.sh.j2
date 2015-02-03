@@ -1,0 +1,59 @@
+#!/bin/bash
+
+origin_host=${1?} && shift
+
+tmp_dir="{{ staging_dir }}/dcc" && mkdir -p ${tmp_dir?}
+
+dictionary_file="{{ config_ditionaries_dir }}/dictionary.json"
+codelists_file="{{ config_dir }}/codelists.json"
+
+# ===========================================================================
+
+echo "origin_host=${origin_host?}"
+echo "dictionary_file=${dictionary_file?}"
+echo "codelists_file=${codelists_file?}"
+
+# ===========================================================================
+
+function ensure_open() {
+  awk '{gsub(/"state" *: *"CLOSED"/,"\"state\":\"OPENED\"")}1'
+}
+
+function extract_version() {
+  python -c "import json,sys;print json.loads(sys.stdin.read())[0]['version'];"
+}
+
+# ===========================================================================
+
+# download origin dictionary and ensure state is OPENED
+echo "getting dictionary"
+echo "[" > ${dictionary_file?}
+curl -v -XGET ${origin_host?}/ws/nextRelease/dictionary -H "Accept: application/json" | ensure_open >> ${dictionary_file?} && echo "OK" || echo "KO"
+echo "]" >> ${dictionary_file?}
+
+# get latest codelists
+echo "getting codelists"
+curl ${origin_host?}/ws/codeLists                -H "Accept: application/json" > ${codelists_file?} && echo "OK" || echo "KO"
+
+# extract dictionary version
+echo "extracting dictionary version"
+dictionary_version=$(cat ${dictionary_file?} | extract_version) && [ -n "${dictionary_version?}" ] || { echo "ERROR: could not find a version in dictionary"; }
+echo "dictionary_version=${dictionary_version?}"
+
+# rename dictionary file to version
+cd {{ config_ditionaries_dir }}
+mv dictionary.json ${dictionary_version?}.json
+
+echo "cleaning up"
+rm -v ${tmp_dir?}/*
+rmdir -v ${tmp_dir?}
+
+echo "done"
+
+# Signal error if there is no dictionary detected
+if [ "${dictionary_version}" = "" ]; then
+   exit 1
+fi
+exit 0
+# ===========================================================================
+

@@ -81,6 +81,7 @@
     - "tree"
     - "sendemail"
     - "git"
+    - "curl"
 
 # - name: Unmount FUSE
 #   shell: "umount {{ fuse_root_dir }}"
@@ -169,4 +170,23 @@
   file: path="{{ etl_root_dir }}" 
         owner={{ dcc_user }} 
         recurse=yes
+
+################################################################################
+# Bootstrap ETL environment, get codelist and dictionary, setup project file, etc.
+################################################################################
+
+- name: Interpolate and copy script
+  template: src=init.sh.j2 
+            dest={{ etl_root_dir }}/init.sh 
+            mode=0744
+
+- name: Assign init command to variable
+  set_fact: init_command="{{ etl_root_dir }}/init.sh {{ external_submission_url }}"
+  
+- name: Initialize the system
+  shell: "{{ init_command }}"
+  register: initLog
+
+- debug: msg="{{ initLog.stdout }}"
+
   
