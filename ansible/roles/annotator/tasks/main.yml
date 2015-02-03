@@ -2,15 +2,6 @@
   file: path="{{ annotator_root }}"
         state=absent
 
-- name: Create directories
-  file: path="{{ item }}" 
-        state="directory" 
-        owner="{{ dcc_user }}"
-  with_items:
-    - "{{ dcc_user_directory }}"
-    - "{{ annotator_root }}"
-    - "{{ annotator_conf }}"
-
 - name: get dcc-annotator tarball from artifactory
   get_url:  url="{{ annotator_dist_url }}" 
             dest="{{ staging_dir }}/{{ annotator_dist_filename }}" 
@@ -18,15 +9,30 @@
 
 - name: Extract dcc-annotator ==> /u/dcc_dev/dcc_annotator
   unarchive:  src="{{ staging_dir }}/{{ annotator_dist_filename }}"
-              dest="{{ annotator_root }}"
+              dest="{{ dcc_user_directory }}"
               copy=no
+
+- name: Update the symbolic link to the distribution
+  file: path="{{ annotator_root }}"
+        src="{{ dcc_user_directory }}/{{ annotator_dist_fullname }}"
+        state=link 
+        owner="{{ dcc_user }}"
+        force=yes
+
+- name: Create directories
+  file: path="{{ item }}" 
+        state="directory" 
+        owner="{{ dcc_user }}"
+  with_items:
+    - "{{ annotator_conf }}"
 
 - name: Copy over annotator configuration
   template: src="annotator.yml.j2" 
             dest="{{ annotator_conf }}/annotator.yml" 
             mode=0755
 
+# https://github.com/ansible/ansible/issues/548
 - name: Make sure dcc_dev owns everything
-  file: path="{{ annotator_root }}" 
+  file: path="{{ dcc_user_directory }}" 
         owner={{ dcc_user }}
         recurse=yes

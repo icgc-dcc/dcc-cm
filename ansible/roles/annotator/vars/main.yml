@@ -1,11 +1,13 @@
 # Jerry said the snpeff directory name is dependent on the reference genome name
 
-annotator_root: "{{ dcc_user_directory }}/dcc-annotator"
+annotator_name: dcc-annotator
+annotator_root: "{{ dcc_user_directory }}/{{ annotator_name }}"
 annotator_conf: "{{ annotator_root }}/conf"
 
 annotator_dist_name: dcc-etl-annotator
 annotator_dist_version: 3.5.11-SNAPSHOT
-annotator_dist_filename: "{{ annotator_dist_name }}-{{ annotator_dist_version }}-dist.tar.gz"
+annotator_dist_fullname: "{{ annotator_dist_name }}-{{ annotator_dist_version }}"
+annotator_dist_filename: "{{ annotator_dist_fullname }}-dist.tar.gz"
 annotator_dist_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{ annotator_dist_name }}/{{ annotator_dist_version }}/{{ annotator_dist_filename }}"
 
 snpEff_resource_dir: /tmp/dcc-etl-annotator

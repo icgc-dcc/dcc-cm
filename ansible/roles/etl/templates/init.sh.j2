@@ -2,8 +2,6 @@
 
 origin_host=${1?} && shift
 
-tmp_dir="{{ staging_dir }}/dcc" && mkdir -p ${tmp_dir?}
-
 dictionary_file="{{ config_ditionaries_dir }}/dictionary.json"
 codelists_file="{{ config_dir }}/codelists.json"
 
@@ -43,10 +41,6 @@ echo "dictionary_version=${dictionary_version?}"
 # rename dictionary file to version
 cd {{ config_ditionaries_dir }}
 mv dictionary.json ${dictionary_version?}.json
-
-echo "cleaning up"
-rm -v ${tmp_dir?}/*
-rmdir -v ${tmp_dir?}
 
 echo "done"
 

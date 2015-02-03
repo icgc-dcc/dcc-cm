@@ -12,6 +12,7 @@ dcc_user_directory: "/u/{{dcc_user}}"
 # Some etl settings shared between roles.
 etl_root_dir: "{{ dcc_user_directory }}/dcc-etl"
 data_dir: "{{ etl_root_dir }}/data"
+repo_dir: "{{ etl_root_dir }}/git/dcc-etl"
 
 # Directories
 staging_dir: /tmp

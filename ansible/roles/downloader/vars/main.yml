@@ -1,4 +1,6 @@
-downloader_root: "{{ dcc_user_directory }}/dcc-downloader"
+downloader_name: dcc-downloader
+downloader_root: "{{ dcc_user_directory }}/{{ downloader_name }}"
+
 downloader_workflow_folder: "{{ downloader_root}}/workflows"
 
 downloader_user_folder: /user/downloader
@@ -8,5 +10,6 @@ downloader_hbase_lib_folder: /hbase_lib
 
 downloader_dist_name: dcc-downloader
 downloader_dist_version: 3.6.1.2-SNAPSHOT
-downloader_dist_filename: "{{ downloader_dist_name }}-{{ downloader_dist_version }}-dist.tar.gz"
+downloader_dist_fullname: "{{ downloader_dist_name }}-{{ downloader_dist_version }}"
+downloader_dist_filename: "{{ downloader_dist_fullname }}-dist.tar.gz"
 downloader_dist_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{downloader_dist_name}}/{{downloader_dist_version}}/{{downloader_dist_filename}}"

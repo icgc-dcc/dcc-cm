@@ -1,14 +1,6 @@
-################################################################################
-# Setting up exporter 
-################################################################################
-- name: Create directories
-  file: path="{{ item }}" 
-        state="directory" 
-        owner="{{ dcc_user }}"
-  with_items:
-    - "{{ dcc_user_directory }}"
-    - "{{ exporter_root }}"
-    - "{{ exporter_root }}/logs"
+- name: Clean copy
+  file: path="{{ exporter_root }}"
+        state=absent
 
 - name: get exporter tarball from artifactory
   get_url:  url="{{ exporter_dist_url }}" 
@@ -17,8 +9,21 @@
 
 - name: Extract dcc-exporter
   unarchive:  src="{{ staging_dir }}/{{ exporter_dist_filename }}"
-              dest="{{ exporter_root }}"
+              dest="{{ dcc_user_directory }}"
               copy=no
+
+- name: Update the symbolic link to the distribution
+  file: path="{{ exporter_root }}"
+        src="{{ dcc_user_directory }}/{{ exporter_dist_fullname }}"
+        state=link 
+        force=yes
+
+- name: Create directories
+  file: path="{{ item }}" 
+        state="directory" 
+        owner="{{ dcc_user }}"
+  with_items:
+    - "{{ exporter_root }}/logs"
 
 # Make up HDFS directories 
 - name: Make downloader directory
@@ -55,4 +60,8 @@
               line="export HBASE_CONF_DIR=/etc/hbase/conf"
   ignore_errors: yes
 
-
+# https://github.com/ansible/ansible/issues/548
+- name: Make sure dcc_dev owns everything
+  file: path="{{ dcc_user_directory }}" 
+        owner={{ dcc_user }}
+        recurse=yes
