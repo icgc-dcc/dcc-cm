@@ -1,3 +1,5 @@
+# TODO: parametrize /usr/lib/jvm/jdk
+
 # See http://stackoverflow.com/questions/18132719/how-to-change-elasticsearch-max-size
 - name: Setting limits
   copy: src="limits.conf" dest="/etc/security/limits.conf" mode=644 force=yes
@@ -10,7 +12,10 @@
 
 # FIXME: Maybe it is best to bite the bullet and just copy the entire config
 - name: Patch elasticsearch init.d
-  lineinfile: dest="/etc/init.d/elasticsearch" regexp="#ES_HEAP_SIZE" line="ES_HEAP_SIZE=4g"
+  lineinfile: dest="/etc/init.d/elasticsearch" regexp="^#ES_HEAP_SIZE" line="ES_HEAP_SIZE=4g"
+
+- name: Patch elasticsearch init.d to add jdk location 
+  lineinfile: dest="/etc/init.d/elasticsearch" regexp="^JDK_DIRS=" line="JDK_DIRS=\"/usr/lib/jvm/jdk\""
 
 #- name: Patch elasticsearch yml
 #  lineinfile: dest="/etc/elasticsearch/elasticsearch.yml" regexp="bootstrap.mlockall" line="bootstrap.mlockall:true"
