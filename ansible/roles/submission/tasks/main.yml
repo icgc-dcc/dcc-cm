@@ -13,7 +13,7 @@
 - name: Download Reference Genome
   include:  ../../../tasks/reference-genome.yml 
             staging_dir={{ staging_dir }} 
-            data_dir={{ data_dir }}
+            target_dir={{ data_dir }}
 
 - name: Download the distribution
   get_url: url="{{ submission_server_dist_url }}"

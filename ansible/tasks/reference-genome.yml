@@ -3,7 +3,7 @@
         state="directory" 
   with_items:
     - "{{ staging_dir }}"
-    - "{{ data_dir }}"
+    - "{{ target_dir }}"
 
 - name: Download the reference genome
   get_url:  url="{{ reference_genome_url }}"
@@ -12,12 +12,12 @@
 
 - name: Extract the reference genome
   unarchive:  src="{{ staging_dir }}/{{ reference_genome_archive }}"
-              dest="{{ data_dir }}"
+              dest="{{ target_dir }}"
               copy=no
 
 - name: Symlink the reference genome files
-  file: src="{{ data_dir }}/{{ reference_genome_filename }}.{{ item }}"
-        dest="{{ data_dir }}/{{ reference_genome_basename }}.{{ item }}"
+  file: src="{{ target_dir }}/{{ reference_genome_filename }}.{{ item }}"
+        dest="{{ target_dir }}/{{ reference_genome_basename }}.{{ item }}"
         state=link
   with_items:
     - "dict"
