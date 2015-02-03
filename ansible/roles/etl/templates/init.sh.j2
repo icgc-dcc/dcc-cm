@@ -25,9 +25,7 @@ function extract_version() {
 
 # download origin dictionary and ensure state is OPENED
 echo "getting dictionary"
-echo "[" > ${dictionary_file?}
 curl -v -XGET ${origin_host?}/ws/nextRelease/dictionary -H "Accept: application/json" | ensure_open >> ${dictionary_file?} && echo "OK" || echo "KO"
-echo "]" >> ${dictionary_file?}
 
 # get latest codelists
 echo "getting codelists"
