@@ -4,7 +4,6 @@ install_dir: /srv/dcc-identifier
 bin_dir: "{{ install_dir }}/bin"
 conf_dir: "{{ install_dir }}/conf"
 
-identifier_dist_version: 3.4.1
 identifier_dist_name: "dcc-identifier"
 identifier_dist_name_version: "{{ identifier_dist_name }}-{{ identifier_dist_version }}"
 identifier_dist_archive: "{{ identifier_dist_name_version }}-dist.tar.gz"

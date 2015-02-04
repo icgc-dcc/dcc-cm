@@ -1,4 +1,3 @@
-cli_version: 3.7.5.1
 cli_name: dcc-etl-cli
 cli_jar_filename: "{{ cli_name }}-{{ cli_version }}.jar"
 cli_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ cli_name }}/{{ cli_version }}/{{ cli_jar_filename }}"

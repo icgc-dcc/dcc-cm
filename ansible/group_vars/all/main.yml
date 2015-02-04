@@ -18,9 +18,24 @@ repo_dir: "{{ etl_root_dir }}/git/dcc-etl"
 staging_dir: /tmp
 
 
-# versions
-ditionary_version: 0.10a
+################################################################################
+# All Versions, Centralized for convenience.
+################################################################################
 
+ditionary_version: 0.10a
+cm_version: 5.3.0 #Cloudera Manager 
+cdh_version: 5.3.0
+elasticsearch_version: 0.90.1
+shiro_version: 1.2.1
+mongodb_version: 2.4.1
+postgresql_version: 9.2
+
+# DCC Components
+annotator_dist_version: 3.5.11-SNAPSHOT
+cli_version: 3.7.5.1
+downloader_dist_version: 3.6.1.2-SNAPSHOT
+exporter_dist_version: 3.5.11-SNAPSHOT
+identifier_dist_version: 3.4.1
 
 ################################################################################
 # DCC Resources, DCC Dependices
@@ -74,5 +89,11 @@ mongo_base_uri: "mongodb://{{ server_prefix }}-mongo"
 identifier_uri: "http://{{ server_prefix }}-identifier:6381"
 elasticsearch_uri: "es://{{ server_prefix }}-elasticsearch:9300"
 mongo_host: "{{ server_prefix }}-mongo"
+
+# DCC ETL Contact Settings
+smtpServer: ***REMOVED***
+sender: noreply@oicr.on.ca
+recipients: "sepehr.mavedati@oicr.on.ca" # ';' separated
+
 
 

@@ -2,7 +2,6 @@ exporter_name: dcc-exporter
 exporter_root: "{{ dcc_user_directory }}/{{ exporter_name }}"
 
 exporter_dist_name: dcc-etl-exporter
-exporter_dist_version: 3.5.11-SNAPSHOT
 exporter_dist_fullname: "{{ exporter_dist_name }}-{{ exporter_dist_version }}"
 exporter_dist_filename: "{{ exporter_dist_fullname }}-dist.tar.gz"
 

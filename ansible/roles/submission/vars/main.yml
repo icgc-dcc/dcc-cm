@@ -19,7 +19,6 @@ root_dir: /tmp/dcc_root_dir
 staging_dir: /tmp
 
 # Shiro password utility
-shiro_version: 1.2.1
 shiro_url: "http://repo1.maven.org/maven2/org/apache/shiro/tools/shiro-tools-hasher/{{ shiro_version }}/shiro-tools-hasher-{{ shiro_version }}-cli.jar"
 
 # Admin SFTP / HTTP username / password for the submission system which gets hashed and stored in ream.ini
