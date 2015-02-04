@@ -1,0 +1,18 @@
+################################################################################
+#
+# Downloader playbook
+#
+# - Uses ETL-Main node to put oozie workflow files and configurationsin HDFS.
+# 
+################################################################################
+
+- include: tasks/setup.yml group=downloader
+
+- hosts: etl-main
+  gather_facts: no
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+
+  roles:
+    - downloader

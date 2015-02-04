@@ -32,10 +32,10 @@ postgresql_version: 9.2
 
 # DCC Components
 annotator_dist_version: 3.5.11-SNAPSHOT
-cli_version: 3.7.5.1
-downloader_dist_version: 3.6.1.2-SNAPSHOT
+cli_version: 3.7.5.2-SNAPSHOT
+downloader_workflows_dist_version: 3.6.1.3-SNAPSHOT
 exporter_dist_version: 3.5.11-SNAPSHOT
-identifier_dist_version: 3.4.1
+identifier_dist_version: 3.7.5.2-SNAPSHOT
 
 ################################################################################
 # DCC Resources, DCC Dependices
@@ -51,15 +51,14 @@ external_docs_url: http://docs.icgc.org
 
 # Submission Server
 submission_server_dist_name: dcc-submission-server
-submission_server_dist_version: 3.7.4.1
+submission_server_dist_version: 3.7.4.2-SNAPSHOT
 submission_server_dist_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}-dist.tar.gz"
 submission_server_jar_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}.jar"
-submission_server_dist_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ submission_server_dist_name }}/{{ submission_server_dist_version }}/{{ submission_server_dist_filename }}"
-submission_server_jar_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ submission_server_dist_name }}/{{ submission_server_dist_version }}/{{ submission_server_jar_filename }}"
+submission_server_dist_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{ submission_server_dist_name }}/{{ submission_server_dist_version }}/{{ submission_server_dist_filename }}"
+submission_server_jar_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{ submission_server_dist_name }}/{{ submission_server_dist_version }}/{{ submission_server_jar_filename }}"
 
 # Artifactory URLS
 artifactory_url: http://seqwaremaven.oicr.on.ca/artifactory
-artifactory_release_url: "{{ artifactory_url }}/dcc-release" 
 artifactory_deps_url: "{{ artifactory_url }}/simple/dcc-dependencies" 
 artifactory_release_url: "{{ artifactory_url }}/simple/dcc-release"
 artifactory_snapshot_url: "{{ artifactory_url }}/simple/dcc-snapshot"

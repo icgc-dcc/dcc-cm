@@ -12,19 +12,6 @@
     </encoder>
   </appender>
 
-  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <File>${etl.log.dir}/${log.name}.log</File>
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <FileNamePattern>${etl.log.dir}/${log.name}.%d{yyyy-MM-dd}.log</FileNamePattern>
-    </rollingPolicy>
-    <encoder>
-      <pattern>${pattern}</pattern>
-    </encoder>
-  </appender>
-
-
-  <!--<logger name="com.mongodb.hadoop.util" level="trace" />-->
-
   <root level="info">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />

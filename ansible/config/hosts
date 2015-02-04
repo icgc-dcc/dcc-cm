@@ -27,3 +27,6 @@ dcc-portal-main-1
 dcc-portal-main-2
 dcc-varnish
 dcc-nginx
+
+[downloader]
+dcc-etl-main

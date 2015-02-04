@@ -1,14 +1,12 @@
-downloader_name: dcc-downloader
-downloader_root: "{{ dcc_user_directory }}/{{ downloader_name }}"
-
-downloader_workflow_folder: "{{ downloader_root}}/workflows"
+downloader_workflows_name: dcc-downloader-workflows
+downloader_workflows_root: "{{ dcc_user_directory }}/{{ downloader_workflows_name }}"
 
 downloader_user_folder: /user/downloader
-downloader_user_workflow_folder: "{{ downloader_user_folder }}/workflows"
+downloader_user_workflows_folder: "{{ downloader_user_folder }}/workflows"
 
 downloader_hbase_lib_folder: /hbase_lib
 
-downloader_dist_name: dcc-downloader
-downloader_dist_fullname: "{{ downloader_dist_name }}-{{ downloader_dist_version }}"
-downloader_dist_filename: "{{ downloader_dist_fullname }}-dist.tar.gz"
-downloader_dist_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{downloader_dist_name}}/{{downloader_dist_version}}/{{downloader_dist_filename}}"
+downloader_workflows_dist_name: dcc-downloader-workflows
+downloader_workflows_dist_fullname: "{{ downloader_workflows_dist_name }}-{{ downloader_workflows_dist_version }}"
+downloader_workflows_dist_filename: "{{ downloader_workflows_dist_fullname }}-dist.tar.gz"
+downloader_workflows_dist_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{downloader_workflows_dist_name}}/{{downloader_workflows_dist_version}}/{{downloader_workflows_dist_filename}}"

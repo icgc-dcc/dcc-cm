@@ -1,6 +1,6 @@
 cli_name: dcc-etl-cli
 cli_jar_filename: "{{ cli_name }}-{{ cli_version }}.jar"
-cli_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ cli_name }}/{{ cli_version }}/{{ cli_jar_filename }}"
+cli_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{ cli_name }}/{{ cli_version }}/{{ cli_jar_filename }}"
 
 nfs_dir: /nfs
 fuse_root_dir: /hdfs/dcc

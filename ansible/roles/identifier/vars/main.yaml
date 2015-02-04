@@ -7,5 +7,5 @@ conf_dir: "{{ install_dir }}/conf"
 identifier_dist_name: "dcc-identifier"
 identifier_dist_name_version: "{{ identifier_dist_name }}-{{ identifier_dist_version }}"
 identifier_dist_archive: "{{ identifier_dist_name_version }}-dist.tar.gz"
-identifier_dist_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ identifier_dist_name }}/{{ identifier_dist_version }}/{{ identifier_dist_archive }}"
+identifier_dist_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{ identifier_dist_name }}/{{ identifier_dist_version }}/{{ identifier_dist_archive }}"
 
