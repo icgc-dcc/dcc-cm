@@ -3,7 +3,7 @@
 # Sets up a Hadoop client:
 #
 # TODO: 
-#     - Parametrize cluster stste check.
+#     - Parametrize cluster state check.
 #     - Merge cloudera_config.ini and default main.yml.
 #
 ################################################################################
