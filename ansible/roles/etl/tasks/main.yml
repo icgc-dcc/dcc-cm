@@ -75,6 +75,7 @@
     - "sendemail"
     - "git"
     - "curl"
+    - "inetutils-ping"
 
 # FIXME: this is dchang's github key
 - name: Copy github key
