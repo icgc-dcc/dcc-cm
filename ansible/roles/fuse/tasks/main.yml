@@ -1,0 +1,23 @@
+- name: Setup CDH repositories
+  include: dependencies.yml
+
+- name: Create directories
+  file: path="{{ item }}" 
+        state="directory"
+  with_items:
+    - "{{ fuse_root_dir }}"
+
+- name: Install helper packages
+  action: apt pkg={{ item }} 
+              state=latest
+              force=yes
+  with_items:
+    - "hadoop-hdfs-fuse"
+
+- name: Unmount FUSE
+  shell: "umount {{ fuse_root_dir }}"
+  ignore_errors: yes
+
+- name: Mount FUSE
+  shell: "hadoop-fuse-dfs ro {{ hadoop_fs_url }} {{ fuse_root_dir }}"
+  ignore_errors: yes

@@ -60,6 +60,7 @@ hadoop_name_node_host: "{{ server_prefix }}-hadoop-worker-1"
 hadoop_name_node: "hdfs://{{ server_prefix }}-hadoop-worker-1:8020"
 hadoop_zookeeper_quorum: "{{ server_prefix }}-hadoop-worker-1"
 hadoop_username: hdfs
+fuse_root_dir: /hdfs/dcc
 
 postgresql_user: dcc
 postgresql_password: dcc

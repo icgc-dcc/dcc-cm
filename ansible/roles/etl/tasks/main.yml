@@ -66,40 +66,21 @@
     - "{{ lib_dir }}"
     - "{{ nfs_dir }}"
 
-# - name: Create directories
-#   file: path="{{ item }}" 
-#         state="directory"
-#   with_items:
-#     - "{{ fuse_root_dir }}"
-
 - name: Install helper packages
   action: apt pkg={{ item }} 
               state=latest
               force=yes
   with_items:
-#    - "hadoop-hdfs-fuse"
     - "tree"
     - "sendemail"
     - "git"
     - "curl"
-
-# - name: Unmount FUSE
-#   shell: "umount {{ fuse_root_dir }}"
-#   ignore_errors: yes
-
-# - name: Mount FUSE
-#   shell: "hadoop-fuse-dfs ro {{ default_fs }} {{ fuse_root_dir }}"
-#   ignore_errors: yes
 
 # FIXME: this is dchang's github key
 - name: Copy github key
   copy: src="github-keys/id_rsa" 
         dest="{{ keys_dir }}/id_rsa"
         mode=600
-
-# - name: Git configuration
-#   shell: "git config --global color.ui true"
-#   ignore_errors: yes
 
 # TODO: Might want to do sparse checkout
 # FIXME: Use biternay's group account?

@@ -1,0 +1,9 @@
+- name: get CDH repository package
+  get_url:  url="{{ cloudera_cdh_deb_url }}" 
+            dest="{{ staging_dir }}"
+
+- name: Install CDH repository package
+  apt: deb="{{ staging_dir }}/{{ cloudera_cdh_deb_filename }}"
+
+- name: update the repositories
+  apt: update_cache=yes
