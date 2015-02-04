@@ -2,7 +2,7 @@
 
 origin_host=${1?} && shift
 
-dictionary_file="{{ config_ditionaries_dir }}/dictionary.json"
+dictionary_file="{{ config_ditionaries_dir }}/{{ ditionary_version }}.json"
 codelists_file="{{ config_dir }}/codelists.json"
 
 # ===========================================================================
@@ -25,27 +25,10 @@ function extract_version() {
 
 # download origin dictionary and ensure state is OPENED
 echo "getting dictionary"
-curl -v -XGET ${origin_host?}/ws/nextRelease/dictionary -H "Accept: application/json" | ensure_open >> ${dictionary_file?} && echo "OK" || echo "KO"
+curl -v -XGET ${origin_host?}/ws/dictionaries/{{ ditionary_version }} -H "Accept: application/json" | ensure_open >> ${dictionary_file?} && echo "OK" || echo "KO"
 
 # get latest codelists
 echo "getting codelists"
 curl ${origin_host?}/ws/codeLists                -H "Accept: application/json" > ${codelists_file?} && echo "OK" || echo "KO"
 
-# extract dictionary version
-echo "extracting dictionary version"
-dictionary_version=$(cat ${dictionary_file?} | extract_version) && [ -n "${dictionary_version?}" ] || { echo "ERROR: could not find a version in dictionary"; }
-echo "dictionary_version=${dictionary_version?}"
-
-# rename dictionary file to version
-cd {{ config_ditionaries_dir }}
-mv dictionary.json ${dictionary_version?}.json
-
 echo "done"
-
-# Signal error if there is no dictionary detected
-if [ "${dictionary_version}" = "" ]; then
-   exit 1
-fi
-exit 0
-# ===========================================================================
-

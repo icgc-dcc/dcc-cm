@@ -18,6 +18,10 @@ repo_dir: "{{ etl_root_dir }}/git/dcc-etl"
 staging_dir: /tmp
 
 
+# versions
+ditionary_version: 0.10a
+
+
 ################################################################################
 # DCC Resources, DCC Dependices
 ################################################################################
