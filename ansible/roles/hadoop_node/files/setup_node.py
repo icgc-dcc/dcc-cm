@@ -126,7 +126,7 @@ def configure_host(cm_host, private_key_path, hostname):
     config_value = 'HADOOP_CLASSPATH=$HADOOP_CLASSPATH:/usr/lib/hadoop/lib/*\n' \
             'JAVA_LIBRARY_PATH=$JAVA_LIBRARY_PATH:/usr/lib/hadoop/lib/native'
     mapred_service_config = {
-      'mapreduce_service_env_safety_valve' : config_value
+      'mapreduce_client_env_safety_valve' : config_value
     }
     mapred_service.update_config(mapred_service_config)
 
