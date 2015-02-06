@@ -113,13 +113,21 @@
               regexp="\s+normal_database_user_passwd="
               line="  normal_database_user_passwd=dcc"
 
-- name: Download dcc-etl-cli and dcc-submission-validator
-  get_url: "url={{ cli_url }}
-            dest={{ lib_dir }}
-            mode=0444"
+- name: get dcc-etl-cli from artifactory
+  get_url:  url="{{ cli_url }}" 
+            dest="{{ staging_dir }}/{{ cli_jar_filename }}" 
+            mode=644
+
+- name: get dcc-submission-server from artifactory
+  get_url:  url="{{ submission_server_jar_url }}" 
+            dest="{{ staging_dir }}/{{ submission_server_jar_filename }}" 
+            mode=644
+
+- name: Copy dcc-etl-cli and dcc-submission-server to lib
+  command: cp "{{ staging_dir }}/{{ item }}" "{{ lib_dir }}/{{ item }}"
   with_items:
-    - "{{ cli_url }}"
-    - "{{ submission_server_jar_url }}"
+    - "{{ cli_jar_filename }}"
+    - "{{ submission_server_jar_filename }}"
 
 - name: Symlink dcc-etl-cli jar file
   file: src="{{ cli_jar_filename }}"
