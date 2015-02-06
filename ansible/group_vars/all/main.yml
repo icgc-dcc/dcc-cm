@@ -31,10 +31,10 @@ mongodb_version: 2.4.1
 postgresql_version: 9.2
 
 # DCC Components
-annotator_dist_version: 3.5.11-SNAPSHOT
+annotator_dist_version: 3.7.5.2-SNAPSHOT
 cli_version: 3.7.5.2-SNAPSHOT
-downloader_workflows_dist_version: 3.6.1.3-SNAPSHOT
-exporter_dist_version: 3.5.11-SNAPSHOT
+downloader_workflows_dist_version: 3.7.5.2-SNAPSHOT
+exporter_dist_version: 3.7.5.2-SNAPSHOT
 identifier_dist_version: 3.7.5.2-SNAPSHOT
 
 ################################################################################
@@ -51,7 +51,7 @@ external_docs_url: http://docs.icgc.org
 
 # Submission Server
 submission_server_dist_name: dcc-submission-server
-submission_server_dist_version: 3.7.4.2-SNAPSHOT
+submission_server_dist_version: 3.7.5.2-SNAPSHOT
 submission_server_dist_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}-dist.tar.gz"
 submission_server_jar_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}.jar"
 submission_server_dist_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{ submission_server_dist_name }}/{{ submission_server_dist_version }}/{{ submission_server_dist_filename }}"
