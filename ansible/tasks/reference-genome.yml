@@ -22,3 +22,4 @@
   with_items:
     - "dict"
     - "fasta"
+    - "fasta.fai"
