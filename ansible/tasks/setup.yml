@@ -43,9 +43,6 @@
       add_host: name={{ ip_data.public_ip }}
                 groups={{ inventory_hostname | regex_replace('^[a-z]*-([a-z]*-?\w*)(-\d*$)?', '\\1') }},{{ group }}_all_instances
                 hostname={{ inventory_hostname }}
-    - name: Writing private IPs to host file
-      shell: echo "{{ creation_data.private_ip }} {{ inventory_hostname }}" >> {{ group }}_bootstrap_hosts
-      delegate_to: localhost
     - name: Writing some debug information about hosts
       shell: echo "{{ inventory_hostname }} | {{ ip_data.public_ip }} | {{ creation_data.private_ip }} | {{ inventory_hostname | regex_replace('^[a-z]*-([a-z]*-?\w*)(-\d*$)?', '\\1') }}" >> {{ group }}_bootstrap_hosts_debug
       delegate_to: localhost
@@ -63,15 +60,15 @@
                 timeout=900
       delegate_to: localhost
 
-- name: Replace /etc/hosts with bootstrapped hosts file
+- name: Update /etc/hosts with new hosts
   hosts: "{{ group }}_all_instances"
   sudo: yes
-  serial: 1
   vars_files:
     - "../vars/main.yml"
   tasks:
-    - name: Copying... 
-      copy: src={{ group }}_bootstrap_hosts 
-            dest=/etc/hosts
-            owner=root
-            group=root
+    - name: Display all variables/facts known for a host
+      debug: var=hostvars[inventory_hostname]
+    - name: "Build hosts file"
+      lineinfile: dest=/etc/hosts regexp='.*{{ hostvars[item].ansible_hostname }}$' line="{{ hostvars[item].ansible_default_ipv4.address }} {{ hostvars[item].ansible_hostname }}" state=present
+      when: hostvars[item].ansible_default_ipv4.address is defined
+      with_items: groups['{{ group }}_all_instances']
