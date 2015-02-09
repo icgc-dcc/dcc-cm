@@ -31,7 +31,7 @@ mongodb_version: 2.4.1
 postgresql_version: 9.2
 
 # DCC Components
-annotator_dist_version: 3.7.7.0-SNAPSHOT
+annotator_version: 3.7.7.0-SNAPSHOT
 cli_version: 3.7.7.0-SNAPSHOT
 downloader_workflows_dist_version: 3.7.7.0-SNAPSHOT
 exporter_dist_version: 3.7.7.0-SNAPSHOT

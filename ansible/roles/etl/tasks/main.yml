@@ -122,6 +122,11 @@
             dest="{{ staging_dir }}/{{ cli_jar_filename }}" 
             mode=644
 
+- name: get dcc-etl-annotator from artifactory
+  get_url:  url="{{ annotator_jar_url }}" 
+            dest="{{ staging_dir }}/{{ annotator_jar_filename }}" 
+            mode=644
+
 - name: get dcc-submission-server from artifactory
   get_url:  url="{{ submission_server_jar_url }}" 
             dest="{{ staging_dir }}/{{ submission_server_jar_filename }}" 
@@ -132,10 +137,16 @@
   with_items:
     - "{{ cli_jar_filename }}"
     - "{{ submission_server_jar_filename }}"
+    - "{{ annotator_jar_filename }}"
 
 - name: Symlink dcc-etl-cli jar file
   file: src="{{ cli_jar_filename }}"
         dest="{{ lib_dir }}/dcc-etl.jar"
+        state=link
+
+- name: Symlink dcc-etl-annotator jar file
+  file: src="{{ annotator_jar_filename }}"
+        dest="{{ lib_dir }}/dcc-annotator.jar"
         state=link
 
 - name: Symlink dcc-submission-validator jar file
