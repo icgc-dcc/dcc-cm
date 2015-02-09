@@ -13,7 +13,13 @@
   command: tar -xvzf /tmp/{{ jdk_download_filename }} chdir=/usr/lib/jvm creates=/usr/lib/jvm/jdk{{ jdk_version }}
 
 - name: Update the symbolic link to the JDK install
-  file: path=/usr/lib/jvm/jdk src=/usr/lib/jvm/jdk{{ jdk_version }} state=link force=yes
+  file: path={{ item }} 
+        src=/usr/lib/jvm/jdk{{ jdk_version }} 
+        state=link 
+        force=yes
+  with_items:
+    - /usr/lib/jvm/jdk
+    - /usr/java/default
 
 - name: Add the JDK binaries to the system path (/etc/profile)
   lineinfile: "dest={{ item.dest }} line={{ item.line }} state={{ item.state }}"
