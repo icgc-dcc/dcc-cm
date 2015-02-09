@@ -92,6 +92,10 @@
         accept_hostkey=True
         key_file={{ keys_dir }}/id_rsa
 
+# TODO: Remove this when changes are merged.
+- name: Switch to cdh5.3.0 branch
+  shell: "cd {{ repo_dir }} && git checkout feature/DCC-2713-cdh5.3-upgrade"
+
 # FIXME: quickie fix for mongo on openstack
 - name: Patch mongo admin 
   lineinfile: dest="{{ lisi_facade }}" 
