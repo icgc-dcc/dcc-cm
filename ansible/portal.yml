@@ -22,7 +22,7 @@
     - nginx
 
 - name: Configure and deploy portal
-  hosts: portal-main
+  hosts: portal
   gather_facts: no
   user: ubuntu
   sudo: yes
