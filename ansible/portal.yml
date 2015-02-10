@@ -24,7 +24,7 @@
     - nginx
 
 - name: Configure and deploy portal
-  hosts: portal
+  hosts: portal_main
   gather_facts: no
   sudo: yes
   vars_files:

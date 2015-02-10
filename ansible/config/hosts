@@ -23,8 +23,8 @@ dcc-hadoop-worker-3
 dcc-hadoop-worker-4
 
 [portal]
-dcc-portal-1
-dcc-portal-2
+dcc-portal-main-1
+dcc-portal-main-2
 dcc-varnish
 dcc-nginx
 

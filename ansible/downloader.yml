@@ -8,7 +8,7 @@
 
 - include: tasks/setup.yml group=downloader
 
-- hosts: etl-main
+- hosts: etl_main
   gather_facts: no
   sudo: yes
   vars_files:

@@ -68,7 +68,7 @@
   roles: 
     - mongodb
 
-- hosts: hadoop-worker
+- hosts: hadoop_worker
   gather_facts: False
   sudo: yes
   vars_files:
@@ -78,7 +78,7 @@
     - worker
     - lzo
 
-- hosts: hadoop-manager
+- hosts: hadoop_manager
   gather_facts: no
   sudo: yes
   vars_files:
@@ -87,7 +87,7 @@
   roles:
     - hadoop_cluster
 
-- hosts: etl-main
+- hosts: etl_main
   gather_facts: no
   sudo: yes
   vars_files:

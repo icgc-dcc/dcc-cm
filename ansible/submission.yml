@@ -19,7 +19,7 @@
 
 - include: tasks/setup.yml group=submission
 
-- hosts: hadoop-manager
+- hosts: hadoop_manager
   gather_facts: no
   sudo: yes
   vars_files:
@@ -37,7 +37,7 @@
   roles: 
     - mongodb
 
-- hosts: submission-main
+- hosts: submission_main
   gather_facts: no
   sudo: yes
   vars_files:
