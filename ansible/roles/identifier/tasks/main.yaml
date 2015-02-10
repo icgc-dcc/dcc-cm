@@ -19,7 +19,7 @@
 
 # Install and start service
 - name: Install service
-  command: "{{ bin_dir }}/{{ identifier_dist_name }} install creates=/etc/init.d/{{ identifier_dist_name }}"
+  command: "{{ bin_dir }}/{{ identifier_installer_name }} install creates=/etc/init.d/{{ identifier_dist_name }}"
   
 - name: Ensure daemon is running
   service: name={{ identifier_dist_name }} state=started
