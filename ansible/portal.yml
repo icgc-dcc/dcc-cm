@@ -6,8 +6,9 @@
 - name: Configure and deploy varnish
   hosts: varnish
   gather_facts: no
-  user: ubuntu
   sudo: yes
+  vars_files:
+    - "vars/main.yml"
 
   roles:
     - varnish
@@ -15,8 +16,9 @@
 - name: Configure and deploy nginx
   hosts: nginx
   gather_facts: no
-  user: ubuntu
   sudo: yes
+  vars_files:
+    - "vars/main.yml"
 
   roles:
     - nginx
@@ -24,8 +26,9 @@
 - name: Configure and deploy portal
   hosts: portal
   gather_facts: no
-  user: ubuntu
   sudo: yes
+  vars_files:
+    - "vars/main.yml"
 
   roles:
     - portal

@@ -1,11 +1,16 @@
 ---
 # Copyright 2014(c) The Ontario Institute for Cancer Research. All rights reserved.
 
-portal_root: "/srv"
+install_dir: /srv
+conf_dir: "{{ install_dir }}/conf"
+
+portal_dist_name: dcc-portal-api
+portal_dist_version: 3.5.1
+portal_dist_name_version: "{{ portal_dist_name }}-{{ portal_dist_version }}"
+portal_dist_archive: "{{ portal_dist_name_version }}-dist.tar.gz"
+portal_dist_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ portal_dist_name }}/{{ portal_dist_version }}/{{ portal_dist_archive }}"
 
 es_index_name: "openstack-test"
-
-portal_version: 3.5.1
 
 # Variables for settings.yml generation
 http_port: 5381

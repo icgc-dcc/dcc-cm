@@ -3,5 +3,4 @@
 
 dependencies:
 
-  # ElasticSearch
   - { role: elasticsearch }
