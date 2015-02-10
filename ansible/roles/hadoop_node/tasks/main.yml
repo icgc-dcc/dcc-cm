@@ -17,4 +17,4 @@
   ignore_errors: yes
 
 - include: setup_node.yml
-  when: cluster_output.stdout.find('"hostname" : "dcc-etl-main"') == -1
+  when: cluster_output.stdout.find('dcc-etl-main') == -1
