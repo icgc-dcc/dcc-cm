@@ -34,12 +34,17 @@
   tasks:
     - include: create-openstack-instances.yml
     
-    - name: Add public ip to hostgroup
+    - name: Add public ip to group
       # This hack allows adding each hostname to a group that will be used downstream. The regex strips "prefix-" from beginning
       # and potential "-xx" from the end of hostname and uses that as a group name, allowing us to use group names 
       # like postgres or hadoop-worker in include statements. ex. dcc-hadoop-worker-1 -> hadoop-worker
       add_host: name={{ ip_data.public_ip }}
-                groups={{ inventory_hostname | regex_replace('^[a-z]*-([a-z]*-?\w*)(-\d*$)?', '\\1') | replace("-", "_") }} ,{{ group }}_all_instances
+                groups={{ inventory_hostname | regex_replace('^[a-z]*-([a-z]*-?\w*)(-\d*$)?', '\\1') | replace("-", "_") }}
+                hostname={{ inventory_hostname }}
+      
+    - name: Add public ip to all_instances catchall group
+      add_host: name={{ ip_data.public_ip }}
+                groups={{ group }}_all_instances
                 hostname={{ inventory_hostname }}
     
     - name: Writing public IPs to a host file
@@ -70,8 +75,8 @@
   vars_files:
     - "../vars/main.yml"
   tasks:
-    - name: Display all variables/facts known for a host
-      debug: var=hostvars[inventory_hostname]
+    # - name: Display all variables/facts known for a host
+    #   debug: var=hostvars[inventory_hostname]
     - name: "Build hosts file"
       lineinfile: dest=/etc/hosts regexp='.*{{ hostvars[item].ansible_hostname }}$' line="{{ hostvars[item].ansible_default_ipv4.address }} {{ hostvars[item].ansible_hostname }}" state=present
       when: hostvars[item].ansible_default_ipv4.address is defined
