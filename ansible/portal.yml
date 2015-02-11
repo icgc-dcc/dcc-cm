@@ -3,7 +3,7 @@
 
 - include: tasks/setup.yml group=portal
 
-- name: Configure and deploy varnish
+- name: Provision varnish
   hosts: varnish
   gather_facts: no
   sudo: yes
@@ -13,7 +13,7 @@
   roles:
     - varnish
 
-- name: Configure and deploy nginx
+- name: Provision nginx
   hosts: nginx
   gather_facts: no
   sudo: yes
@@ -23,7 +23,26 @@
   roles:
     - nginx
 
-- name: Configure Database
+- name: Provision Elasticsearch
+- hosts: elasticsearch
+  gather_facts: no
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+  roles: 
+    - elasticsearch
+
+- name: Provision Postgres
+- hosts: postgres
+  gather_facts: no
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+
+  roles: 
+    - postgres
+
+- name: Configure Postgres
   hosts: postgres
   gather_facts: no
   sudo_user: postgres
@@ -34,7 +53,7 @@
   roles: 
     - portal_db
 
-- name: Configure and deploy portal
+- name: Provision Portal
   hosts: portal_main
   gather_facts: no
   sudo: yes

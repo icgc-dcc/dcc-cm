@@ -23,19 +23,20 @@ staging_dir: /tmp
 ################################################################################
 
 ditionary_version: 0.10a
-cm_version: 5.3.0 #Cloudera Manager 
-cdh_version: 5.3.0
+cm_version: 5.3.1 #Cloudera Manager 
+cdh_version: 5.3.1
 elasticsearch_version: 0.90.1
 shiro_version: 1.2.1
 mongodb_version: 2.4.1
 postgresql_version: 9.2
 
 # DCC Components
-annotator_version: 3.7.7.0-SNAPSHOT
-cli_version: 3.7.7.0-SNAPSHOT
-downloader_workflows_dist_version: 3.7.7.0-SNAPSHOT
-exporter_dist_version: 3.7.7.0-SNAPSHOT
-identifier_dist_version: 3.7.7.0-SNAPSHOT
+annotator_version: 10-cdh-java8
+cli_version: 10-cdh-java8
+downloader_workflows_dist_version: 10-cdh-java8
+exporter_dist_version: 10-cdh-java8
+identifier_dist_version: 10-cdh-java8
+portal_dist_version: 10-cdh-java8
 
 ################################################################################
 # DCC Resources, DCC Dependices
@@ -51,7 +52,7 @@ external_docs_url: http://docs.icgc.org
 
 # Submission Server
 submission_server_dist_name: dcc-submission-server
-submission_server_dist_version: 3.7.7.0-SNAPSHOT
+submission_server_dist_version: 10-cdh-java8
 submission_server_dist_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}-dist.tar.gz"
 submission_server_jar_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}.jar"
 submission_server_dist_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{ submission_server_dist_name }}/{{ submission_server_dist_version }}/{{ submission_server_dist_filename }}"
@@ -77,17 +78,30 @@ hadoop_job_tracker: "{{ server_prefix }}-hadoop-worker-1:8021"
 hadoop_name_node_host: "{{ server_prefix }}-hadoop-worker-1"
 hadoop_name_node: "hdfs://{{ server_prefix }}-hadoop-worker-1:8020"
 hadoop_zookeeper_quorum: "{{ server_prefix }}-hadoop-worker-1"
+hadoop_oozie_node: "{{ server_prefix }}-hadoop-worker-1:11000/oozie"
 hadoop_username: hdfs
 fuse_root_dir: /hdfs/dcc
+
+downloader_user_folder: /user/downloader
+downloader_user_workflows_folder: "{{ downloader_user_folder }}/workflows"
+download_app_path: "{{ hadoop_name_node }}{{ downloader_user_workflows_folder }}/archive-main"
+
+reverse_proxy_url: "https://{{ server_prefix }}-nginx"
 
 postgresql_user: dcc
 postgresql_password: dcc
 postgresql_uri: "jdbc:postgresql://{{ server_prefix }}-postgres"
-fathmm_uri: "{{ postgresql_uri }}/fathmm?user={{postgresql_user}}&password={{postgresql_password}}"
-mongo_base_uri: "mongodb://{{ server_prefix }}-mongo"
-identifier_uri: "http://{{ server_prefix }}-identifier:6381"
-elasticsearch_uri: "es://{{ server_prefix }}-elasticsearch:9300"
+postgresql_fathmm_uri: "{{ postgresql_uri }}/fathmm?user={{postgresql_user}}&password={{postgresql_password}}"
+postgresql_portal_uri: "{{ postgresql_uri }}/dcc_portal"
+
 mongo_host: "{{ server_prefix }}-mongo"
+mongo_base_uri: "mongodb://{{ mongo_host }}"
+
+identifier_uri: "http://{{ server_prefix }}-identifier:6381"
+
+elasticsearch_host: "{{ server_prefix }}-elasticsearch"
+elasticsearch_uri: "es://{{ elasticsearch_host }}:9300"
+
 
 # DCC ETL Contact Settings
 smtpServer: ***REMOVED***

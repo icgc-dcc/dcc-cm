@@ -1,9 +1,6 @@
 downloader_workflows_name: dcc-downloader-workflows
 downloader_workflows_root: "{{ dcc_user_directory }}/{{ downloader_workflows_name }}"
 
-downloader_user_folder: /user/downloader
-downloader_user_workflows_folder: "{{ downloader_user_folder }}/workflows"
-
 downloader_hbase_lib_folder: /hbase_lib
 
 downloader_workflows_dist_name: dcc-downloader-workflows

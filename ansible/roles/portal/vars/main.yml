@@ -19,7 +19,7 @@ http_admin_port: 5382
 crowd_sso_url: "https://***REMOVED***/user?continue="
 
 es_index_name: "openstack-test"
-es_host: "localhost"
+es_host: "{{ elasticsearch_host }}"
 
 download_uri: "{{ hadoop_name_node }}"
 download_current: "/Current/dev-06e-6-31"

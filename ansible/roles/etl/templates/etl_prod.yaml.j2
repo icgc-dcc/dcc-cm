@@ -40,7 +40,7 @@ filterAllControlled: false
 fastaFile: "{{ data_dir }}/GRCh37.fasta"
 
 #fathmmPostgresqlUri: "jdbc:postgresql://***REMOVED***/fathmm?user=dcc&password="
-fathmmPostgresqlUri: "{{ fathmm_uri }}"
+fathmmPostgresqlUri: "{{ postgresql_fathmm_uri }}"
 
 # Export mutation VCF file
 exportVCF: true
