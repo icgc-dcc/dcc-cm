@@ -1,4 +1,3 @@
----
 
 dependencies:
-  - { role: jdk}
+  - { role: jdk, install_dir: /usr/lib/jvm/jdk }
