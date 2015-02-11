@@ -24,7 +24,7 @@
     - nginx
 
 - name: Provision Elasticsearch
-- hosts: elasticsearch
+  hosts: elasticsearch
   gather_facts: no
   sudo: yes
   vars_files:
@@ -33,7 +33,7 @@
     - elasticsearch
 
 - name: Provision Postgres
-- hosts: postgres
+  hosts: postgres
   gather_facts: no
   sudo: yes
   vars_files:
