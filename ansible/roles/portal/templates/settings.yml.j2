@@ -19,6 +19,61 @@ http:
       # If true, log requests to a file.
       enabled: false
 
+# Database
+database:
+  # the name of your JDBC driver
+  driverClass: org.postgresql.Driver
+
+  # the username
+  user: dcc
+
+  # the password
+  password: dcc
+
+  # the JDBC URL
+  url: {{ database_url }}
+
+  # any properties specific to your JDBC driver:
+  properties:
+    charSet: UTF-8
+
+  # the maximum amount of time to wait on an empty pool before throwing an exception
+  maxWaitForConnection: 1s
+
+  # the SQL query to run when validating a connection's liveness
+  validationQuery: "/* Portal DB Health Check */ SELECT 1"
+
+  # the minimum number of connections to keep open
+  minSize: 8
+
+  # the maximum number of connections to keep open
+  maxSize: 32
+
+  # whether or not idle connections should be validated
+  checkConnectionWhileIdle: false
+
+  # how long a connection must be held before it can be validated
+  checkConnectionHealthWhenIdleFor: 10s
+
+  # the maximum lifetime of an idle connection
+  closeConnectionIfIdleFor: 1 minute
+
+# Controls generation of "Last-Modified" and "ETag" HTTP headers
+cache:
+  enabled: true
+
+  # Enable Last-Modified HTTP header generation
+  enableLastModified: true
+
+  # List of resources for which Last-Modified HTTP header should not be generated. Format: regex accepted by java.lang.String
+  excludeLastModified: ["^v\\d+/short$", "^v\\d+/auth/.*$", "^v\\d+/download.*$", "^v\\d+/analysis.*$", "^v\\d+/entityset.*$"]
+
+  # Enable ETag HTTP header generation
+  enableETag: false
+
+  # List of resources for which ETag HTTP header should not be generated. Format: regex accepted by java.lang.String
+  excludeETag: []
+
 # Authentication
 crowd:
   ssoUrl: {{ crowd_sso_url }}
@@ -60,18 +115,23 @@ browser:
        className: org.icgc.dcc.portal.browser.ds.GeneDataSource
      - uri: mutation
        className: org.icgc.dcc.portal.browser.ds.MutationDataSource
+
 # Data download
 download:
   enabled: true
   uri: {{ download_uri }}
-  dynamicRootPath: "/icgc/download/dynamic"
-  staticRootPath: "/icgc/download/static"
+  dynamicRootPath: {{ download_dynamic_root_path }}
+  staticRootPath: {{ download_static_root_path }}
   currentReleaseSymlink: {{ download_current }}
-  stage: "PRODUCTION"
+  stage: {{ download_stage }}
   quorum: {{ download_quorum }}
   oozieUrl: {{ download_oozie_url }}
   appPath: {{ download_app_path }}
-  releaseName: "CURRENT_RELEASE"
+  releaseName: {{ download_release_name }}
+
+web:
+  # Defines an external URL when the portal is behind a reverse proxy / load balancer. E.g. shortUrl resource uses it for generation of valid URLs
+  baseUrl: {{ web_base_url }}
 
 # Logging settings
 logging:
@@ -123,17 +183,18 @@ logging:
 
     # ERRORs should be converted to WARNs in Swagger 1.2.2
     "com.wordnik.swagger.jaxrs.HelpApi": OFF
+
 # ICGC Client configuration
 icgc:
 
   # CGP/DACO API endpoint
-  cgpUrl: "https://icgc.org/ud_oauth/1/search"
+  cgpUrl: {{ icgc_cgp_url }}
 
   # ShortUrl API endpoint
-  shortUrl: "https://icgc.org/short/api/1/shorten"
+  shortUrl: {{ icgc_short_url }}
 
   # CUD API endpoint
-  cudUrl: "https://icgc.org/ud_rest/1"
+  cudUrl: {{ icgc_cud_url }}
 
   # CUD credentials. Obtained from webdev@oicr.on.ca
   cudAppId: {{ icgc_cud_id }}
@@ -152,3 +213,19 @@ icgc:
 
   # Disallow self-signed SSL certificates
   enableStrictSSL: true
+
+# Set analysis configuration
+setOperation:
+
+  # Limit for number of items to return from ElasticSearch
+  maxPreviewNumberOfHits: 1000
+  maxNumberOfHits: 20000
+  maxMultiplier: 3
+
+  # Settings related to the demo record
+  demoListUuid: {{ set_operation_demo_list_uuid }}
+  # Gene demo list - top 50 mutated genes in Cancer Gene census. See https://wiki.oicr.on.ca/download/attachments/60561081/Cancer_Gene_Census_Top50.txt?version=1&modificationDate=1422392030000&api=v2
+  demoListFilterParam: "TP53,NRG1,FIP1L1,CAMTA1,FHIT,PIK3CA,ALK,RUNX1,NTRK3,PDE4DIP,LPP,KRAS,PTPRK,BRAF,ZNF521,FOXP1,STAG2,GPHN,EBF1,CUX1,RANBP17,PRDM16,NF1,SETBP1,CDH11,MAML2,GOPC,ERC1,PTEN,ATRX,APC,PBX1,EGFR,ARID1A,GAS7,NCOA2,CACNA1D,ERG,SRGAP3,AKAP9,CTNNB1,EIF3E,EXT1,LHFP,RSPO2,PTPRB,NOTCH2,KMT2D,PTPRC,GPC3"
+
+release:
+  releaseDate: {{ release_release_date }}

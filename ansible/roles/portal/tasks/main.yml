@@ -1,20 +1,35 @@
+- name: Clean copy
+  file: path="{{ install_dir }}"
+        state=absent
+
 - name: Ensure directories
-  file: "path={{ item }} state=directory"
+  file: path={{ item }} state=directory
   with_items:
     - "{{ install_dir }}"
-    - "{{ conf_dir }}"
 
 - name: Download the distribution
-  get_url: "url={{ portal_dist_url }} dest={{ staging_dir }}/{{ portal_dist_archive }} mode=0444"
+  get_url:  url="{{ portal_dist_url }}"
+            dest="{{ staging_dir }}/{{ portal_dist_filename }}"
+            mode=0444
 
-- name: Extract the dist 
-  command: "tar xzf {{ staging_dir }}/{{ portal_dist_archive }} -C {{ install_dir }}" 
+- name: Extract the dist
+  unarchive:  src="{{ staging_dir }}/{{ portal_dist_filename }}"
+              dest="{{ install_dir }}"
+              copy=no
+
+- name: Update the symbolic link to the distribution
+  file: path="{{ portal_root }}"
+        src="{{ install_dir }}/{{ portal_dist_fullname }}"
+        state=link
+        force=yes
+
+- name: Ensure directories
+  file: path={{ item }} state=directory
+  with_items:
+    - "{{ portal_conf }}"
 
 - name: Copy over portal configuraiton file
-  template: src="settings.yml.j2" dest="{{ conf_dir }}/settings.yml" mode=644 force=yes
+  template: src="settings.yml.j2" dest="{{ portal_conf }}/settings.yml" mode=644 force=yes
 
 - name: Start dcc-portal
-  shell: "{{ install_dir }}/dcc-portal-api-{{ portal_dist_version }}/bin/dcc-portal-api restart"
-
-
-
+  shell: "{{ portal_root }}/bin/dcc-portal-api restart"

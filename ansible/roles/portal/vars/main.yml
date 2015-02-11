@@ -2,30 +2,51 @@
 # Copyright 2014(c) The Ontario Institute for Cancer Research. All rights reserved.
 
 install_dir: /srv
-conf_dir: "{{ install_dir }}/conf"
+portal_name: dcc-portal-api
+portal_root: "{{ install_dir }}/{{ portal_name }}"
+portal_conf: "{{ portal_root }}/conf"
 
 portal_dist_name: dcc-portal-api
-portal_dist_version: 3.5.1
-portal_dist_name_version: "{{ portal_dist_name }}-{{ portal_dist_version }}"
-portal_dist_archive: "{{ portal_dist_name_version }}-dist.tar.gz"
-portal_dist_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ portal_dist_name }}/{{ portal_dist_version }}/{{ portal_dist_archive }}"
+portal_dist_fullname: "{{ portal_dist_name }}-{{ portal_dist_version }}"
+portal_dist_filename: "{{ portal_dist_fullname }}-dist.tar.gz"
+portal_dist_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{ portal_dist_name }}/{{ portal_dist_version }}/{{ portal_dist_filename }}"
 
-es_index_name: "openstack-test"
 
 # Variables for settings.yml generation
+
 http_port: 5381
 http_admin_port: 5382
 crowd_sso_url: "https://***REMOVED***/user?continue="
-es_index_name: "dcc-release-dcc-etl-cli"
+
+es_index_name: "openstack-test"
 es_host: "localhost"
-download_uri: "hdfs://<namenode>:8020"
+
+download_uri: "{{ hadoop_name_node }}"
 download_current: "/Current/dev-06e-6-31"
-download_quorum: "localhost"
-download_oozie_url: "http://***REMOVED***:11000/oozie"
-download_app_path: "***REMOVED***/user/downloader/workflows/archive-main"
+download_quorum: "{{ hadoop_zookeeper_quorum }}"
+download_oozie_url: "{{ hadoop_oozie_node }}"
+download_app_path: "{{ download_app_path }}"
+download_stage: "PRODUCTION"
+download_release_name: "CURRENT_RELEASE"
+download_root_path: /icgc/download
+download_dynamic_root_path: "{{ download_root_path }}/dynamic"
+download_static_root_path: "{{ download_root_path }}/static"
+
+database_url: "{{ postgresql_portal_uri }}"
+
+web_base_url: "{{ reverse_proxy_url }}"
+
+icgc_cgp_url: "https://***REMOVED***/ud_oauth/1/search"
+icgc_short_url: "https://***REMOVED***/short/api/1/shorten"
+
+icgc_cud_url: "https://***REMOVED***/ud_rest/1"
 icgc_cud_id: ""
 icgc_cud_user: ""
 icgc_cud_passwd: ""
+
+set_operation_demo_list_uuid: "de305d54-75b4-431b-adb2-eb6b9e386023"
+
+release_release_date: "placeholder"
 
 
 
