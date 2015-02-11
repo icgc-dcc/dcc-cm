@@ -1,5 +1,3 @@
-# Jerry said the snpeff directory name is dependent on the reference genome name
-
 annotator_name: dcc-annotator
 annotator_root: "{{ dcc_user_directory }}/{{ annotator_name }}"
 annotator_conf: "{{ annotator_root }}/conf"

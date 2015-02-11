@@ -23,9 +23,6 @@
     - name: "Remove previous debug file if exist"
       shell: "rm -f {{ group }}_bootstrap_hosts_debug"
       delegate_to: localhost
-    - name: "Create new host file with localhost entry"
-      shell: "echo '127.0.0.1 localhost' > {{ group }}_bootstrap_hosts"
-      delegate_to: localhost
 
 - name: Creates OpenStack instances of all the hosts in group parameter, defined in hosts file.
   hosts: "{{ group }}"
@@ -36,6 +33,7 @@
     - "../vars/main.yml"
   tasks:
     - include: create-openstack-instances.yml
+    
     - name: Add public ip to hostgroup
       # This hack allows adding each hostname to a group that will be used downstream. The regex strips "prefix-" from beginning
       # and potential "-xx" from the end of hostname and uses that as a group name, allowing us to use group names 
@@ -43,9 +41,15 @@
       add_host: name={{ ip_data.public_ip }}
                 groups={{ inventory_hostname | regex_replace('^[a-z]*-([a-z]*-?\w*)(-\d*$)?', '\\1') | replace("-", "_") }} ,{{ group }}_all_instances
                 hostname={{ inventory_hostname }}
+    
+    - name: Writing public IPs to a host file
+      shell: echo "{{ ip_data.public_ip }} {{ inventory_hostname }}" >> {{ group }}_bootstrap_hosts
+      delegate_to: localhost
+    
     - name: Writing some debug information about hosts
       shell: echo "{{ inventory_hostname }} | {{ ip_data.public_ip }} | {{ creation_data.private_ip }} | {{ inventory_hostname | regex_replace('^[a-z]*-([a-z]*-?\w*)(-\d*$)?', '\\1') | replace("-", "_") }}" >> {{ group }}_bootstrap_hosts_debug
       delegate_to: localhost
+    
     - name: Save cloudera manager's public IP for later
       set_fact: cm_host={{ ip_data.public_ip }}
       when: inventory_hostname == "dcc-hadoop-manager"

@@ -79,7 +79,6 @@ def setup_cluster(cm_host, private_key_path):
     try:
         cm.begin_trial()
     except:
-        print 'Trial has been used already.'
         pass
 
     # create the management service

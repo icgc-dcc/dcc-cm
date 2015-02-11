@@ -132,7 +132,7 @@
             dest="{{ staging_dir }}/{{ submission_server_jar_filename }}" 
             mode=644
 
-- name: Copy dcc-etl-cli and dcc-submission-server to lib
+- name: Copy dcc-etl-cli, dcc-submission-server and dcc-annotator jars to lib
   command: cp "{{ staging_dir }}/{{ item }}" "{{ lib_dir }}/{{ item }}"
   with_items:
     - "{{ cli_jar_filename }}"

@@ -5,7 +5,8 @@
   register: cm_started
   ignore_errors: yes
 
-# - include: install.yml
 - include: installer.yml
   when: cm_started.stdout.find('cloudera-scm-server is running') == -1
 
+- name: wait for Cloudera Manager web interface to become available
+  wait_for: port=8000 delay=30

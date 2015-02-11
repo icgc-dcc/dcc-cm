@@ -29,6 +29,9 @@
     - archivecleaner-main/config-default.xml
     - archivecleaner-main/job.properties
 
+- name: Create downloader directory in hdfs
+  shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir -p {{ downloader_user_folder }}"
+
 - name: Copy workflow dirs
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal -p -f {{ downloader_workflows_root }} {{ downloader_user_folder }}"
 
