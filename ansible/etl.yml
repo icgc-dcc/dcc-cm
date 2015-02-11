@@ -48,7 +48,7 @@
     - "vars/main.yml"
 
   roles: 
-    - postgres_seed
+    - identifier_db
 
 - hosts: identifier
   gather_facts: no

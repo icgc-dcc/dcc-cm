@@ -19,7 +19,6 @@
 - name: Create DCC User
   postgresql_user: db="fathmm" name="dcc" login_password="dcc"
 
-
 # Explicit set password, otherwise have to use hash above
 - name: Set password
   shell: psql -d dcc_identifier -c "ALTER USER dcc with PASSWORD 'dcc'"
@@ -28,8 +27,6 @@
 - name: Set password
   shell: psql -d fathmm -c "ALTER USER dcc with PASSWORD 'dcc'"
   ignore_errors: yes
-
-
 
 # Schema and privileges
 - name: Initialize identifier

@@ -27,6 +27,7 @@ dcc-portal-main-1
 dcc-portal-main-2
 dcc-varnish
 dcc-nginx
+dcc-postgres
 
 [downloader]
 dcc-etl-main
