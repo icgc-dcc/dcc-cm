@@ -2,6 +2,8 @@
 http:
   port: {{ http_port }}
   adminPort: {{ http_admin_port }}
+  maxThreads: 2048
+  # The root path for the Jersey servlet.
   rootPath: "/api/*"
 
   # HTTP request log settings.
@@ -44,7 +46,7 @@ database:
   validationQuery: "/* Portal DB Health Check */ SELECT 1"
 
   # the minimum number of connections to keep open
-  minSize: 8
+  minSize: 4
 
   # the maximum number of connections to keep open
   maxSize: 32
@@ -60,13 +62,11 @@ database:
 
 # Controls generation of "Last-Modified" and "ETag" HTTP headers
 cache:
-  enabled: true
-
   # Enable Last-Modified HTTP header generation
   enableLastModified: true
 
   # List of resources for which Last-Modified HTTP header should not be generated. Format: regex accepted by java.lang.String
-  excludeLastModified: ["^v\\d+/short$", "^v\\d+/auth/.*$", "^v\\d+/download.*$", "^v\\d+/analysis.*$", "^v\\d+/entityset.*$"]
+  excludeLastModified: ["^v\\d+/short$", "^v\\d+/auth/.*$", "^v\\d+/download.*$", "^v\\d+/analysis.*$", "^v\\d+/entityset.*$" ]
 
   # Enable ETag HTTP header generation
   enableETag: false
@@ -74,11 +74,14 @@ cache:
   # List of resources for which ETag HTTP header should not be generated. Format: regex accepted by java.lang.String
   excludeETag: []
 
-# Authentication
+# Authorization
 crowd:
   ssoUrl: {{ crowd_sso_url }}
 
+# In memory data grid
 hazelcast:
+  enabled: true
+
   # NB: Below hazelcast settings do not have default values. The portal won't start if they're unset
 
   # Credentials to enter a group. E.g. dev, uat, prod groups
@@ -103,18 +106,13 @@ elastic:
      - host: {{ es_host }}
        port: 9300
 
-# Mail
-mail:
-  enabled: false
-  recipientEmail: ***REMOVED***
-
 # Genomemaps
 browser:
   dataSources:
      - uri: gene
        className: org.icgc.dcc.portal.browser.ds.GeneDataSource
      - uri: mutation
-       className: org.icgc.dcc.portal.browser.ds.MutationDataSource
+       className: org.icgc.dcc.portal.browser.ds.MutationDataSource  
 
 # Data download
 download:
@@ -128,6 +126,12 @@ download:
   oozieUrl: {{ download_oozie_url }}
   appPath: {{ download_app_path }}
   releaseName: {{ download_release_name }}
+
+# Mail
+mail:
+  enabled: false
+  smtpServer: "localhost"
+  recipientEmail: "***REMOVED***"
 
 web:
   # Defines an external URL when the portal is behind a reverse proxy / load balancer. E.g. shortUrl resource uses it for generation of valid URLs
@@ -149,7 +153,7 @@ logging:
     enabled: false
 
     # Do not write log statements below this threshold to the file.
-    threshold: INFO
+    threshold: INFO 
 
     # The file to which current statements will be logged.
     currentLogFilename: ../logs/dcc-portal-api.log
@@ -172,7 +176,11 @@ logging:
     "com.sun.jersey.api.container.filter.LoggingFilter": INFO
 
     # ElasticSearch query logging
-    "org.icgc.dcc.portal.service.BaseQueryService": WARN
+    "org.icgc.dcc.portal.service": WARN
+    "org.icgc.dcc.portal.repository": WARN
+    "org.icgc.dcc.portal.resource": WARN
+    "org.icgc.dcc.portal.browser.ds.GeneParser": WARN
+    "org.icgc.dcc.portal.browser.ds.MutationParser": WARN
 
     # Very chatty
     "com.wordnik.swagger.jsonschema.ApiModelParser": WARN
@@ -227,5 +235,7 @@ setOperation:
   # Gene demo list - top 50 mutated genes in Cancer Gene census. See https://wiki.oicr.on.ca/download/attachments/60561081/Cancer_Gene_Census_Top50.txt?version=1&modificationDate=1422392030000&api=v2
   demoListFilterParam: "TP53,NRG1,FIP1L1,CAMTA1,FHIT,PIK3CA,ALK,RUNX1,NTRK3,PDE4DIP,LPP,KRAS,PTPRK,BRAF,ZNF521,FOXP1,STAG2,GPHN,EBF1,CUX1,RANBP17,PRDM16,NF1,SETBP1,CDH11,MAML2,GOPC,ERC1,PTEN,ATRX,APC,PBX1,EGFR,ARID1A,GAS7,NCOA2,CACNA1D,ERG,SRGAP3,AKAP9,CTNNB1,EIF3E,EXT1,LHFP,RSPO2,PTPRB,NOTCH2,KMT2D,PTPRC,GPC3"
 
+# Portal release configuration
 release:
   releaseDate: {{ release_release_date }}
+
