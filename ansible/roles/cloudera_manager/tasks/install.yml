@@ -1,12 +1,14 @@
 ---
 
 - include: dependencies.yml
+
 - name: Install Cloudera Manager Server
   action: apt pkg={{ item }} state=latest
   with_items:
     - cloudera-manager-daemons
     - cloudera-manager-server-db
     - cloudera-manager-server
+
 - name: Start CM services
   service:  name={{ item }}
             state=running

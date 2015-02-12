@@ -2,12 +2,15 @@
 
 - name: Update apt-get 
   apt:  update_cache=yes
+
 - name: install python-apt
   raw:  "apt-get install -y python-apt"
+
 - name: install ntp
   apt:  pkg=ntp 
         state=latest
   notify: start ntp    
+
 - name: Install apt packages
   apt:  pkg={{ item }}
         state=latest
@@ -15,7 +18,9 @@
     - sudo
     - tree
     - curl
-- name: get ClouderaManager repo list
-  shell: wget http://archive.cloudera.com/cm5/ubuntu/precise/amd64/cm/cloudera.list  -O /etc/apt/sources.list.d/cloudera.list
+
+- name: Copy over Cloudera Manager repo list
+  template: src="cloudera.list.j2" dest="/etc/apt/sources.list.d/cloudera.list" mode=644 force=yes
+
 - name: update the repositories
   apt: update_cache=yes
