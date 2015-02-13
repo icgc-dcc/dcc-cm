@@ -18,17 +18,17 @@ http_port: 5381
 http_admin_port: 5382
 crowd_sso_url: "https://***REMOVED***/user?continue="
 
-es_index_name: "test18-0-0"
+es_index_name: "{{ release_name }}"
 es_host: "{{ elasticsearch_host }}"
 
 download_uri: "{{ hadoop_name_node }}"
-download_current: "/Current/dev-06e-6-31"
+download_current: "/Current /{{ release_name }}"
 download_quorum: "{{ hadoop_zookeeper_quorum }}"
 download_oozie_url: "{{ hadoop_oozie_node }}"
 download_app_path: "{{ download_app_path }}"
 download_stage: "PRODUCTION"
-download_release_name: "CURRENT_RELEASE"
-download_root_path: /icgc/download
+download_release_name: "{{ release_name }}"
+download_root_path: "{{ download_root_path }}"
 download_dynamic_root_path: "{{ download_root_path }}/dynamic"
 download_static_root_path: "{{ download_root_path }}/static"
 

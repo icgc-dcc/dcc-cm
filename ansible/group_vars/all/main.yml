@@ -18,6 +18,8 @@ repo_dir: "{{ etl_root_dir }}/git/dcc-etl"
 staging_dir: /tmp
 
 
+release_name: test18-0-0
+
 ################################################################################
 # All Versions, Centralized for convenience.
 ################################################################################
@@ -86,6 +88,8 @@ fuse_root_dir: /hdfs/dcc
 downloader_user_folder: /user/downloader
 downloader_user_workflows_folder: "{{ downloader_user_folder }}/workflows"
 download_app_path: "{{ hadoop_name_node }}{{ downloader_user_workflows_folder }}/archive-main"
+download_root_path: /tmp/download
+
 
 reverse_proxy_url: "https://{{ server_prefix }}-nginx"
 

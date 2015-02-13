@@ -46,6 +46,11 @@
               regexp="hbase.zookeeper.quorum" 
               line="Pig.set('hbase.zookeeper.quorum', '{{ hadoop_zookeeper_quorum }}')"
 
+- name: Patch download directory location
+  lineinfile: dest="{{ exporter_root }}/scripts/core.py" 
+              regexp="^root = \"/tmp/download\"" 
+              line="root = \"{{ download_root_path }}\""
+
 # Patch environment: FIXME: should probably be parameterized by overarch
 - name: Patch setenv
   lineinfile: dest="{{ exporter_root }}/bin/setenv.sh" 
