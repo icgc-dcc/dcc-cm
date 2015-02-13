@@ -51,7 +51,7 @@ cluster_name = config.get("CDH", "cluster.name")
 host_list = config.get("CDH", "cluster.hosts").split(',')
 
 cdh_version = "CDH5"
-cdh_version_number = "5"
+cdh_version_number = "5.3.1"
 
 cm_port = 7180
 cm_username = "admin"

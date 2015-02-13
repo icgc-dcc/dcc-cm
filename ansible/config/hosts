@@ -29,6 +29,7 @@ dcc-varnish
 dcc-nginx
 dcc-postgres
 dcc-elasticsearch
+dcc-hadoop-worker-1
 
 [downloader]
 dcc-etl-main

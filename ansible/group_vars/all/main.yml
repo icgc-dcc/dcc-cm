@@ -73,6 +73,7 @@ reference_genome_archive: "{{ reference_genome_name }}-{{ reference_genome_filen
 reference_genome_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ reference_genome_name }}/{{ reference_genome_filename }}/{{ reference_genome_archive }}"
 
 # Hadoop Settings
+hadoop_cloudera_manager: "{{ server_prefix }}-hadoop-manager"
 hadoop_fs_url: "hdfs://{{ server_prefix }}-hadoop-worker-1"
 hadoop_job_tracker: "{{ server_prefix }}-hadoop-worker-1:8021"
 hadoop_name_node_host: "{{ server_prefix }}-hadoop-worker-1"

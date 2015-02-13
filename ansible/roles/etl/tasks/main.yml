@@ -161,7 +161,7 @@
 
 - name: Prepare etl configuration
   template: src=etl_prod.yaml.j2 
-            dest="{{ config_dir }}/etl_dev.yaml"
+            dest="{{ config_dir }}/etl_prod.yaml"
 
 - name: Create icgc dir
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir {{ hdfs_icgc_root_dir }}"
