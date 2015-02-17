@@ -28,9 +28,7 @@ download_oozie_url: "{{ hadoop_oozie_node }}"
 download_app_path: "{{ download_app_path }}"
 download_stage: "PRODUCTION"
 download_release_name: "{{ release_name }}"
-download_root_path: "{{ download_root_path }}"
-download_dynamic_root_path: "{{ download_root_path }}/dynamic"
-download_static_root_path: "{{ download_root_path }}/static"
+
 
 database_url: "{{ postgresql_portal_uri }}"
 

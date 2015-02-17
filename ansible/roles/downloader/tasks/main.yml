@@ -26,6 +26,8 @@
   with_items:
     - archive/config-default.xml
     - archive-main/config-default.xml
+    - archive-maintenance-main/config-default.xml
+    - archive-maintenance-main/job.properties
     - archivecleaner-main/config-default.xml
     - archivecleaner-main/job.properties
 

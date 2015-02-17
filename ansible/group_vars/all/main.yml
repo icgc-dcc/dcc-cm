@@ -89,6 +89,8 @@ downloader_user_folder: /user/downloader
 downloader_user_workflows_folder: "{{ downloader_user_folder }}/workflows"
 download_app_path: "{{ hadoop_name_node }}{{ downloader_user_workflows_folder }}/archive-main"
 download_root_path: /tmp/download
+download_dynamic_root_path: "{{ download_root_path }}/dynamic"
+download_static_root_path: "{{ download_root_path }}/static"
 
 
 reverse_proxy_url: "https://{{ server_prefix }}-nginx"
