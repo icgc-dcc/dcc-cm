@@ -93,7 +93,7 @@ def configure_host(cm_host, private_key_path, hostname):
 
     print "Updating configurations for HBASE"
     # See hbase.dynamic.jars.dir in http://hbase.apache.org/book.html
-    config_value = '<property><name>hbase.dynamic.jars.dir</name><value>/hbase_lib</value></property>'
+    config_value = '<property><name>hbase.dynamic.jars.dir</name><value>/hbase-lib</value></property>'
     hbase_service_config = {
       'hbase_service_config_safety_valve' : config_value
     }

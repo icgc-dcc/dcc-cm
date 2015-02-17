@@ -25,16 +25,6 @@
   with_items:
     - "{{ exporter_log }}"
 
-# Make up HDFS directories 
-- name: Make downloader directory
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir /user/downloader"
-  ignore_errors: yes
-
-# TODO Resolve hdfs vs. downloader user logic
-- name: Give downloader ownership
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -chown -R hdfs /user/downloader"
-  ignore_errors: yes
-
 # Patch configurations: FIXME: should be parameterized in overarch
 - name: Patch zookeeper location
   lineinfile: dest="{{ exporter_root }}/scripts/pig/bucket.pig" 

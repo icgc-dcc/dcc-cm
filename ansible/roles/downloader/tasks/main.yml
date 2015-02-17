@@ -33,10 +33,18 @@
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir -p {{ downloader_user_folder }}"
 
 - name: Copy workflow dirs
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal -p -f {{ downloader_workflows_root }} {{ downloader_user_folder }}"
+  shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal -p -f {{ downloader_workflows_root }}/* {{ downloader_user_folder }}"
 
 - name: Change ownership
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -chown -R downloader {{ downloader_user_folder }}"
+
+- name: Create dynamic lib directory
+  shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir -p {{ hbase_lib_folder }}"
+  ignore_errors: yes
+
+- name: Copy over filter.jar
+  shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal {{ downloader_hbase_lib_folder }}/* {{ hbase_lib_folder }}/"
+  ignore_errors: yes
 
 # https://github.com/ansible/ansible/issues/548
 - name: Make sure dcc_dev owns everything
