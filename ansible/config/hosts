@@ -30,6 +30,10 @@ dcc-nginx
 dcc-postgres
 dcc-elasticsearch
 dcc-hadoop-worker-1
+dcc-hadoop-worker-2
+dcc-hadoop-worker-3
+dcc-hadoop-worker-4
+
 
 [downloader]
 dcc-etl-main
