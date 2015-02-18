@@ -38,7 +38,14 @@ $ python setup.py install
 
 Create a new file, `vars/main.yml` using `vars/main.yml.template` as template, providing necessary settings.
 
-#### 5. Edit ssh config
+To run Portal successfully, you also need to provide required values for CUD credentials in cud.yml, which is referenced in portal.yml. You can provide your own, or provide Ansible vault password to unlock the provided values:
+
+```bash
+$ cd ansible/vars
+$ ansible-vault edit cud.yml
+```
+
+#### 5. (Optional) Edit ssh config
 
 Edit `/etc/ssh_config` and add the following to avoid having to accept connecting to each server.
 
@@ -53,5 +60,11 @@ Host 10.5.74.*
 Execute the following command:
 
 ```bash
-$ ansible-playbook -i config/hosts site.yml
+$ ansible-playbook -i config/hosts site.yml --ask-vault-pass
+```
+
+You can also execute palybooks individually:
+
+```bash
+$ ansible-playbook -i config/hosts submission.yml
 ```
