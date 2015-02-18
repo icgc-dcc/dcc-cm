@@ -81,3 +81,6 @@
       lineinfile: dest=/etc/hosts regexp='.*{{ hostvars[item].ansible_hostname }}$' line="{{ hostvars[item].ansible_default_ipv4.address }} {{ hostvars[item].ansible_hostname }}" state=present
       when: hostvars[item].ansible_default_ipv4.address is defined
       with_items: groups['{{ group }}_all_instances']
+
+    - name: "Prevent resetting host fle on OpenStack"
+      - lineinfile: dest=/etc/cloud/cloud.cfg regexp=^manage_etc_hosts line="manage_etc_hosts: False"
