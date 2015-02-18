@@ -45,7 +45,7 @@
   ignore_errors: yes
 
 - name: Copy over filter.jar
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal {{ downloader_hbase_lib_folder }}/* {{ hbase_lib_folder }}/"
+  shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal -p -f {{ downloader_hbase_lib_folder }}/* {{ hbase_lib_folder }}/"
   ignore_errors: yes
 
 # https://github.com/ansible/ansible/issues/548
