@@ -7,8 +7,16 @@
 #
 ################################################################################
 
+- name: Remove previous setup script
+  local_action: command rm -f roles/hadoop_cluster/files/setup_cluster.py
+  sudo: no
+
+- name: Populate setup script with variables
+  local_action: template dest=roles/hadoop_cluster/files/setup_cluster.py src=roles/hadoop_cluster/files/setup_cluster.py.j2
+  sudo: no
+
 - name: Assign command to variable
-  set_fact: command="python roles/hadoop_cluster/files/setup_cluster.py -p {{ ansible_ssh_private_key_file }} -c {{ hostvars['dcc-hadoop-manager']['cm_host'] }} "
+  set_fact: command="python roles/hadoop_cluster/files/setup_cluster.py"
 
 - name: Provision Hadoop Cluster using Cloudera Manager API
   sudo: no

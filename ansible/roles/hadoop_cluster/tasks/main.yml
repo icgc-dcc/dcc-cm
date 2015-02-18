@@ -4,12 +4,11 @@
 #
 # TODO: 
 #     - Parametrize cluster state check.
-#     - Merge cloudera_config.ini and default main.yml.
 #
 ################################################################################
 
 - name: Check Cluster State
-  command:  "curl -u 'admin:admin' {{ cm_host }}:7180/api/v9/clusters/"
+  command:  "curl -u 'admin:admin' localhost:7180/api/v9/clusters/"
   register: cluster_output
   ignore_errors: yes
 

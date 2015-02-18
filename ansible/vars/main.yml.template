@@ -13,5 +13,6 @@ flavor_id: 5 # m1.xlarge | 16GB RAM | 8 VCPU | 160.0GB Disk
 
 # Ansible Settings
 host_key_checking: False
+openstack_ssh_user: <ssh_user>
 ansible_ssh_user: <ssh_user>
 ansible_ssh_private_key_file: <ssh_key_file>

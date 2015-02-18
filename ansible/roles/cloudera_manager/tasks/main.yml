@@ -8,8 +8,7 @@
 - include: installer.yml
   when: cm_started.stdout.find('cloudera-scm-server is running') == -1
 
-- name: Wait for ssh
-  wait_for: host={{ inventory_hostname }}
+- name: Wait for Cloudera Manager web interface to be ready
+  wait_for: host=localhost
             port=7180
             timeout=30
-  delegate_to: localhost

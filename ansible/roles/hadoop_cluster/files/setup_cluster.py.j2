@@ -1,18 +1,19 @@
 # Copyright (c) 2014 The Ontario Institute for Cancer Research. All rights reserved.
 #
 # This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
-# You should have received a copy of the GNU General Public License along with                                  
-# this program. If not, see <http://www.gnu.org/licenses/>.                                                     
-#                                                                                                               
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY                           
-# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES                          
-# OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT                           
-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,                                
-# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED                          
-# TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;                               
-# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER                              
-# IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
-# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+# OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+# TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+# IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
 
 from cm_api.api_client import ApiResource
 from cm_api.endpoints.clusters import create_cluster
@@ -24,11 +25,6 @@ from time import sleep
 import sys
 import yaml
 import getopt
-import ConfigParser
-
-# Prep for reading config props from external file
-config = ConfigParser.ConfigParser()
-config.read("roles/hadoop_cluster/files/cloudera_config.ini")
 
 zookeeper_service_name = "ZOOKEEPER"
 hdfs_service_name = "HDFS"
@@ -45,10 +41,11 @@ service_types_and_names = {
     "OOZIE": oozie_service_name}
 
 # Cluster name
-cluster_name = config.get("CDH", "cluster.name")
+cluster_name = {{ cluster_name }}
 
-# These include hosts that will run NameNode, DataNode, JobTracker, TaskTracker, etc as well as things like gateways and zookeeper nodes
-host_list = config.get("CDH", "cluster.hosts").split(',')
+# These include hosts that will run NameNode, DataNode, JobTracker,
+# TaskTracker, etc as well as things like gateways and zookeeper nodes
+host_list = '{{ hadoop_workers }}'.split(',')
 
 cdh_version = "CDH5"
 cdh_version_number = "5.3.1"
@@ -59,14 +56,15 @@ cm_password = "admin"
 cm_service_name = "mgmt"
 cm_repo_url = None
 
-reports_manager_host = config.get("SERVICES", "reports_manager_host")
+reports_manager_host = host_list[0]
 reports_manager_name = "reports_manager"
 reports_manager_username = "rman"
 reports_manager_password = ""
 reports_manager_database_type = "postgresql"
 
-host_username = config.get("CM", "host_username")
-
+host_username = '{{ openstack_ssh_user }}'
+cm_host = '{{ hostvars[hadoop_cloudera_manager]['cm_host'] }}'
+private_key_path = '{{ ansible_ssh_private_key_file }}'
 
 def setup_cluster(cm_host, private_key_path):
     # get a handle on the instance of CM that we have running
@@ -93,7 +91,11 @@ def setup_cluster(cm_host, private_key_path):
     private_key = open(private_key_path, 'rb').read()
 
     # install hosts on this CM instance
-    cmd = cm.host_install(host_username, host_list, private_key=private_key, cm_repo_url=cm_repo_url)
+    cmd = cm.host_install(
+        host_username,
+        host_list,
+        private_key=private_key,
+        cm_repo_url=cm_repo_url)
     print "Installing hosts. This will take a while."
     while cmd.success is None:
         sleep(30)
@@ -144,7 +146,11 @@ def setup_cluster(cm_host, private_key_path):
     # make sure the download finishes
     while cdh_parcel.stage != 'DOWNLOADED':
         sleep(30)
-        cdh_parcel = get_parcel(api, cdh_parcel.product, cdh_parcel.version, cluster_name)
+        cdh_parcel = get_parcel(
+            api,
+            cdh_parcel.product,
+            cdh_parcel.version,
+            cluster_name)
 
     print cdh_parcel.product + ' ' + cdh_parcel.version + " downloaded"
 
@@ -158,7 +164,11 @@ def setup_cluster(cm_host, private_key_path):
     # make sure the distribution finishes
     while cdh_parcel.stage != "DISTRIBUTED":
         sleep(30)
-        cdh_parcel = get_parcel(api, cdh_parcel.product, cdh_parcel.version, cluster_name)
+        cdh_parcel = get_parcel(
+            api,
+            cdh_parcel.product,
+            cdh_parcel.version,
+            cluster_name)
 
     print cdh_parcel.product + ' ' + cdh_parcel.version + " distributed"
 
@@ -171,7 +181,11 @@ def setup_cluster(cm_host, private_key_path):
     # make sure the activation finishes
     while cdh_parcel.stage != "ACTIVATED":
         sleep(30)
-        cdh_parcel = get_parcel(api, cdh_parcel.product, cdh_parcel.version, cluster_name)
+        cdh_parcel = get_parcel(
+            api,
+            cdh_parcel.product,
+            cdh_parcel.version,
+            cluster_name)
 
     print cdh_parcel.product + ' ' + cdh_parcel.version + " activated"
 
@@ -219,7 +233,11 @@ def setup_cluster(cm_host, private_key_path):
     # only once instance of each CM management service, we do this just in case
     # it is not placed in the base group
     rm_role_group = rm_role.roleConfigGroupRef
-    rm_rcg = get_role_config_group(api, rm_role.type, rm_role_group.roleConfigGroupName, None)
+    rm_rcg = get_role_config_group(
+        api,
+        rm_role.type,
+        rm_role_group.roleConfigGroupName,
+        None)
 
     # update the appropriate fields in the config
     rm_rcg_config = {"headlamp_database_host": reports_manager_host,
@@ -252,7 +270,9 @@ def main(argv):
     cm_host = ''
     private_key_path = ''
     try:
-        opts, args = getopt.getopt(argv, "p:c:", ["private_key_path=", "cloudera_manager_host="])
+        opts, args = getopt.getopt(
+            argv, "p:c:", [
+                "private_key_path=", "cloudera_manager_host="])
     except getopt.GetoptError:
         print 'cluster_setup.py -p <private_key_path> -c <cloudera_manager_host>'
         sys.exit(2)
@@ -261,7 +281,7 @@ def main(argv):
             private_key_path = arg
         elif opt in ("-c", "--cloudera_manager_host"):
             cm_host = arg
-    
+
     print "private_key_path = \"" + private_key_path + "\""
     print "cm_host = \"" + cm_host + "\""
     setup_cluster(cm_host, private_key_path)
