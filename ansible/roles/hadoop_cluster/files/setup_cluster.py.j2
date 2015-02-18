@@ -23,8 +23,6 @@ from cm_api.endpoints.services import ApiServiceSetupInfo
 from cm_api.endpoints.role_config_groups import get_role_config_group
 from time import sleep
 import sys
-import yaml
-import getopt
 
 zookeeper_service_name = "ZOOKEEPER"
 hdfs_service_name = "HDFS"
@@ -41,7 +39,7 @@ service_types_and_names = {
     "OOZIE": oozie_service_name}
 
 # Cluster name
-cluster_name = {{ cluster_name }}
+cluster_name = {{ hadoop_cluster_name }}
 
 # These include hosts that will run NameNode, DataNode, JobTracker,
 # TaskTracker, etc as well as things like gateways and zookeeper nodes
@@ -267,21 +265,6 @@ def setup_cluster(cm_host, private_key_path):
 
 
 def main(argv):
-    cm_host = ''
-    private_key_path = ''
-    try:
-        opts, args = getopt.getopt(
-            argv, "p:c:", [
-                "private_key_path=", "cloudera_manager_host="])
-    except getopt.GetoptError:
-        print 'cluster_setup.py -p <private_key_path> -c <cloudera_manager_host>'
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt in ("-p", "--private_key_path"):
-            private_key_path = arg
-        elif opt in ("-c", "--cloudera_manager_host"):
-            cm_host = arg
-
     print "private_key_path = \"" + private_key_path + "\""
     print "cm_host = \"" + cm_host + "\""
     setup_cluster(cm_host, private_key_path)

@@ -23,12 +23,6 @@ from cm_api.endpoints.role_config_groups import get_role_config_group
 from time import sleep
 import sys
 import yaml
-import getopt
-import ConfigParser
-
-# Prep for reading config props from external file
-config = ConfigParser.ConfigParser()
-config.read("roles/hadoop_node/files/cloudera_config.ini")
 
 zookeeper_service_name = "ZOOKEEPER"
 hdfs_service_name = "HDFS"
@@ -37,13 +31,15 @@ hbase_service_name = "HBASE"
 oozie_service_name = "OOZIE"
 
 # Cluster name
-cluster_name = config.get("CDH", "cluster.name")
+cluster_name = {{ hadoop_cluster_name }}
 
 cm_port = 7180
 cm_username = "admin"
 cm_password = "admin"
 
-host_username = config.get("CM", "host_username")
+host_username = '{{ openstack_ssh_user }}'
+cm_host = '{{ hostvars[hadoop_cloudera_manager]['cm_host'] }}'
+private_key_path = '{{ ansible_ssh_private_key_file }}'
 
 def configure_host(cm_host, private_key_path, hostname):
 
@@ -137,22 +133,6 @@ def configure_host(cm_host, private_key_path, hostname):
     print "Done restarting cluster"
 
 def main(argv):
-    cm_host = ''
-    private_key_path = ''
-    hostname = ''
-    try:
-        opts, args = getopt.getopt(argv, "p:c:h:", ["private_key_path=", "cloudera_manager_host=", "hostname="])
-    except getopt.GetoptError:
-        print 'cluster_setup.py -p <private_key_path> -c <cloudera_manager_host> -h <hostname>'
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt in ("-p", "--private_key_path"):
-            private_key_path = arg
-        elif opt in ("-c", "--cloudera_manager_host"):
-            cm_host = arg
-        elif opt in ("-h", "--hostname"):
-            hostname = arg
-    
     print "private_key_path = \"" + private_key_path + "\""
     print "cm_host = \"" + cm_host + "\""
     print "hostname = \"" + hostname + "\""
