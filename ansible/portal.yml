@@ -59,6 +59,7 @@
   sudo: yes
   vars_files:
     - "vars/main.yml"
+    - "vars/cud.yml"
 
   roles:
     - portal

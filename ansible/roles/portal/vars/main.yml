@@ -37,11 +37,6 @@ web_base_url: "{{ reverse_proxy_url }}"
 icgc_cgp_url: "https://***REMOVED***/ud_oauth/1/search"
 icgc_short_url: "https://***REMOVED***/short/api/1/shorten"
 
-icgc_cud_url: "https://***REMOVED***/ud_rest/1"
-icgc_cud_id: ""
-icgc_cud_user: ""
-icgc_cud_passwd: ""
-
 set_operation_demo_list_uuid: "de305d54-75b4-431b-adb2-eb6b9e386023"
 
 release_release_date: "placeholder"
