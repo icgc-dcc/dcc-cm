@@ -45,14 +45,17 @@ cluster_name = {{ hadoop_cluster_name }}
 # TaskTracker, etc as well as things like gateways and zookeeper nodes
 host_list = '{{ hadoop_workers }}'.split(',')
 
-cdh_version = "CDH5"
-cdh_version_number = "5.3.1"
+cdh_version = {{ cdh_version }}
+cdh_version_number = {{ cdh_version_number }}
+
+gplextras_parcel_repo = "http://archive-primary.cloudera.com/gxplextras5/parcels/" + cdh_version_number
 
 cm_port = 7180
 cm_username = "admin"
 cm_password = "admin"
 cm_service_name = "mgmt"
 cm_repo_url = None
+cm_api_version = {{ cm_api_version }}
 
 reports_manager_host = host_list[0]
 reports_manager_name = "reports_manager"
@@ -64,9 +67,9 @@ host_username = '{{ openstack_ssh_user }}'
 cm_host = '{{ hostvars[hadoop_cloudera_manager]['cm_host'] }}'
 private_key_path = '{{ ansible_ssh_private_key_file }}'
 
-def setup_cluster(cm_host, private_key_path):
+def setup_cluster():
     # get a handle on the instance of CM that we have running
-    api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=9)
+    api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=cm_api_version)
 
     # get the CM instance
     cm = ClouderaManager(api)
@@ -134,58 +137,8 @@ def setup_cluster(cm_host, private_key_path):
         if p.version > cdh_parcel.version:
             cdh_parcel = p
 
-    # download the parcel
-    print "Starting parcel download. This might take a while."
-    cmd = cdh_parcel.start_download()
-    if cmd.success is not True:
-        print "Parcel download failed!"
-        exit(0)
-
-    # make sure the download finishes
-    while cdh_parcel.stage != 'DOWNLOADED':
-        sleep(30)
-        cdh_parcel = get_parcel(
-            api,
-            cdh_parcel.product,
-            cdh_parcel.version,
-            cluster_name)
-
-    print cdh_parcel.product + ' ' + cdh_parcel.version + " downloaded"
-
-    # distribute the parcel
-    print "Starting parcel distribution. This might take a while."
-    cmd = cdh_parcel.start_distribution()
-    if cmd.success is not True:
-        print "Parcel distribution failed!"
-        exit(0)
-
-    # make sure the distribution finishes
-    while cdh_parcel.stage != "DISTRIBUTED":
-        sleep(30)
-        cdh_parcel = get_parcel(
-            api,
-            cdh_parcel.product,
-            cdh_parcel.version,
-            cluster_name)
-
-    print cdh_parcel.product + ' ' + cdh_parcel.version + " distributed"
-
-    # activate the parcel
-    cmd = cdh_parcel.activate()
-    if cmd.success is not True:
-        print "Parcel activation failed!"
-        exit(0)
-
-    # make sure the activation finishes
-    while cdh_parcel.stage != "ACTIVATED":
-        sleep(30)
-        cdh_parcel = get_parcel(
-            api,
-            cdh_parcel.product,
-            cdh_parcel.version,
-            cluster_name)
-
-    print cdh_parcel.product + ' ' + cdh_parcel.version + " activated"
+    # deploy CDH parcel
+    deploy_parcel(api, cdh_parcel)
 
     # inspect hosts and print the result
     print "Inspecting hosts. This might take a few minutes."
@@ -263,8 +216,15 @@ def setup_cluster(cm_host, private_key_path):
 
     print "First run successfully executed. Cluster has been set up!"
 
+
+def configure_services():
+    # get a handle on the instance of CM that we have running
+    api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=cm_api_version)
+
+    cluster = api.get_cluster(cluster_name)
+
     print "Updating service configurations...."
-    
+
     hdfs_service = cluster.get_service(hdfs_service_name)
     mapred_service = cluster.get_service(mapred_service_name)
     hbase_service = cluster.get_service(hbase_service_name)
@@ -314,12 +274,105 @@ def setup_cluster(cm_host, private_key_path):
     cluster.start().wait()
     print "Done restarting cluster"
 
+def deploy_parcel(api, parcel):
+    # download the parcel
+    print "Starting parcel download. This might take a while."
+    cmd = parcel.start_download()
+    if cmd.success is not True:
+        print "Parcel download failed!"
+        exit(0)
 
+    # make sure the download finishes
+    while parcel.stage != 'DOWNLOADED':
+        sleep(30)
+        parcel = get_parcel(
+            api,
+            parcel.product,
+            parcel.version,
+            cluster_name)
+
+    print parcel.product + ' ' + parcel.version + " downloaded"
+
+    # distribute the parcel
+    print "Starting parcel distribution. This might take a while."
+    cmd = parcel.start_distribution()
+    if cmd.success is not True:
+        print "Parcel distribution failed!"
+        exit(0)
+
+    # make sure the distribution finishes
+    while parcel.stage != "DISTRIBUTED":
+        sleep(30)
+        parcel = get_parcel(
+            api,
+            parcel.product,
+            parcel.version,
+            cluster_name)
+
+    print parcel.product + ' ' + parcel.version + " distributed"
+
+    # activate the parcel
+    cmd = parcel.activate()
+    if cmd.success is not True:
+        print "Parcel activation failed!"
+        exit(0)
+
+    # make sure the activation finishes
+    while parcel.stage != "ACTIVATED":
+        sleep(30)
+        parcel = get_parcel(
+            api,
+            parcel.product,
+            parcel.version,
+            cluster_name)
+
+    print parcel.product + ' ' + parcel.version + " activated"
+
+def setup_gplextras():
+
+    # get a handle on the instance of CM that we have running
+    api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=cm_api_version)
+
+    # get the CM instance
+    cm = ClouderaManager(api)
+
+    # Add GPL EXtra Parcel Repo to Cloudera Manager    
+    cm_config = cm.get_config(view='full')
+    repo_config = cm_config['REMOTE_PARCEL_REPO_URLS']
+    value = repo_config.value or repo_config.default
+    # value is a comma-separated list
+    value += ',' + gplextras_parcel_repo
+    cm.update_config({
+      'REMOTE_PARCEL_REPO_URLS': value})
+    # wait to make sure parcels are refreshed
+    sleep(10)
+
+    parcels_list = []
+    # get and list all available parcels
+    print "Available parcels:"
+    for p in cluster.get_all_parcels():
+        print '\t' + p.product + ' ' + p.version
+        if p.version.startswith(cdh_version_number) and p.product == "GPLEXTRAS":
+            parcels_list.append(p)
+
+    if len(parcels_list) == 0:
+        print "No GPL EXtras parcel found!"
+        exit(0)
+
+    parcel = parcels_list[0]
+    for p in parcels_list:
+        if p.version > parcel.version:
+            parcel = p
+
+    # deploy gplextras parcel
+    deploy_parcel(api, parcel)
 
 def main(argv):
     print "private_key_path = \"" + private_key_path + "\""
     print "cm_host = \"" + cm_host + "\""
-    setup_cluster(cm_host, private_key_path)
+    setup_cluster()
+    setup_gplextras()
+    configure_services()
 
 if __name__ == "__main__":
     main(sys.argv[1:])

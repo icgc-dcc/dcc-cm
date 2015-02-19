@@ -75,6 +75,9 @@ reference_genome_archive: "{{ reference_genome_name }}-{{ reference_genome_filen
 reference_genome_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ reference_genome_name }}/{{ reference_genome_filename }}/{{ reference_genome_archive }}"
 
 # Hadoop Settings
+cdh_version: CDH5
+cdh_version_number: 5.3.1
+cm_api_version: 9
 hadoop_cluster_name: DCC
 hadoop_cloudera_manager: "{{ server_prefix }}-hadoop-manager"
 hadoop_workers: "{{ server_prefix }}-hadoop-worker-1,{{ server_prefix }}-hadoop-worker-2,{{ server_prefix }}-hadoop-worker-3,{{ server_prefix }}-hadoop-worker-4"
