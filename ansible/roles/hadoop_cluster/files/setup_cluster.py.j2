@@ -120,25 +120,8 @@ def setup_cluster():
 
     cluster = api.get_cluster(cluster_name)
 
-    parcels_list = []
-    # get and list all available parcels
-    print "Available parcels:"
-    for p in cluster.get_all_parcels():
-        print '\t' + p.product + ' ' + p.version
-        if p.version.startswith(cdh_version_number) and p.product == "CDH":
-            parcels_list.append(p)
-
-    if len(parcels_list) == 0:
-        print "No " + cdh_version + " parcel found!"
-        exit(0)
-
-    cdh_parcel = parcels_list[0]
-    for p in parcels_list:
-        if p.version > cdh_parcel.version:
-            cdh_parcel = p
-
     # deploy CDH parcel
-    deploy_parcel(api, cdh_parcel)
+    deploy_parcel(api, "CDH")
 
     # inspect hosts and print the result
     print "Inspecting hosts. This might take a few minutes."
@@ -216,14 +199,16 @@ def setup_cluster():
 
     print "First run successfully executed. Cluster has been set up!"
 
+    print "Starting service configuration...."
+    configure_services(api)
 
-def configure_services():
-    # get a handle on the instance of CM that we have running
-    api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=cm_api_version)
+    print "Starting GPL Extras installation...."
+    setup_gplextras(api)
+
+
+def configure_services(api):
 
     cluster = api.get_cluster(cluster_name)
-
-    print "Updating service configurations...."
 
     hdfs_service = cluster.get_service(hdfs_service_name)
     mapred_service = cluster.get_service(mapred_service_name)
@@ -274,7 +259,26 @@ def configure_services():
     cluster.start().wait()
     print "Done restarting cluster"
 
-def deploy_parcel(api, parcel):
+def deploy_parcel(api, parcel_name):
+
+    parcels_list = []
+    # get and list all available parcels
+    print "Available parcels:"
+    for p in cluster.get_all_parcels():
+        print '\t' + p.product + ' ' + p.version
+        if p.version.startswith(cdh_version_number) and p.product == parcel_name:
+            parcels_list.append(p)
+
+    if len(parcels_list) == 0:
+        print "No " + parcel_name + " parcel found!"
+        exit(0)
+
+    # find latest version
+    parcel = parcels_list[0]
+    for p in parcels_list:
+        if p.version > parcel.version:
+            parcel = p
+
     # download the parcel
     print "Starting parcel download. This might take a while."
     cmd = parcel.start_download()
@@ -328,10 +332,7 @@ def deploy_parcel(api, parcel):
 
     print parcel.product + ' ' + parcel.version + " activated"
 
-def setup_gplextras():
-
-    # get a handle on the instance of CM that we have running
-    api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=cm_api_version)
+def setup_gplextras(api):
 
     # get the CM instance
     cm = ClouderaManager(api)
@@ -347,32 +348,13 @@ def setup_gplextras():
     # wait to make sure parcels are refreshed
     sleep(10)
 
-    parcels_list = []
-    # get and list all available parcels
-    print "Available parcels:"
-    for p in cluster.get_all_parcels():
-        print '\t' + p.product + ' ' + p.version
-        if p.version.startswith(cdh_version_number) and p.product == "GPLEXTRAS":
-            parcels_list.append(p)
-
-    if len(parcels_list) == 0:
-        print "No GPL EXtras parcel found!"
-        exit(0)
-
-    parcel = parcels_list[0]
-    for p in parcels_list:
-        if p.version > parcel.version:
-            parcel = p
-
     # deploy gplextras parcel
-    deploy_parcel(api, parcel)
+    deploy_parcel(api, "GPLEXTRAS")
 
 def main(argv):
     print "private_key_path = \"" + private_key_path + "\""
     print "cm_host = \"" + cm_host + "\""
     setup_cluster()
-    setup_gplextras()
-    configure_services()
 
 if __name__ == "__main__":
     main(sys.argv[1:])
