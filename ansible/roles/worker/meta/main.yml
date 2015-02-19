@@ -1,4 +1,4 @@
 ---
 
 dependencies:
-  - { role: jdk}
+  - { role: jdk, java_install_dir: "{{ java_install_dir }}" }

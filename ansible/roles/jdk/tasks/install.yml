@@ -2,42 +2,42 @@
   apt: pkg=openjdk state=absent purge=true
 
 - name: Make a directory that holds the Java binaries
-  file: path={{ install_dir }} state=directory
+  file: path={{ java_install_dir }} state=directory
 
 - name: Download JDK
   command: "wget --max-redirect=2 --header 'Cookie: oraclelicense=accept-securebackup-cookie' '{{ jdk_download_url }}' chdir=/tmp creates=/tmp/{{ jdk_download_filename }}"
 
 - name: Unpack the compressed JDK binaries
-  command: tar -xvzf /tmp/{{ jdk_download_filename }} chdir={{ install_dir }} creates={{ install_dir }}/jdk{{ jdk_version }}
+  command: tar -xvzf /tmp/{{ jdk_download_filename }} chdir={{ java_install_dir }} creates={{ java_install_dir }}/jdk{{ jdk_version }}
 
 - name: Update the symbolic link to the JDK install
   file: path={{ item }} 
-        src="{{ install_dir }}/jdk{{ jdk_version }}"
+        src="{{ java_install_dir }}/jdk{{ jdk_version }}"
         state=link 
         force=yes
   with_items:
-    - "{{ install_dir }}/jdk"
+    - "{{ java_install_dir }}/jdk"
 
 - name: Add the JDK binaries to the system path (/etc/profile)
   lineinfile: "dest={{ item.dest }} line={{ item.line }} state={{ item.state }}"
   with_items:
-    - { dest: '/etc/profile', regexp: '^JAVA_HOME={{ install_dir }}/jdk', line: 'JAVA_HOME={{ install_dir }}/jdk', state: 'present' }
+    - { dest: '/etc/profile', regexp: '^JAVA_HOME={{ java_install_dir }}/jdk', line: 'JAVA_HOME={{ java_install_dir }}/jdk', state: 'present' }
     - { dest: '/etc/profile', regexp: '^PATH=.*JAVA_HOME.*', line: 'PATH=$PATH:$HOME/bin:$JAVA_HOME/bin', state: 'present' }
 
 - name: Inform the system where JDK is located
   command: "{{ item }}"
   with_items:
-    - update-alternatives --install "/usr/bin/java" "java" "{{ install_dir }}/jdk/bin/java" 1
-    - update-alternatives --install "/usr/bin/javac" "javac" "{{ install_dir }}/jdk/bin/javac" 1
-    - update-alternatives --install "/usr/bin/javaws" "javaws" "{{ install_dir }}/jdk/bin/javaws" 1
-    - update-alternatives --install "/usr/bin/javah" "javah" "{{ install_dir }}/jdk/bin/javah" 1
-    - update-alternatives --install "/usr/bin/jar" "jar" "{{ install_dir }}/jdk/bin/jar" 1
+    - update-alternatives --install "/usr/bin/java" "java" "{{ java_install_dir }}/jdk/bin/java" 1
+    - update-alternatives --install "/usr/bin/javac" "javac" "{{ java_install_dir }}/jdk/bin/javac" 1
+    - update-alternatives --install "/usr/bin/javaws" "javaws" "{{ java_install_dir }}/jdk/bin/javaws" 1
+    - update-alternatives --install "/usr/bin/javah" "javah" "{{ java_install_dir }}/jdk/bin/javah" 1
+    - update-alternatives --install "/usr/bin/jar" "jar" "{{ java_install_dir }}/jdk/bin/jar" 1
 
 - name: Inform the system that JDK must be the default
   command: "{{ item }}"
   with_items:
-    - update-alternatives --set java {{ install_dir }}/jdk/bin/java
-    - update-alternatives --set javac {{ install_dir }}/jdk/bin/javac
-    - update-alternatives --set javaws {{ install_dir }}/jdk/bin/javaws
-    - update-alternatives --set javah {{ install_dir }}/jdk/bin/javah
-    - update-alternatives --set jar {{ install_dir }}/jdk/bin/jar
+    - update-alternatives --set java {{ java_install_dir }}/jdk/bin/java
+    - update-alternatives --set javac {{ java_install_dir }}/jdk/bin/javac
+    - update-alternatives --set javaws {{ java_install_dir }}/jdk/bin/javaws
+    - update-alternatives --set javah {{ java_install_dir }}/jdk/bin/javah
+    - update-alternatives --set jar {{ java_install_dir }}/jdk/bin/jar

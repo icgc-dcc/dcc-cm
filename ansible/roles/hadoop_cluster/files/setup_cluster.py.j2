@@ -39,14 +39,16 @@ service_types_and_names = {
     "OOZIE": oozie_service_name}
 
 # Cluster name
-cluster_name = {{ hadoop_cluster_name }}
+cluster_name = "{{ hadoop_cluster_name }}"
 
 # These include hosts that will run NameNode, DataNode, JobTracker,
 # TaskTracker, etc as well as things like gateways and zookeeper nodes
-host_list = '{{ hadoop_workers }}'.split(',')
+host_list = "{{ hadoop_workers }}".split(",")
 
-cdh_version = {{ cdh_version }}
-cdh_version_number = {{ cdh_version_number }}
+cdh_version = "{{ cdh_version }}"
+cdh_version_number = "{{ cdh_version_number }}"
+
+java_home = "{{ java_home }}"
 
 gplextras_parcel_repo = "http://archive-primary.cloudera.com/gxplextras5/parcels/" + cdh_version_number
 
@@ -57,15 +59,17 @@ cm_service_name = "mgmt"
 cm_repo_url = None
 cm_api_version = {{ cm_api_version }}
 
-reports_manager_host = host_list[0]
-reports_manager_name = "reports_manager"
+reports_manager_host = "localhost"
+reports_manager_name = "rman"
 reports_manager_username = "rman"
-reports_manager_password = ""
+reports_manager_password = "" # need to read this from /etc/cloudera-scm-server/db.mgmt.properties
 reports_manager_database_type = "postgresql"
 
-host_username = '{{ openstack_ssh_user }}'
-cm_host = '{{ hostvars[hadoop_cloudera_manager]['cm_host'] }}'
-private_key_path = '{{ ansible_ssh_private_key_file }}'
+host_username = "{{ openstack_ssh_user }}"
+cm_host = "{{ hostvars[hadoop_cloudera_manager]['cm_host'] }}"
+private_key_path = "{{ ansible_ssh_private_key_file }}"
+
+all_hosts_cnfig = {"java_home": java_home}
 
 def setup_cluster():
     # get a handle on the instance of CM that we have running
@@ -89,7 +93,9 @@ def setup_cluster():
         pass
 
     # read private key
-    private_key = open(private_key_path, 'rb').read()
+    private_key = open(private_key_path, "rb").read()
+
+    cm.update_all_hosts_config(all_hosts_cnfig)
 
     # install hosts on this CM instance
     cmd = cm.host_install(
@@ -216,9 +222,9 @@ def configure_services(api):
 
     print "Updating configurations for HBASE"
     # See hbase.dynamic.jars.dir in http://hbase.apache.org/book.html
-    config_value = '<property><name>hbase.dynamic.jars.dir</name><value>/hbase-lib</value></property>'
+    config_value = "<property><name>hbase.dynamic.jars.dir</name><value>/hbase-lib</value></property>"
     hbase_service_config = {
-      'hbase_service_config_safety_valve' : config_value
+      "hbase_service_config_safety_valve" : config_value
     }
     hbase_service.update_config(hbase_service_config)
 
@@ -226,7 +232,7 @@ def configure_services(api):
     # See: http://stackoverflow.com/questions/24950393/trying-to-load-more-than-32-hfiles-to-one-family-of-one-region
     gw = hbase_service.get_role_config_group("{0}-GATEWAY-BASE".format(hbase_service_name))
     hbase_gw_config = {
-      'hbase_client_config_safety_valve' : '<property><name>hbase.mapreduce.bulkload.max.hfiles.perRegion.perFamily</name><value>5000</value></property>'
+      "hbase_client_config_safety_valve" : "<property><name>hbase.mapreduce.bulkload.max.hfiles.perRegion.perFamily</name><value>5000</value></property>"
     }
     gw.update_config(hbase_gw_config)
     # deploy client config again.
@@ -234,22 +240,22 @@ def configure_services(api):
 
     print "Updating configurations for MAPREDUCE"
     # Configure compression codecs for TaskTracker, a comma separated list
-    config_value = 'org.apache.hadoop.io.compress.DefaultCodec,' \
-            'org.apache.hadoop.io.compress.GzipCodec,'\
-            'org.apache.hadoop.io.compress.BZip2Codec,'\
-            'com.hadoop.compression.lzo.LzoCodec,'\
-            'com.hadoop.compression.lzo.LzopCodec,'\
-            'org.apache.hadoop.io.compress.SnappyCodec'
+    config_value = "org.apache.hadoop.io.compress.DefaultCodec," \
+            "org.apache.hadoop.io.compress.GzipCodec,"\
+            "org.apache.hadoop.io.compress.BZip2Codec,"\
+            "com.hadoop.compression.lzo.LzoCodec,"\
+            "com.hadoop.compression.lzo.LzopCodec,"\
+            "org.apache.hadoop.io.compress.SnappyCodec"
     mapred_tt_config = {
-      'override_io_compression_codecs' : config_value
+      "override_io_compression_codecs" : config_value
     }
     tt = mapred_service.get_role_config_group("{0}-TASKTRACKER-BASE".format(mapred_service_name))
     tt.update_config(mapred_tt_config)
 
-    config_value = 'HADOOP_CLASSPATH=$HADOOP_CLASSPATH:/usr/lib/hadoop/lib/*\n' \
-            'JAVA_LIBRARY_PATH=$JAVA_LIBRARY_PATH:/usr/lib/hadoop/lib/native'
+    config_value = "HADOOP_CLASSPATH=$HADOOP_CLASSPATH:/usr/lib/hadoop/lib/*\n" \
+            "JAVA_LIBRARY_PATH=$JAVA_LIBRARY_PATH:/usr/lib/hadoop/lib/native"
     mapred_service_config = {
-      'mapreduce_service_env_safety_valve' : config_value
+      "mapreduce_service_env_safety_valve" : config_value
     }
     mapred_service.update_config(mapred_service_config)
 
@@ -261,11 +267,13 @@ def configure_services(api):
 
 def deploy_parcel(api, parcel_name):
 
-    parcels_list = []
+    cluster = api.get_cluster(cluster_name)
+
     # get and list all available parcels
+    parcels_list = []
     print "Available parcels:"
     for p in cluster.get_all_parcels():
-        print '\t' + p.product + ' ' + p.version
+        print "\t" + p.product + " " + p.version
         if p.version.startswith(cdh_version_number) and p.product == parcel_name:
             parcels_list.append(p)
 
@@ -287,7 +295,7 @@ def deploy_parcel(api, parcel_name):
         exit(0)
 
     # make sure the download finishes
-    while parcel.stage != 'DOWNLOADED':
+    while parcel.stage != "DOWNLOADED":
         sleep(30)
         parcel = get_parcel(
             api,
@@ -295,7 +303,7 @@ def deploy_parcel(api, parcel_name):
             parcel.version,
             cluster_name)
 
-    print parcel.product + ' ' + parcel.version + " downloaded"
+    print parcel.product + " " + parcel.version + " downloaded"
 
     # distribute the parcel
     print "Starting parcel distribution. This might take a while."
@@ -313,7 +321,7 @@ def deploy_parcel(api, parcel_name):
             parcel.version,
             cluster_name)
 
-    print parcel.product + ' ' + parcel.version + " distributed"
+    print parcel.product + " " + parcel.version + " distributed"
 
     # activate the parcel
     cmd = parcel.activate()
@@ -330,7 +338,7 @@ def deploy_parcel(api, parcel_name):
             parcel.version,
             cluster_name)
 
-    print parcel.product + ' ' + parcel.version + " activated"
+    print parcel.product + " " + parcel.version + " activated"
 
 def setup_gplextras(api):
 
@@ -338,13 +346,13 @@ def setup_gplextras(api):
     cm = ClouderaManager(api)
 
     # Add GPL EXtra Parcel Repo to Cloudera Manager    
-    cm_config = cm.get_config(view='full')
-    repo_config = cm_config['REMOTE_PARCEL_REPO_URLS']
+    cm_config = cm.get_config(view="full")
+    repo_config = cm_config["REMOTE_PARCEL_REPO_URLS"]
     value = repo_config.value or repo_config.default
     # value is a comma-separated list
-    value += ',' + gplextras_parcel_repo
+    value += "," + gplextras_parcel_repo
     cm.update_config({
-      'REMOTE_PARCEL_REPO_URLS': value})
+      "REMOTE_PARCEL_REPO_URLS": value})
     # wait to make sure parcels are refreshed
     sleep(10)
 
