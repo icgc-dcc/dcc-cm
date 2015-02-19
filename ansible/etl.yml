@@ -76,7 +76,6 @@
 
   roles: 
     - worker
-    - lzo
 
 - hosts: hadoop_manager
   gather_facts: no
@@ -95,7 +94,6 @@
 
   roles:
     - hadoop_node 
-    - lzo
     - mongodb
     - etl
     - annotator
