@@ -4,6 +4,7 @@ MAINTAINER Bob Tiernay
 # Versions
 ENV CDH_MAJOR 5
 ENV CDH_VERSION 5.3.1
+ENV MONGODB_VERSION 2.4.1
 
 # Installing Oracle JDK
 RUN apt-get update && apt-get install -y python-software-properties
@@ -38,7 +39,22 @@ RUN apt-get install -y oozie-client
 RUN apt-get install -y hadoop-hdfs-fuse && mkdir -p /hdfs/dcc
 
 # Install command-line utils
-RUN apt-get install -y vim.tiny git curl tree mongodb inetutils-ping sendemail
+RUN apt-get install -y \
+    vim.tiny \
+    git \
+    curl \
+    tree \
+    inetutils-ping \
+    sendemail
+
+# Installing MongoDB
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+RUN echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | tee /etc/apt/sources.list.d/10gen.list
+RUN apt-get update && apt-get install -y \
+    mongodb-10gen=$MONGODB_VERSION
+
+# Create the MongoDB data directory
+RUN mkdir -p /data/db
 
 # Remove defaults in preparation for mounting
 RUN unlink /etc/hadoop/conf
