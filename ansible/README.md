@@ -1,7 +1,7 @@
 # ICGC DCC - Ansible
 ===
 
-Ansible scripts for ETL, Portal and Submission systems
+Ansible scripts for provisioning ETL, Portal and Submission systems
 
 ### Requirements:
 
@@ -13,7 +13,7 @@ Easiest way for MacOSX to get the latest Ansible is using Homebrew:
 $ brew install ansible
 ```
 
-For other platfroms, refer to [Ansible documentation.](http://docs.ansible.com/intro_installation.html)
+For other platforms, refer to [Ansible documentation.](http://docs.ansible.com/intro_installation.html)
 
 #### 2. Install Open Stack clients, Nova and Neutron.
 
@@ -22,11 +22,11 @@ $ sudo pip install python-novaclient
 $ sudo pip install python-neutronclient
 ```
 
-They install the required dependencies, but you might need to install addional clients from [here.](http://docs.openstack.org/user-guide/content/install_clients.html)
+They install the required dependencies, but you might need to install additional clients from [here.](http://docs.openstack.org/user-guide/content/install_clients.html)
 
 #### 3. Install Cloudera Manager API Python Client
 
-Cloudera provides wrappers for rest api access to manager [here.](https://github.com/cloudera/cm_api)
+Cloudera provides wrappers for REST API access to manager [here.](https://github.com/cloudera/cm_api)
 
 ```bash
 $ git clone https://github.com/cloudera/cm_api.git
@@ -63,8 +63,12 @@ Execute the following command:
 $ ansible-playbook -i config/hosts site.yml --ask-vault-pass
 ```
 
-You can also execute palybooks individually:
+You can also execute playbooks individually:
 
 ```bash
 $ ansible-playbook -i config/hosts submission.yml
 ```
+
+### To Dos:
+
+A list can be found [here.](https://jira.oicr.on.ca/browse/DCC-2962)

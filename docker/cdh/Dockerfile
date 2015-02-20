@@ -1,5 +1,5 @@
 FROM    ubuntu:precise
-MAINTAINER Bob Tiernay
+MAINTAINER Sepehr Mavedati <sepehr.mavedati@oicr.on.ca>
 
 # Versions
 ENV CDH_MAJOR 5
