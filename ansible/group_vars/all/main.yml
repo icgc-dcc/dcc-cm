@@ -123,6 +123,7 @@ submission_server_jar_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_pa
 # Misc DCC
 identifier_uri: "http://{{ server_prefix }}-identifier:6381"
 reverse_proxy_url: "https://{{ server_prefix }}-nginx"
+icgc_url: https://***REMOVED***
 
 # DCC ETL Contact Settings
 smtp_server: ***REMOVED***
