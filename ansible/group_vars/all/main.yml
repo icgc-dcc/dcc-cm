@@ -66,8 +66,9 @@ artifactory_snapshot_url: "{{ artifactory_url }}/simple/dcc-snapshot"
 # Reference Genome
 reference_genome_name: dcc-reference-genome
 reference_genome_basename: GRCh37
-reference_genome_version: 75.v1
-reference_genome_filename: "{{ reference_genome_basename}}.{{ reference_genome_version }}"
+reference_genome_build: 75
+reference_genome_version: v1
+reference_genome_filename: "{{ reference_genome_basename}}.{{ reference_genome_build }}.{{ reference_genome_version }}"
 reference_genome_archive: "{{ reference_genome_name }}-{{ reference_genome_filename }}.tar.gz"
 reference_genome_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ reference_genome_name }}/{{ reference_genome_filename }}/{{ reference_genome_archive }}"
 

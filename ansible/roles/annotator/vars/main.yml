@@ -9,6 +9,6 @@ annotator_dist_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{ annotator_di
 
 snpEff_resource_dir: /tmp/dcc-etl-annotator
 snpEff_resource_url: "{{ artifactory_deps_url }}/org/icgc/dcc"
-snpeff_database_version: GRCh37.75.v1
-snpeff_reference_genome_version: GRCh37.75.v1
-snpeff_gene_build_version: 75
+snpeff_database_version: {{ reference_genome_filename }}
+snpeff_reference_genome_version: {{ reference_genome_filename }}
+snpeff_gene_build_version: {{ reference_genome_build }}
