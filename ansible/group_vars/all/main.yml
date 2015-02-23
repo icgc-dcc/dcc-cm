@@ -124,5 +124,5 @@ reverse_proxy_url: "https://{{ server_prefix }}-nginx"
 # DCC ETL Contact Settings
 smtpServer: ***REMOVED***
 sender: noreply@oicr.on.ca
-recipients: "sepehr.mavedati@oicr.on.ca" # ';' separated
+recipients: "***REMOVED***" # ';' separated
 
