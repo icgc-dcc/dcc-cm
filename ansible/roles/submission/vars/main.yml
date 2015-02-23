@@ -37,4 +37,4 @@ system_files_basename: dcc-system-files
 system_files_version: 1
 system_files_filename: "{{ system_files_basename}}-{{ system_files_version }}"
 system_files_archive: "{{ system_files_name }}-{{ system_files_filename }}.tar.gz"
-system_files_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ system_files_name }}/{{ system_files_version }}/{{ system_files_archive }}"
+system_files_url: "{{ artifactory_deps_url }}/{{ artifactory_dcc_path }}/{{ system_files_name }}/{{ system_files_version }}/{{ system_files_archive }}"

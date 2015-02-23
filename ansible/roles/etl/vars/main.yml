@@ -1,10 +1,10 @@
 cli_name: dcc-etl-cli
 cli_jar_filename: "{{ cli_name }}-{{ cli_version }}.jar"
-cli_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{ cli_name }}/{{ cli_version }}/{{ cli_jar_filename }}"
+cli_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{{ cli_name }}/{{ cli_version }}/{{ cli_jar_filename }}"
 
 annotator_jar_name: dcc-etl-annotator
 annotator_jar_filename: "{{ annotator_jar_name }}-{{ annotator_version }}.jar"
-annotator_jar_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{ annotator_jar_name }}/{{ annotator_version }}/{{ annotator_jar_filename }}"
+annotator_jar_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{{ annotator_jar_name }}/{{ annotator_version }}/{{ annotator_jar_filename }}"
 
 nfs_dir: /nfs
 hdfs_fuse_mount_dir: /hdfs/dcc

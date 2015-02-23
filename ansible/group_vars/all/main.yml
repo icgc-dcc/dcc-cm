@@ -49,19 +49,12 @@ proxy_env:
 external_submission_url: ***REMOVED***
 external_docs_url: http://docs.icgc.org
 
-# Submission Server
-submission_server_dist_name: dcc-submission-server
-submission_server_dist_version: 10-cdh-java8
-submission_server_dist_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}-dist.tar.gz"
-submission_server_jar_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}.jar"
-submission_server_dist_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{ submission_server_dist_name }}/{{ submission_server_dist_version }}/{{ submission_server_dist_filename }}"
-submission_server_jar_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{ submission_server_dist_name }}/{{ submission_server_dist_version }}/{{ submission_server_jar_filename }}"
-
 # Artifactory URLS
 artifactory_url: http://seqwaremaven.oicr.on.ca/artifactory
 artifactory_deps_url: "{{ artifactory_url }}/simple/dcc-dependencies" 
 artifactory_release_url: "{{ artifactory_url }}/simple/dcc-release"
 artifactory_snapshot_url: "{{ artifactory_url }}/simple/dcc-snapshot"
+artifactory_dcc_path: org/icgc/dcc
 
 # Reference Genome
 reference_genome_name: dcc-reference-genome
@@ -70,7 +63,7 @@ reference_genome_build: 75
 reference_genome_version: v1
 reference_genome_filename: "{{ reference_genome_basename}}.{{ reference_genome_build }}.{{ reference_genome_version }}"
 reference_genome_archive: "{{ reference_genome_name }}-{{ reference_genome_filename }}.tar.gz"
-reference_genome_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ reference_genome_name }}/{{ reference_genome_filename }}/{{ reference_genome_archive }}"
+reference_genome_url: "{{ artifactory_deps_url }}/{{ artifactory_dcc_path }}/{{ reference_genome_name }}/{{ reference_genome_filename }}/{{ reference_genome_archive }}"
 
 # Cloudera
 cloudera_major: 5
@@ -95,14 +88,6 @@ hadoop_oozie_node: "http://{{ server_prefix }}-hadoop-worker-1:11000/oozie"
 hadoop_username: hdfs
 hdfs_fuse_mount_dir: /hdfs/dcc
 
-# Downloader Settings
-downloader_user_folder: /user/downloader
-downloader_user_workflows_folder: "{{ downloader_user_folder }}/workflows"
-download_app_path: "{{ hadoop_name_node }}{{ downloader_user_workflows_folder }}/archive-main"
-download_home_path: /tmp/download
-download_dynamic_home_path: "{{ download_home_path }}/dynamic"
-download_static_home_path: "{{ download_home_path }}/static"
-
 # Postgres Settings
 postgresql_user: dcc
 postgresql_password: dcc
@@ -118,6 +103,22 @@ mongo_base_uri: "mongodb://{{ mongo_host }}"
 elasticsearch_host: "{{ server_prefix }}-elasticsearch"
 elasticsearch_uri: "es://{{ elasticsearch_host }}:9300"
 
+# Downloader Settings
+downloader_user_folder: /user/downloader
+downloader_user_workflows_folder: "{{ downloader_user_folder }}/workflows"
+download_app_path: "{{ hadoop_name_node }}{{ downloader_user_workflows_folder }}/archive-main"
+download_home_path: /tmp/download
+download_dynamic_home_path: "{{ download_home_path }}/dynamic"
+download_static_home_path: "{{ download_home_path }}/static"
+
+# DCC Submission Server
+submission_server_dist_name: dcc-submission-server
+submission_server_dist_version: 10-cdh-java8
+submission_server_dist_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}-dist.tar.gz"
+submission_server_jar_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}.jar"
+submission_server_dist_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{{ submission_server_dist_name }}/{{ submission_server_dist_version }}/{{ submission_server_dist_filename }}"
+submission_server_jar_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{{ submission_server_dist_name }}/{{ submission_server_dist_version }}/{{ submission_server_jar_filename }}"
+
 # Misc DCC
 identifier_uri: "http://{{ server_prefix }}-identifier:6381"
 reverse_proxy_url: "https://{{ server_prefix }}-nginx"
@@ -126,4 +127,3 @@ reverse_proxy_url: "https://{{ server_prefix }}-nginx"
 smtp_server: ***REMOVED***
 sender: noreply@oicr.on.ca
 recipients: "***REMOVED***" # ';' separated
-

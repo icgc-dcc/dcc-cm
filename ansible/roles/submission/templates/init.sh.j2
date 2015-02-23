@@ -20,7 +20,7 @@ project_key=${1?}
 project_name=$2 && project_name=${project_name:=${project_key?}}
 project_alias=$3 && project_alias=${project_alias:=${project_key?}}
 
-release_system_files=https://seqwaremaven.oicr.on.ca/artifactory/simple/dcc-dependencies/org/icgc/dcc/dcc-system-files/1/dcc-system-files-1.tar.gz
+release_system_files=https://seqwaremaven.oicr.on.ca/artifactory/simple/dcc-dependencies/{{ artifactory_dcc_path }}/dcc-system-files/1/dcc-system-files-1.tar.gz
 
 tmp_dir="{{ staging_dir }}/dcc" && mkdir -p ${tmp_dir?}
 mongodb_host="{{ mongo_host }}"
