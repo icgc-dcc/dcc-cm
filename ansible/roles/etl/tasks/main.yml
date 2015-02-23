@@ -61,7 +61,7 @@
     - "{{ repo_dir }}"
     - "{{ config_dir }}"
     - "{{ config_project_dir }}"
-    - "{{ config_ditionaries_dir }}"
+    - "{{ config_dictionaries_dir }}"
     - "{{ data_dir }}"
     - "{{ lib_dir }}"
     - "{{ nfs_dir }}"
