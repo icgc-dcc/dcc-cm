@@ -46,9 +46,9 @@ fathmmPostgresqlUri: "{{ postgresql_fathmm_uri }}"
 exportVCF: true
 
 # Emails
-smtpServer: "{{smtpServer}}"
-sender: "{{sender}}"
-recipients: "{{recipients}}" # ';' separated
+smtpServer: "{{ smtp_server }}"
+sender: "{{ sender }}"
+recipients: "{{ recipients }}" # ';' separated
 
 # Hadoop configuration
 loaderHadoop:

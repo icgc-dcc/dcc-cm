@@ -130,8 +130,8 @@ download:
 # Mail
 mail:
   enabled: false
-  smtpServer: "localhost"
-  recipientEmail: "***REMOVED***"
+  smtp_server: "{{ smtp_server }}"
+  recipientEmail: "{{ recipients }}" # ';' separated
 
 web:
   # Defines an external URL when the portal is behind a reverse proxy / load balancer. E.g. shortUrl resource uses it for generation of valid URLs

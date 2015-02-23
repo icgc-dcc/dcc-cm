@@ -122,7 +122,7 @@ identifier_uri: "http://{{ server_prefix }}-identifier:6381"
 reverse_proxy_url: "https://{{ server_prefix }}-nginx"
 
 # DCC ETL Contact Settings
-smtpServer: ***REMOVED***
+smtp_server: ***REMOVED***
 sender: noreply@oicr.on.ca
 recipients: "***REMOVED***" # ';' separated
 
