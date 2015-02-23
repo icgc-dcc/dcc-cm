@@ -1,3 +1,5 @@
+downloader_user: downloader
+
 downloader_workflows_name: dcc-downloader-workflows
 downloader_workflows_home: "{{ dcc_home }}/{{ downloader_workflows_name }}"
 
