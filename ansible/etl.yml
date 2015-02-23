@@ -36,7 +36,6 @@
   sudo: yes
   vars_files:
     - "vars/main.yml"
-
   roles: 
     - postgres
 
@@ -46,7 +45,6 @@
   sudo: yes
   vars_files:
     - "vars/main.yml"
-
   roles: 
     - identifier_db
 
@@ -55,7 +53,6 @@
   sudo: yes
   vars_files:
     - "vars/main.yml"
-
   roles: 
     - identifier
 
@@ -64,7 +61,6 @@
   sudo: yes
   vars_files:
     - "vars/main.yml"
-
   roles: 
     - mongodb
 
@@ -73,7 +69,6 @@
   sudo: yes
   vars_files:
     - "vars/main.yml"
-
   roles: 
     - worker
 
@@ -82,7 +77,6 @@
   sudo: yes
   vars_files:
     - "vars/main.yml"
-
   roles:
     - hadoop_cluster
 
@@ -91,7 +85,6 @@
   sudo: yes
   vars_files:
     - "vars/main.yml"
-
   roles:
     - hadoop_node 
     - mongodb

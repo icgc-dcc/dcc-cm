@@ -9,7 +9,6 @@
   sudo: yes
   vars_files:
     - "vars/main.yml"
-
   roles:
     - varnish
 
@@ -19,7 +18,6 @@
   sudo: yes
   vars_files:
     - "vars/main.yml"
-
   roles:
     - nginx
 
@@ -38,7 +36,6 @@
   sudo: yes
   vars_files:
     - "vars/main.yml"
-
   roles: 
     - postgres
 
@@ -49,7 +46,6 @@
   sudo: yes
   vars_files:
     - "vars/main.yml"
-
   roles: 
     - portal_db
 
@@ -60,6 +56,5 @@
   vars_files:
     - "vars/main.yml"
     - "vars/cud.yml"
-
   roles:
     - portal
