@@ -32,16 +32,16 @@
     - archivecleaner-main/job.properties
 
 - name: Create downloader directory in hdfs
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir -p {{ downloader_user_folder }}"
+  shell: "HADOOP_USER_NAME={{ hadoop_username }} hadoop fs -mkdir -p {{ downloader_user_folder }}"
 
 - name: Copy workflow dirs
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal -p -f {{ downloader_workflows_home }}/* {{ downloader_user_folder }}"
+  shell: "HADOOP_USER_NAME={{ hadoop_username }} hadoop fs -copyFromLocal -p -f {{ downloader_workflows_home }}/* {{ downloader_user_folder }}"
 
 - name: Change ownership
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -chown -R downloader {{ downloader_user_folder }}"
+  shell: "HADOOP_USER_NAME={{ hadoop_username }} hadoop fs -chown -R downloader {{ downloader_user_folder }}"
 
 - name: Copy over filter.jar
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal -p -f {{ downloader_hbase_lib_folder }}/* {{ hbase_lib_folder }}/"
+  shell: "HADOOP_USER_NAME={{ hadoop_username }} hadoop fs -copyFromLocal -p -f {{ downloader_hbase_lib_folder }}/* {{ hbase_lib_folder }}/"
 
 # https://github.com/ansible/ansible/issues/548
 - name: Make sure dcc_dev owns everything
