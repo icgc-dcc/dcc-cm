@@ -192,8 +192,8 @@
   
 - name: Initialize the system
   shell: "{{ init_command }}"
-  register: initLog
+  register: init_log
 
-- debug: msg="{{ initLog.stdout }}"
+- debug: msg="{{ init_log.stdout }}"
 
   
