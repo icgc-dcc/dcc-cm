@@ -6,7 +6,7 @@
     login_username: "{{ login_username }}"
     login_password: "{{ login_password }}"
     login_tenant_name: "{{ login_tenant_name }}"
-    security_groups: "dcc"
+    security_groups: "{{ security_groups }}"
     state: present
     name: "{{ inventory_hostname }}"
     image_id: "{{ image_id }}"
@@ -31,7 +31,7 @@
     login_tenant_name: "{{ login_tenant_name }}"
     network_name: "public (external)"
     instance_name: "{{ inventory_hostname }}"
-    internal_network_name: "dcc"
+    internal_network_name: "{{ internal_network_name }}"
   delegate_to: localhost
   register: ip_data
 

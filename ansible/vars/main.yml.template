@@ -12,6 +12,8 @@ private_net: 2abdf48d-aa9a-4677-89fa-ae982f7db274
 image_id: 0d22ce84-59c7-48e4-87d0-31d4c8360689 #Ubuntu 12.04 amd64 (2014-07-17)
 flavor_id: 5 # m1.xlarge | 16GB RAM | 8 VCPU | 160.0GB Disk
 #flavor_id: 5e1407ce-1982-4351-9b7f-60b163c87763 # x2-large 32GZB ram
+security_groups: "dcc"
+internal_network_name: "dcc"
 
 # Ansible Settings
 host_key_checking: False
