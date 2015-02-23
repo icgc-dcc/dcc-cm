@@ -10,9 +10,9 @@ dcc_user: dcc_dev
 dcc_home: "/u/{{dcc_user}}"
 
 # Some etl settings shared between roles.
-etl_home_dir: "{{ dcc_home }}/dcc-etl"
-data_dir: "{{ etl_home_dir }}/data"
-repo_dir: "{{ etl_home_dir }}/git/dcc-etl"
+etl_home: "{{ dcc_home }}/dcc-etl"
+data_dir: "{{ etl_home }}/data"
+repo_dir: "{{ etl_home }}/git/dcc-etl"
 
 # Directories
 staging_dir: /tmp

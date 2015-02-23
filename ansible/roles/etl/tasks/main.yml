@@ -172,7 +172,7 @@
   ignore_errors: yes
 
 - name: Give dcc_user ownership.
-  file: path="{{ etl_home_dir }}" 
+  file: path="{{ etl_home }}" 
         owner={{ dcc_user }} 
         recurse=yes
 
@@ -182,11 +182,11 @@
 
 - name: Interpolate and copy script
   template: src=init.sh.j2 
-            dest={{ etl_home_dir }}/init.sh 
+            dest={{ etl_home }}/init.sh 
             mode=0744
 
 - name: Assign init command to variable
-  set_fact: init_command="{{ etl_home_dir }}/init.sh {{ external_submission_url }}"
+  set_fact: init_command="{{ etl_home }}/init.sh {{ external_submission_url }}"
   
 - name: Initialize the system
   shell: "{{ init_command }}"
