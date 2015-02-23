@@ -92,7 +92,7 @@ hadoop_name_node: "hdfs://{{ server_prefix }}-hadoop-worker-1:8020"
 hadoop_zookeeper_quorum: "{{ server_prefix }}-hadoop-worker-1"
 hadoop_oozie_node: "http://{{ server_prefix }}-hadoop-worker-1:11000/oozie"
 hadoop_username: hdfs
-fuse_home_dir: /hdfs/dcc
+hdfs_fuse_mount_dir: /hdfs/dcc
 
 # Downloader Settings
 downloader_user_folder: /user/downloader
