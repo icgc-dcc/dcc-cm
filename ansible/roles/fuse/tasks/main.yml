@@ -5,7 +5,7 @@
   file: path="{{ item }}" 
         state="directory"
   with_items:
-    - "{{ fuse_root_dir }}"
+    - "{{ fuse_home_dir }}"
 
 - name: Install helper packages
   action: apt pkg={{ item }} 
@@ -15,9 +15,9 @@
     - "hadoop-hdfs-fuse"
 
 - name: Unmount FUSE
-  shell: "umount {{ fuse_root_dir }}"
+  shell: "umount {{ fuse_home_dir }}"
   ignore_errors: yes
 
 - name: Mount FUSE
-  shell: "hadoop-fuse-dfs ro {{ hadoop_fs_url }} {{ fuse_root_dir }}"
+  shell: "hadoop-fuse-dfs ro {{ hadoop_fs_url }} {{ fuse_home_dir }}"
   ignore_errors: yes

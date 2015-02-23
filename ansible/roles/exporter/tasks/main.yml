@@ -1,5 +1,5 @@
 - name: Clean copy
-  file: path="{{ exporter_root }}"
+  file: path="{{ exporter_home }}"
         state=absent
 
 - name: get exporter tarball from artifactory
@@ -13,7 +13,7 @@
               copy=no
 
 - name: Update the symbolic link to the distribution
-  file: path="{{ exporter_root }}"
+  file: path="{{ exporter_home }}"
         src="{{ dcc_home }}/{{ exporter_dist_fullname }}"
         state=link 
         force=yes
@@ -27,28 +27,28 @@
 
 # Patch configurations: FIXME: should be parameterized in overarch
 - name: Patch zookeeper location
-  lineinfile: dest="{{ exporter_root }}/scripts/pig/bucket.pig" 
+  lineinfile: dest="{{ exporter_home }}/scripts/pig/bucket.pig" 
               regexp="^set hbase.zookeeper.quorum" 
               line="set hbase.zookeeper.quorum '{{ hadoop_zookeeper_quorum }}'"
 
 - name: Patch zookeeper location
-  lineinfile: dest="{{ exporter_root }}/scripts/core.py" 
+  lineinfile: dest="{{ exporter_home }}/scripts/core.py" 
               regexp="hbase.zookeeper.quorum" 
               line="Pig.set('hbase.zookeeper.quorum', '{{ hadoop_zookeeper_quorum }}')"
 
 - name: Patch download directory location
-  lineinfile: dest="{{ exporter_root }}/scripts/core.py" 
+  lineinfile: dest="{{ exporter_home }}/scripts/core.py" 
               regexp="^root = \"/tmp/download\"" 
-              line="root = \"{{ download_root_path }}\""
+              line="root = \"{{ download_home_path }}\""
 
 # Patch environment: FIXME: should probably be parameterized by overarch
 - name: Patch setenv
-  lineinfile: dest="{{ exporter_root }}/bin/setenv.sh" 
+  lineinfile: dest="{{ exporter_home }}/bin/setenv.sh" 
               regexp="^export HBASE_CONF_DIR" 
               line="export HBASE_CONF_DIR=/etc/hbase/conf"
 
 - name: Patch downloader user
-  lineinfile: dest="{{ exporter_root }}/bin/setenv.sh" 
+  lineinfile: dest="{{ exporter_home }}/bin/setenv.sh" 
               regexp="^JOB_USER=downloader" 
               line="JOB_USER=hdfs"
 

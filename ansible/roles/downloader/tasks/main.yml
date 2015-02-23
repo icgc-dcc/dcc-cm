@@ -1,5 +1,5 @@
 - name: Clean copy
-  file: path="{{ downloader_workflows_root }}"
+  file: path="{{ downloader_workflows_home }}"
         state=absent
 
 - name: get dcc-downloader_workflows tarball from artifactory
@@ -13,14 +13,14 @@
               copy=no
 
 - name: Update the symbolic link to the distribution
-  file: path="{{ downloader_workflows_root }}"
+  file: path="{{ downloader_workflows_home }}"
         src="{{ dcc_home }}/{{ downloader_workflows_dist_fullname }}"
         state=link 
         force=yes
 
 - name: Patch templates
   template: src="{{ item }}.j2" 
-            dest="{{ downloader_workflows_root }}/workflows/{{ item }}" 
+            dest="{{ downloader_workflows_home }}/workflows/{{ item }}" 
             mode=644 
             force=yes
   with_items:
@@ -35,7 +35,7 @@
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir -p {{ downloader_user_folder }}"
 
 - name: Copy workflow dirs
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal -p -f {{ downloader_workflows_root }}/* {{ downloader_user_folder }}"
+  shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal -p -f {{ downloader_workflows_home }}/* {{ downloader_user_folder }}"
 
 - name: Change ownership
   shell: "HADOOP_USER_NAME=hdfs hadoop fs -chown -R downloader {{ downloader_user_folder }}"

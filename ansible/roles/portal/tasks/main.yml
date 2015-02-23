@@ -18,7 +18,7 @@
               copy=no
 
 - name: Update the symbolic link to the distribution
-  file: path="{{ portal_root }}"
+  file: path="{{ portal_home }}"
         src="{{ install_dir }}/{{ portal_dist_fullname }}"
         state=link
         force=yes
@@ -32,4 +32,4 @@
   template: src="settings.yml.j2" dest="{{ portal_conf }}/settings.yml" mode=644 force=yes
 
 - name: Start dcc-portal
-  shell: "{{ portal_root }}/bin/dcc-portal-api restart"
+  shell: "{{ portal_home }}/bin/dcc-portal-api restart"

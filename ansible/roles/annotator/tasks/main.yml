@@ -1,5 +1,5 @@
 - name: Clean copy
-  file: path="{{ annotator_root }}"
+  file: path="{{ annotator_home }}"
         state=absent
 
 - name: get dcc-annotator tarball from artifactory
@@ -13,7 +13,7 @@
               copy=no
 
 - name: Update the symbolic link to the distribution
-  file: path="{{ annotator_root }}"
+  file: path="{{ annotator_home }}"
         src="{{ dcc_home }}/{{ annotator_dist_fullname }}"
         state=link 
         owner="{{ dcc_user }}"

@@ -3,8 +3,8 @@
 
 install_dir: /srv
 portal_name: dcc-portal-api
-portal_root: "{{ install_dir }}/{{ portal_name }}"
-portal_conf: "{{ portal_root }}/conf"
+portal_home: "{{ install_dir }}/{{ portal_name }}"
+portal_conf: "{{ portal_home }}/conf"
 
 portal_dist_name: dcc-portal-api
 portal_dist_fullname: "{{ portal_dist_name }}-{{ portal_dist_version }}"

@@ -1,6 +1,6 @@
 exporter_name: dcc-exporter
-exporter_root: "{{ dcc_home }}/{{ exporter_name }}"
-exporter_log: "{{ exporter_root }}/logs"
+exporter_home: "{{ dcc_home }}/{{ exporter_name }}"
+exporter_log: "{{ exporter_home }}/logs"
 
 exporter_dist_name: dcc-etl-exporter
 exporter_dist_fullname: "{{ exporter_dist_name }}-{{ exporter_dist_version }}"

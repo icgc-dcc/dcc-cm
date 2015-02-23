@@ -1,6 +1,6 @@
 annotator_name: dcc-annotator
-annotator_root: "{{ dcc_home }}/{{ annotator_name }}"
-annotator_conf: "{{ annotator_root }}/conf"
+annotator_home: "{{ dcc_home }}/{{ annotator_name }}"
+annotator_conf: "{{ annotator_home }}/conf"
 
 annotator_dist_name: dcc-etl-annotator
 annotator_dist_fullname: "{{ annotator_dist_name }}-{{ annotator_version }}"
