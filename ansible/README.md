@@ -1,7 +1,7 @@
 # ICGC DCC - Ansible
 ===
 
-Ansible scripts for provisioning ETL, Portal and Submission systems
+Ansible scripts for provisioning ETL, Portal, Downloader and Submission systems
 
 ### Requirements:
 
