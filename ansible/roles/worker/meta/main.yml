@@ -2,3 +2,4 @@
 
 dependencies:
   - { role: jdk, java_install_dir: "{{ java_install_dir }}" }
+  - { role: reference_genome, target_dir: "{{ data_dir }}" }

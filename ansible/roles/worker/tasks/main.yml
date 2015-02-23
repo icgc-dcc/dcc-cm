@@ -1,6 +1,0 @@
-# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
-
-- name: Download Reference Genome
-  include:  ../../../tasks/reference-genome.yml 
-            staging_dir={{ staging_dir }} 
-            target_dir={{ data_dir }}

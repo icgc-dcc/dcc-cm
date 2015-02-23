@@ -11,11 +11,6 @@
     - "{{ data_dir }}"
     - "{{ staging_dir }}"
 
-- name: Download Reference Genome
-  include:  ../../../tasks/reference-genome.yml 
-            staging_dir={{ staging_dir }} 
-            target_dir={{ data_dir }}
-
 - name: Download the distribution
   get_url: url="{{ submission_server_dist_url }}"
             dest="{{ staging_dir }}/{{ submission_server_dist_filename }}"

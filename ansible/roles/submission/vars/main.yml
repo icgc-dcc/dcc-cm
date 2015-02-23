@@ -1,7 +1,7 @@
 # Copyright 2013(c) The Ontario Institute for Cancer Research. All rights reserved.
 
 # Contact
-smtp_host: {{ smtp_server }}
+smtp_host: "{{ smtp_server }}"
 from_email: no-reply@oicr.on.ca
 from_name: DCC Validator
 support_email: dcc-support@lists.oicr.on.ca
