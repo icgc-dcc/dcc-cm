@@ -87,4 +87,4 @@
     - etl
     - annotator
     - exporter
-    - fuse
+    - hdfs_fuse
