@@ -24,7 +24,7 @@ release_name: test18-0-0
 # All Versions, Centralized for convenience.
 ################################################################################
 
-ditionary_version: 0.10a
+ditionary: 0.10a
 cm_version: 5.3.1 #Cloudera Manager 
 cdh_version: 5.3.1
 elasticsearch_version: 0.90.1

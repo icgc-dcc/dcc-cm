@@ -2,7 +2,7 @@
 
 origin_host=${1?} && shift
 
-dictionary_file="{{ config_ditionaries_dir }}/{{ ditionary_version }}.json"
+dictionary_file="{{ config_ditionaries_dir }}/{{ ditionary }}.json"
 codelists_file="{{ config_dir }}/codelists.json"
 
 # ===========================================================================
@@ -25,7 +25,7 @@ function extract_version() {
 
 # download origin dictionary and ensure state is OPENED
 echo "getting dictionary"
-curl -v -XGET ${origin_host?}/ws/dictionaries/{{ ditionary_version }} -H "Accept: application/json" | ensure_open >> ${dictionary_file?} && echo "OK" || echo "KO"
+curl -v -XGET ${origin_host?}/ws/dictionaries/{{ ditionary }} -H "Accept: application/json" | ensure_open >> ${dictionary_file?} && echo "OK" || echo "KO"
 
 # get latest codelists
 echo "getting codelists"
