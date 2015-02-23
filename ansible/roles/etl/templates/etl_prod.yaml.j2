@@ -2,14 +2,12 @@
 fileSystemOutputCompression: "LZO"
 
 # FileSystem Scheme. This sets hadoop's fs.defaultFS
-#fsUrl: "***REMOVED***"
 fsUrl: "{{ hadoop_fs_url }}"
 
 # Specifies the number of maximum concurrent flows in the loader phase 
 loaderMaxConcurrentFlows: 50 
 
 # ElasticSearch URI
-# esUri: "es://***REMOVED***:9300" # rpc-port
 esUri: "{{ elasticsearch_uri }}"
 
 # ElasticSearch bulk insert batch size
@@ -22,8 +20,6 @@ releaseMongoUri: "{{ mongo_base_uri }}"
 etlAdminMongoUri: "{{ mongo_base_uri }}"
 
 # DCC Identifier Service
-#identifierServiceUri: "http://***REMOVED***:6381" - changed Jan 24, 2014
-#identifierServiceUri: "http://***REMOVED***:6381"
 identifierServiceUri: "{{ identifier_uri }}"
 
 # Project MongoDB URI
@@ -36,10 +32,8 @@ geneMongoUri: "{{ mongo_base_uri }}/dcc-genome"
 filterAllControlled: false
 
 # FASTA file for VCF generation
-#fastaFile: "/u/dcc_dev/dcc-etl/data/genome/GRCh37.75/GRCh37.75.fasta"
 fastaFile: "{{ data_dir }}/GRCh37.fasta"
 
-#fathmmPostgresqlUri: "jdbc:postgresql://***REMOVED***/fathmm?user=dcc&password="
 fathmmPostgresqlUri: "{{ postgresql_fathmm_uri }}"
 
 # Export mutation VCF file
@@ -52,13 +46,11 @@ recipients: "{{ recipients }}" # ';' separated
 
 # Hadoop configuration
 loaderHadoop:
-  #fs.defaultFS: "***REMOVED***"
   fs.defaultFS: "{{ hadoop_fs_url }}"
 
   # temporarily lower the replication factor manually
   #dfs.replication: 2
 
-  #mapred.job.tracker : "***REMOVED***:8021"
   mapred.job.tracker : "{{ hadoop_job_tracker }}"
   # mapred.job.shuffle.input.buffer.percent: 0.5
   mapred.child.java.opts: "-Xmx6g"
@@ -83,13 +75,11 @@ loaderHadoop:
   mapred.reduce.tasks.speculative.execution: false
 
 indexerHadoop:
-  #fs.defaultFS: "***REMOVED***"
   fs.defaultFS: "{{ hadoop_fs_url }}"
 
   # temporarily lower the replication factor manually
   #dfs.replication: 2
 
-  #mapred.job.tracker : "***REMOVED***:8021"
   mapred.job.tracker : "{{ hadoop_job_tracker }}"
   # mapred.job.shuffle.input.buffer.percent: 0.5
   mapred.child.java.opts: "-Xmx6g"
