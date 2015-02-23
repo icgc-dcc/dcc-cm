@@ -15,8 +15,6 @@ web_dir: "{{ install_dir }}/www"
 data_dir: "{{ install_dir }}/data"
 bin_dir: "{{ install_dir }}/bin"
 conf_dir: "{{ install_dir }}/conf"
-root_dir: /tmp/dcc_root_dir
-staging_dir: /tmp
 
 # Shiro password utility
 shiro_url: "http://repo1.maven.org/maven2/org/apache/shiro/tools/shiro-tools-hasher/{{ shiro_version }}/shiro-tools-hasher-{{ shiro_version }}-cli.jar"
