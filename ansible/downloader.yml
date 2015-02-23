@@ -2,7 +2,7 @@
 #
 # Downloader playbook
 #
-# - Uses ETL-Main node to put oozie workflow files and configurationsin HDFS.
+# - Uses ETL-Main node to put oozie workflow files and configurations in HDFS.
 # 
 ################################################################################
 
