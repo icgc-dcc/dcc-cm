@@ -1,3 +1,5 @@
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+
 # OpenStack Settings
 auth_url: http://10.5.73.21:5000/v2.0
 login_tenant_name: sweng

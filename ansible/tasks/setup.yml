@@ -1,9 +1,9 @@
-################################################################################
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 #
-# Setup Task: 
-#
-# - Creates the instances defined in inventory file using create-openstack-instances task.
-# - Creates and uploades the host file for above instances to all hosts
+# Description:
+#   Setup Task: 
+#     Creates the instances defined in inventory file using create-openstack-instances task.
+#     Creates and uploads the host file for above instances to all hosts
 #
 ################################################################################
 

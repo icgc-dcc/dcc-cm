@@ -1,3 +1,5 @@
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+
 cli_name: dcc-etl-cli
 cli_jar_filename: "{{ cli_name }}-{{ cli_version }}.jar"
 cli_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{{ cli_name }}/{{ cli_version }}/{{ cli_jar_filename }}"

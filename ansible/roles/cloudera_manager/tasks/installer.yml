@@ -1,3 +1,5 @@
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+
 - name: Install Expect
   action: apt pkg=expect state=latest
 

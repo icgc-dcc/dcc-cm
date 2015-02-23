@@ -1,5 +1,4 @@
----
-# file: create-openstack-instances.yml
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 
 - name: Create VM instances
   nova_compute:

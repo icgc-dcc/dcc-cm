@@ -1,25 +1,21 @@
-################################################################################
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 #
-# ETL playbook
+# Description:
+#   ETL playbook
+#     Provision ElasticSearch server
+#     Provision Postgresql server
+#     Seed Postgresql server with ICGC schemas
+#     Provision DCC Identifier
+#     Provision MongoDB server
+#     Provision ETL Worker Nodes
+#     Provision Cloudera Manager
+#     Provision ETL Main Node#
 #
-# - Provision ElasticSearch server
-# - Provision Postgresql server
-# - Seed Postgresql server with ICGC schemas
-# - Provision DCC Identifier
-# - Provision MongoDB server
-# - Provision ETL Worker Nodes
-# - Provision Cloudera Manager
-# - Provision ETL Main Node#
-#
-#
-# Post provisioning steps: Do these before starting an ETL run 
-#
-# - Copy projects' submission files to hdfs
-# - Create project.json configuration
-# - Download the dictionary for the ETL run
-# - Download codelist for the ETL run??
-# 
-################################################################################
+#   Post provisioning steps: Do these before starting an ETL run 
+#     Copy projects' submission files to hdfs
+#     Create project.json configuration
+#     Download the dictionary for the ETL run
+#     Download codelist for the ETL run??
 
 - include: tasks/setup.yml group=etl
 

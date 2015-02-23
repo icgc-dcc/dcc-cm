@@ -1,10 +1,4 @@
-################################################################################
-#
-# Sets up a host as Hadoop client : 
-#
-# - Adds the host to hadoop cluster and sets it up as gateway for various services.
-#
-################################################################################
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 
 - name: Remove previous setup script
   local_action: command rm -f roles/hadoop_node/files/setup_node.py

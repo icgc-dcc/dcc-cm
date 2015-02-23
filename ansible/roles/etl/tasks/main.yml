@@ -1,6 +1,8 @@
-################################################################################
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 #
-# ETL Main Role
+#
+# Description: 
+#   xETL Main Role
 #
 # - Install packages on main ETL Node
 # - Install etl scripts, reference data on ETL node

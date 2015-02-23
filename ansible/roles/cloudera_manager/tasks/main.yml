@@ -1,4 +1,4 @@
----
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 
 - name: Check CM service existence and state
   command:  service cloudera-scm-server status

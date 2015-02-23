@@ -1,6 +1,7 @@
-################################################################################
-# Install submission server
-################################################################################
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+#
+# Description:
+#   Install submission server
 
 # Prepare the file system for installation
 - name: Create file system

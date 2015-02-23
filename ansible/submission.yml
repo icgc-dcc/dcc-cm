@@ -1,17 +1,17 @@
-################################################################################
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 #
-# Submission playbook
-# 1) Instances
-# 2) CDH Manager
-# 3) MongoDB
-# 4) Submission Node
+# Description:
+#   Submission playbook
+#     1) Instances
+#     2) CDH Manager
+#     3) MongoDB
+#     4) Submission Node
 #
-# TODO
+# TODO:
 #   - System (.system) need to be set in place
 #   - Need to clear root_dir on HDFS
-#   - Better injection of mongo_uri, hadoop_job_tracker
 #
-# Hacks
+# Hacks:
 #   - Codelists and Dictionary should not use /ws/seed
 #   
 #

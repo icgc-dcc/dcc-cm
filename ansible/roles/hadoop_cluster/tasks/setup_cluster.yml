@@ -1,11 +1,4 @@
-################################################################################
-#
-# Sets up a Hadoop client:
-#
-# TODO: 
-#     - Parametrize the hardcoded "dcc-hadoop-manager".
-#
-################################################################################
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 
 - name: Remove previous setup script
   local_action: command rm -f roles/hadoop_cluster/files/setup_cluster.py

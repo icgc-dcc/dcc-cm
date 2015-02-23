@@ -1,14 +1,7 @@
-################################################################################
-#
-# Sets up a host as Hadoop client : 
-#
-# - Adds the host to hadoop cluster and sets it up as gateway for various services.
-#
-# 
-# TODO: 
-#     - Parametrize node name.
-#
-################################################################################
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+# Description: 
+#   Sets up a host as Hadoop client:
+#   Adds the host to hadoop cluster and sets it up as gateway for various services.
 
 - name: Check Cluster State
   command:  "curl -u 'admin:admin' localhost:7180/api/v9/hosts"

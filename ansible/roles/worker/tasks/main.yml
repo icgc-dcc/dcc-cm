@@ -1,13 +1,4 @@
-################################################################################
-#
-# ETL Worker Role
-# - Copy reference data to worker nodes
-#
-# TODO
-#   - FIXME: Production uses /u/dcc_dev/ as a shared directory, 
-#			 we don't have this on openstack
-#
-################################################################################
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 
 - name: Download Reference Genome
   include:  ../../../tasks/reference-genome.yml 
