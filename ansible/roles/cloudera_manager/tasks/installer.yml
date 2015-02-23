@@ -4,10 +4,15 @@
   action: apt pkg=expect state=latest
 
 - name: Fetch CDH
-  get_url: url={{ cm_download }} dest=/tmp  mode=744
+  get_url: url={{ cm_download }} 
+           dest=/tmp  
+           mode=744
 
 - name: Copy cdh_installer script
-  copy: src="run_cdh_installer" dest="/tmp/run_cdh_installer" mode=744 force=yes
+  copy: src="run_cdh_installer" d
+        est="/tmp/run_cdh_installer" 
+        mode=744 
+        force=yes
 
 - name: Install CDH
   shell: cd /tmp;sudo ./run_cdh_installer
@@ -17,8 +22,8 @@
   debug: msg="{{ run_cdh_installer_result }}"
 
 - name: Ensure CM services are running
-  service:  name={{ item }}
-            state=running
+  service: name={{ item }}
+           state=running
   with_items:
     - cloudera-scm-server-db
     - cloudera-scm-server
