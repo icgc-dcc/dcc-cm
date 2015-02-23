@@ -7,8 +7,8 @@ annotator_dist_fullname: "{{ annotator_dist_name }}-{{ annotator_version }}"
 annotator_dist_filename: "{{ annotator_dist_fullname }}-dist.tar.gz"
 annotator_dist_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/{{ annotator_dist_name }}/{{ annotator_version }}/{{ annotator_dist_filename }}"
 
-snpEff_resource_dir: /tmp/dcc-etl-annotator
-snpEff_resource_url: "{{ artifactory_deps_url }}/org/icgc/dcc"
+snpeff_resource_dir: /tmp/dcc-etl-annotator
+snpeff_resource_url: "{{ artifactory_deps_url }}/org/icgc/dcc"
 snpeff_database_version: {{ reference_genome_filename }}
 snpeff_reference_genome_version: {{ reference_genome_filename }}
 snpeff_gene_build_version: {{ reference_genome_build }}
