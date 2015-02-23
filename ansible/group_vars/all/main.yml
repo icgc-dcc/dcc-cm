@@ -17,7 +17,6 @@ repo_dir: "{{ etl_home }}/git/dcc-etl"
 # Directories
 staging_dir: /tmp
 
-
 release_name: test18-0-0
 
 ################################################################################
@@ -25,14 +24,12 @@ release_name: test18-0-0
 ################################################################################
 
 ditionary: 0.10a
-cm_version: 5.3.1 #Cloudera Manager 
-cdh_version: 5.3.1
 elasticsearch_version: 0.90.1
 shiro_version: 1.2.1
 mongodb_version: 2.4.1
 postgresql_version: 9.2
 
-# DCC Components
+# DCC Components, typically retrieved from Artifactory
 annotator_version: 10-cdh-java8
 cli_version: 10-cdh-java8
 downloader_workflows_dist_version: 10-cdh-java8
@@ -41,7 +38,7 @@ identifier_dist_version: 10-cdh-java8
 portal_dist_version: 10-cdh-java8
 
 ################################################################################
-# DCC Resources, DCC Dependices
+# DCC Resources, DCC Dependencies
 ################################################################################
 
 # DCC apt proxy.
@@ -49,7 +46,7 @@ proxy_env:
   http_proxy: ***REMOVED***
 
 # External URLs 
-external_submission_url: http://hwww2-dcc.oicr.on.ca:5380
+external_submission_url: ***REMOVED***
 external_docs_url: http://docs.icgc.org
 
 # Submission Server
@@ -74,10 +71,15 @@ reference_genome_filename: "{{ reference_genome_basename}}.{{ reference_genome_v
 reference_genome_archive: "{{ reference_genome_name }}-{{ reference_genome_filename }}.tar.gz"
 reference_genome_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ reference_genome_name }}/{{ reference_genome_filename }}/{{ reference_genome_archive }}"
 
-# Hadoop Settings
-cdh_version: CDH5
-cdh_version_number: 5.3.1
+# Cloudera
+cloudera_major: 5
+cloudera_version: "{{ cloudera_major }}.3.1"
+cdh_version: "CDH{{ cloudera_major }}"
+cdh_version_number: "{{ cloudera_version }}"
+cm_version: "{{ cloudera_version }}"
 cm_api_version: 9
+
+# Hadoop Settings
 java_install_dir: /usr/java
 java_home: "{{ java_install_dir }}/jdk"
 hadoop_cluster_name: DCC
@@ -92,6 +94,7 @@ hadoop_oozie_node: "http://{{ server_prefix }}-hadoop-worker-1:11000/oozie"
 hadoop_username: hdfs
 fuse_home_dir: /hdfs/dcc
 
+# Downloader Settings
 downloader_user_folder: /user/downloader
 downloader_user_workflows_folder: "{{ downloader_user_folder }}/workflows"
 download_app_path: "{{ hadoop_name_node }}{{ downloader_user_workflows_folder }}/archive-main"
@@ -99,28 +102,27 @@ download_home_path: /tmp/download
 download_dynamic_home_path: "{{ download_home_path }}/dynamic"
 download_static_home_path: "{{ download_home_path }}/static"
 
-
-reverse_proxy_url: "https://{{ server_prefix }}-nginx"
-
+# Postgres Settings
 postgresql_user: dcc
 postgresql_password: dcc
 postgresql_uri: "jdbc:postgresql://{{ server_prefix }}-postgres"
 postgresql_fathmm_uri: "{{ postgresql_uri }}/fathmm?user={{postgresql_user}}&password={{postgresql_password}}"
 postgresql_portal_uri: "{{ postgresql_uri }}/dcc_portal"
 
+# Mongo
 mongo_host: "{{ server_prefix }}-mongo"
 mongo_base_uri: "mongodb://{{ mongo_host }}"
 
-identifier_uri: "http://{{ server_prefix }}-identifier:6381"
-
+# ElasticSearch
 elasticsearch_host: "{{ server_prefix }}-elasticsearch"
 elasticsearch_uri: "es://{{ elasticsearch_host }}:9300"
 
+# Misc DCC
+identifier_uri: "http://{{ server_prefix }}-identifier:6381"
+reverse_proxy_url: "https://{{ server_prefix }}-nginx"
 
 # DCC ETL Contact Settings
 smtpServer: ***REMOVED***
 sender: noreply@oicr.on.ca
 recipients: "sepehr.mavedati@oicr.on.ca" # ';' separated
-
-
 
