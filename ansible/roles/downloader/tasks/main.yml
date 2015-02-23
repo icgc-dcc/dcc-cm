@@ -1,96 +1,52 @@
-################################################################################
-# Setting up downloader
-# Note downloader is not specific to any node in the cluster, but we do need
-# to 'borrow' a node with hadoop capabilities to install it onto the cluster
-################################################################################
-- name: Create directories
-  file: path="{{ item }}" state="directory" owner="dcc_dev"
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- name: Clean copy
+  file: path="{{ downloader_workflows_home }}"
+        state=absent
+
+- name: Get dcc-downloader_workflows tarball from artifactory
+  get_url: url="{{ downloader_workflows_dist_url }}" 
+           dest="{{ staging_dir }}/{{ downloader_workflows_dist_filename }}" 
+           mode=644
+
+- name: Extract dcc-downloader-workflows ==> /u/dcc_dev/dcc-downloader-workflows
+  unarchive: src="{{ staging_dir }}/{{ downloader_workflows_dist_filename }}"
+             dest="{{ dcc_home }}"
+             copy=no
+
+- name: Update the symbolic link to the distribution
+  file: path="{{ downloader_workflows_home }}"
+        src="{{ dcc_home }}/{{ downloader_workflows_dist_fullname }}"
+        state=link 
+        force=yes
+
+- name: Patch templates
+  template: src="{{ item }}.j2" 
+            dest="{{ downloader_workflows_home }}/workflows/{{ item }}" 
+            mode=644 
+            force=yes
   with_items:
-    - "/u/dcc_dev"
-    - "{{ downloader_root }}"
+    - archive/config-default.xml
+    - archive-main/config-default.xml
+    - archive-maintenance-main/config-default.xml
+    - archive-maintenance-main/job.properties
+    - archivecleaner-main/config-default.xml
+    - archivecleaner-main/job.properties
 
-- name: get dcc-downloader tarball from artifactory
-  get_url: url="{{ dcc_downloader_tarball }}" dest="/tmp/dcc-downloader.tar.gz" mode=644
+- name: Create downloader directory in hdfs
+  shell: "HADOOP_USER_NAME={{ hadoop_username }} hadoop fs -mkdir -p {{ downloader_user_dir }}"
 
-- name: Extract dcc-downloader
-  shell: "tar xzf /tmp/dcc-downloader.tar.gz --strip 1 -C {{ downloader_root }}"
-
-
-# Patch oozie workflow configurations
-- name: Patch archive
-  template: src="archive/config-default.xml.j2" dest="{{ downloader_root}}/workflows/archive/config-default.xml" mode=644 force=yes
-
-- name: Patch archive-main
-  template: src="archive-main/config-default.xml.j2" dest="{{ downloader_root}}/workflows/archive-main/config-default.xml" mode=644 force=yes
-
-- name: Patch archivecleaner
-  template: src="archivecleaner/config-default.xml.j2" dest="{{ downloader_root}}/workflows/archivecleaner/config-default.xml" mode=644 force=yes
-
-- name: Patch archivecleaner-main
-  template: src="archivecleaner-main/config-default.xml.j2" dest="{{ downloader_root}}/workflows/archivecleaner-main/config-default.xml" mode=644 force=yes
-
-- name: Patch archivecleaner-main job property (for installing)
-  template: src="archivecleaner-main/job.properties.j2" dest="{{ downloader_root}}/workflows/archivecleaner-main/job.properties" mode=644 force=yes
-
-
-# Copy to HDFS
-# FIXME: Need to take care of coordinator jobs
-# - name: Remove workflow dir
-#   shell: "HADOOP_USER_NAME=hdfs hadoop fs -rm -r -skipTrash /user/downloader/workflows"
-#   ignore_errors: yes
-
-- name: Create workflow dir
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir /user/downloader/workflows"
-  ignore_errors: yes
-
-- name: Copy archive
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal -p {{ downloader_root }}/workflows/archive /user/downloader/workflows/archive"
-  ignore_errors: yes
-
-- name: Copy archive-main
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal -p {{ downloader_root }}/workflows/archive-main /user/downloader/workflows/archive-main"
-  ignore_errors: yes
-
-- name: Copy archivecleaner
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal -p {{ downloader_root }}/workflows/archivecleaner /user/downloader/workflows/archivecleaner"
-  ignore_errors: yes
-
-- name: Copy archivecleaner-main
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal -p {{ downloader_root }}/workflows/archivecleaner-main /user/downloader/workflows/archivecleaner-main"
-  ignore_errors: yes
+- name: Copy workflow dirs
+  shell: "HADOOP_USER_NAME={{ hadoop_username }} hadoop fs -copyFromLocal -p -f {{ downloader_workflows_home }}/* {{ downloader_user_dir }}"
 
 - name: Change ownership
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -chown -R downloader /user/downloader/workflows"
-  ignore_errors: yes
-
-- name: Create dynamic lib directory
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -mkdir -p /hbase_lib"
-  ignore_errors: yes
+  shell: "HADOOP_USER_NAME={{ hadoop_username }} hadoop fs -chown -R {{ downloader_user }} {{ downloader_user_dir }}"
 
 - name: Copy over filter.jar
-  shell: "HADOOP_USER_NAME=hdfs hadoop fs -copyFromLocal {{ downloader_root }}/hbase-lib/filter.jar /hbase_lib/filter.jar"
-  ignore_errors: yes
+  shell: "HADOOP_USER_NAME={{ hadoop_username }} hadoop fs -copyFromLocal -p -f {{ downloader_hbase_lib_dir }}/* {{ hbase_lib_dir }}/"
 
-
-# Copy downloader libs to hdfs for oozie workflows
-# FIXME: Maybe we can just specify a lib path instead??
-- name: Create lib dir
-  shell: "hadoop fs -mkdir /user/downloader/workflows/{{ item }}/lib"
-  with_items:
-    #- "archive"
-    - "archivecleaner"
-  environment: env
-  ignore_errors: yes
-
-- name: Copy lib to hdfs
-  shell: "hadoop fs -copyFromLocal {{ downloader_root }}/workflows/archive/lib/dcc-downloader.jar /user/downloader/workflows/{{ item }}/lib/dcc-downloader.jar"
-  with_items:
-    #- "archive"
-    - "archivecleaner"
-  environment: env
-  ignore_errors: yes
-
-  
-
-
-
+# https://github.com/ansible/ansible/issues/548
+- name: Make sure dcc_dev owns everything
+  file: path="{{ dcc_home }}" 
+        owner={{ dcc_user }}
+        recurse=yes

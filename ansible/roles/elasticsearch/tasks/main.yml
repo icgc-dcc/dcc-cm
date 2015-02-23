@@ -1,42 +1,11 @@
-#- name: "Install Elasticsearch dependencies"
-#  apt: pkg={{ item }} state=installed update-cache=yes
-#  with_items: elasticsearch.deb.dependencies
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 
-- name: Fetch Elasticsearch
-  get_url: url={{ elasticsearch_download }}/{{ elasticsearch_package }} dest=/tmp  mode=644
-  
-- name: Install Elasticsearch package
-  shell: dpkg -i -E --force-depends "/tmp/{{ elasticsearch_package }}" 
-
-# See http://stackoverflow.com/questions/18132719/how-to-change-elasticsearch-max-size
-- name: Setting limits
-  copy: src="limits.conf" dest="/etc/security/limits.conf" mode=644 force=yes
-
-- name: Setting limits
-  copy: src="limits.conf" dest="/etc/security/limits.d/elasticsearch.conf" mode=644 force=yes
-
-- name: Copy over elasticsearch conf
-  template: src="elasticsearch.yml.j2" dest="/etc/elasticsearch/elasticsearch.yml" mode=644 force=yes
+- include: install.yml
+- include: configure.yml
+- include: plugins.yml
 
 
-# FIXME: Maybe it is best to bite the bullet and just copy the entire config
-- name: Patch elasticsearch init.d
-  lineinfile: dest="/etc/init.d/elasticsearch" regexp="#ES_HEAP_SIZE" line="ES_HEAP_SIZE=4g"
-
-#- name: Patch elasticsearch yml
-#  lineinfile: dest="/etc/elasticsearch/elasticsearch.yml" regexp="bootstrap.mlockall" line="bootstrap.mlockall:true"
 
 
-# Install a few plugins to make debugging/interaction easier
-- shell: "/usr/share/elasticsearch/bin/plugin -remove head"
-  ignore_errors: yes
 
-- shell: "/usr/share/elasticsearch/bin/plugin -install mobz/elasticsearch-head"
-  
-- shell: "/usr/share/elasticsearch/bin/plugin -remove knapsack"
-  ignore_errors: yes
 
-- shell: "/usr/share/elasticsearch/bin/plugin -url http://bit.ly/19zYGu2 -install knapsack" 
-
-- name: Restart Elastic search
-  service: name=elasticsearch state=restarted

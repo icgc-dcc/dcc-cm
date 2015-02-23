@@ -1,11 +1,28 @@
 [localhost]
 127.0.0.1
 
-[varnish]
-127.0.0.1
+[etl]
+dcc-etl-main
+dcc-elasticsearch
+dcc-mongo
+dcc-identifier
+dcc-postgres
+dcc-hadoop-manager
+dcc-hadoop-worker-[1:4]
 
-[nginx]
-127.0.0.1
+[submission]
+dcc-submission-main
+dcc-mongo
+dcc-hadoop-manager
+dcc-hadoop-worker-[1:4]
 
 [portal]
-127.0.0.1
+dcc-portal-main-[1:2]
+dcc-varnish
+dcc-nginx
+dcc-postgres
+dcc-elasticsearch
+dcc-hadoop-worker-[1:4]
+
+[downloader]
+dcc-etl-main

@@ -1,2 +1,0 @@
-# The version of MongoDB to install (currently what is used in dev and prod)
-mongodb_version: 2.4.1

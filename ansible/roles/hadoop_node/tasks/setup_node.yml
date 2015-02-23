@@ -1,0 +1,23 @@
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- name: Remove previous setup script
+  local_action: command rm -f roles/hadoop_node/files/setup_node.py
+  sudo: no
+
+- name: Populate setup script with variables
+  local_action: template dest=roles/hadoop_node/files/setup_node.py src=roles/hadoop_node/files/setup_node.py.j2
+  sudo: no
+
+- name: Assign command to variable
+  set_fact: command="python roles/hadoop_cluster/files/setup_cluster.py"
+  
+- name: Setup Host using Cloudera Manager API
+  sudo: no
+  connection: local
+  shell: "{{ command }}"
+  delegate_to: localhost
+  register: python_script
+  failed_when: "'failed' in python_script.stdout"
+
+- name: output of setup_host
+  debug: msg="{{ python_script.stdout }}"

@@ -30,9 +30,9 @@ echo "job_id=\"${job_id?}\""
 
 admin_database_name="admin" # constant in mongodb
 
- admin_database_user=admin
+admin_database_user=admin
 normal_database_user=admin
- admin_database_user_passwd=dcc
+admin_database_user_passwd=dcc
 normal_database_user_passwd=dcc
 
 # ===========================================================================

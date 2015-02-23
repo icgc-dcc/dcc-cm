@@ -1,4 +1,4 @@
-postgresql_version: 9.2
-#postgresql_repo: "http://apt.postgresql.org/pub/repos/apt/"
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+
 postgresql_repo: 'deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main'
 

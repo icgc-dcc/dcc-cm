@@ -1,0 +1,85 @@
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+#
+# Description:
+#   Setup Task: 
+#     Creates the instances defined in inventory file using create-openstack-instances task.
+#     Creates and uploads the host file for above instances to all hosts
+#
+################################################################################
+
+- name: Create the host file to be uploaded to instances
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: "Remove previous host file if exist"
+      shell: "rm -f {{ group }}_bootstrap_hosts"
+      delegate_to: localhost
+    - name: "Remove previous debug file if exist"
+      shell: "rm -f {{ group }}_bootstrap_hosts_debug"
+      delegate_to: localhost
+
+- name: Creates OpenStack instances of all the hosts in group parameter, defined in hosts file.
+  hosts: "{{ group }}"
+  user: root
+  gather_facts: no
+  serial: 1
+  vars_files:
+    - "../vars/main.yml"
+  tasks:
+    - include: create-openstack-instances.yml
+    
+    - name: Add public ip to group
+      # This hack allows adding each hostname to a group that will be used downstream. The regex strips "prefix-" from beginning
+      # and potential "-xx" from the end of hostname and uses that as a group name, allowing us to use group names 
+      # like postgres or hadoop-worker in include statements. ex. dcc-hadoop-worker-1 -> hadoop-worker
+      add_host: name={{ ip_data.public_ip }}
+                groups={{ inventory_hostname | regex_replace('^[a-z]*-([a-z]*-?\w*)(-\d*$)?', '\\1') | replace("-", "_") }}
+                hostname={{ inventory_hostname }}
+      
+    - name: Add public ip to all_instances catchall group
+      add_host: name={{ ip_data.public_ip }}
+                groups={{ group }}_all_instances
+                hostname={{ inventory_hostname }}
+    
+    - name: Writing public IPs to a host file
+      shell: echo "{{ ip_data.public_ip }} {{ inventory_hostname }}" >> {{ group }}_bootstrap_hosts
+      delegate_to: localhost
+    
+    - name: Writing some debug information about hosts
+      shell: echo "{{ inventory_hostname }} | {{ ip_data.public_ip }} | {{ creation_data.private_ip }} | {{ inventory_hostname | regex_replace('^[a-z]*-([a-z]*-?\w*)(-\d*$)?', '\\1') | replace("-", "_") }}" >> {{ group }}_bootstrap_hosts_debug
+      delegate_to: localhost
+    
+    - name: Save cloudera manager's public IP for later
+      set_fact: cm_host={{ ip_data.public_ip }}
+      when: inventory_hostname == "{{ hadoop_cloudera_manager }}"
+
+- name: Check if SSH is ready on hosts
+  hosts: "{{ group }}_all_instances"
+  gather_facts: no
+  tasks:
+    - name: Wait for ssh
+      wait_for: host={{ inventory_hostname }}
+                port=22
+                timeout=900
+      delegate_to: localhost
+
+- name: Update /etc/hosts with new hosts
+  hosts: "{{ group }}_all_instances"
+  sudo: yes
+  vars_files:
+    - "../vars/main.yml"
+  tasks:
+    # - name: Display all variables/facts known for a host
+    #   debug: var=hostvars[inventory_hostname]
+    - name: "Build hosts file"
+      lineinfile: dest=/etc/hosts 
+                  regexp='.*{{ hostvars[item].ansible_hostname }}$' 
+                  line="{{ hostvars[item].ansible_default_ipv4.address }} {{ hostvars[item].ansible_hostname }}" 
+                  state=present
+      when: hostvars[item].ansible_default_ipv4.address is defined
+      with_items: groups['{{ group }}_all_instances']
+
+    - name: "Prevent resetting host fle on OpenStack"
+      lineinfile: dest="/etc/cloud/cloud.cfg" 
+                  regexp="^manage_etc_hosts" 
+                  line="manage_etc_hosts:False"

@@ -1,8 +1,8 @@
 # HTTP
 http:
-  rootPath: "/api/*"
   port: 6381
   adminPort: 6382
+  rootPath: "/api/*"
 
 # Database
 database:
@@ -16,7 +16,6 @@ database:
   password: dcc
   
   # the JDBC URL
-  # url: jdbc:postgresql://***REMOVED***/dcc_identifier
   url: {{ identifier_url }}
   
   # any properties specific to your JDBC driver:
@@ -42,8 +41,8 @@ database:
   checkConnectionHealthWhenIdleFor: 10s
 
   # the maximum lifetime of an idle connection
-  closeConnectionIfIdleFor: 1 minute
-
+  closeConnectionIfIdleFor: 1 minute    
+  
 # Logging settings
 logging:
 
@@ -79,11 +78,9 @@ logging:
   # Logger-specific levels
   loggers:
 
-    # Jersey request logging
-    "com.sun.jersey.api.container.filter.LoggingFilter": WARN
-
     # Very chatty
     "com.wordnik.swagger.jsonschema.ApiModelParser": WARN
-
+    #"com.sun.jersey.api.container.filter.LoggingFilter": WARN
+    
     # ERRORs should be converted to WARNs in Swagger 1.2.2
     "com.wordnik.swagger.jaxrs.HelpApi": OFF

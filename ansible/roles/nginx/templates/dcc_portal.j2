@@ -2,12 +2,11 @@
 
 # HTTPS
 server {
-	listen 443 ssl;
+	listen  443;
 	server_name {{ server_name }};
+	ssl                 on;
 	ssl_certificate     /etc/ssl/dcc/portal.crt;
 	ssl_certificate_key /etc/ssl/dcc/portal.key;
-	ssl_ciphers RC4:HIGH:!aNULL:!MD5;
-	ssl_prefer_server_ciphers on;
 
 	location / {
 		proxy_pass http://web-cluster;

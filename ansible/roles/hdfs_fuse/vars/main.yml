@@ -1,0 +1,5 @@
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+# CDH 5 "1-click Install" for precise
+cloudera_cdh_deb_filename: cdh5-repository_1.0_all.deb
+cloudera_cdh_deb_url: "http://archive.cloudera.com/cdh5/one-click-install/precise/amd64/{{ cloudera_cdh_deb_filename }}"

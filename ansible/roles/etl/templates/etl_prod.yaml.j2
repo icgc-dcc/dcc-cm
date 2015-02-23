@@ -1,35 +1,17 @@
-# Root directory of DCC submission filesystem
-# fsSubmissionRoot: "/icgc/homogenized" # Not actually used anymore...; fs-convention
-smtpServer: "***REMOVED***"
-sender: "noreply@oicr.on.ca"
-recipients: "a@b.c" # ';' separated
-
-
-# URI to the submission system web app
-submissionWebAppUri: "http://hwww2-dcc.oicr.on.ca:5380"
-
-# Root directory of DCC loader filesystem
-fsLoaderRoot: "/icgc/etl" #FIXME: Remove
-
 # Specify compression type for the output of the loader to be consumed by the exporter
 fileSystemOutputCompression: "LZO"
 
 # FileSystem Scheme. This sets hadoop's fs.defaultFS
-#fsUrl: "***REMOVED***"
-fsUrl: "{{ default_fs }}"
+fsUrl: "{{ hadoop_fs_url }}"
 
 # Specifies the number of maximum concurrent flows in the loader phase 
 loaderMaxConcurrentFlows: 50 
 
 # ElasticSearch URI
-# esUri: "es://***REMOVED***:9300" # rpc-port
 esUri: "{{ elasticsearch_uri }}"
 
 # ElasticSearch bulk insert batch size
 esBulkSize: 10000
-
-# Submission MongoDB URI
-submissionMongoUri: "{{ mongo_base_uri }}/icgc"
 
 # Release MongoDB URI (do not specify a database)
 releaseMongoUri: "{{ mongo_base_uri }}"
@@ -50,27 +32,26 @@ geneMongoUri: "{{ mongo_base_uri }}/dcc-genome"
 filterAllControlled: false
 
 # FASTA file for VCF generation
-#fastaFile: "/u/dcc_dev/dcc-etl/data/genome/GRCh37.75/GRCh37.75.fasta"
 fastaFile: "{{ data_dir }}/GRCh37.fasta"
 
-fathmmPostgresqlUri: "{{ postgresql_uri }}"
-
-# ES archive output directory
-archiveDir: "/tmp" #FIXME: Remove
+fathmmPostgresqlUri: "{{ postgresql_fathmm_uri }}"
 
 # Export mutation VCF file
 exportVCF: true
 
+# Emails
+smtpServer: "{{ smtp_server }}"
+sender: "{{ sender }}"
+recipients: "{{ recipients }}" # ';' separated
+
 # Hadoop configuration
 loaderHadoop:
-  #fs.defaultFS: "***REMOVED***"
-  fs.defaultFS: "{{ default_fs }}"
+  fs.defaultFS: "{{ hadoop_fs_url }}"
 
   # temporarily lower the replication factor manually
   #dfs.replication: 2
 
-  #mapred.job.tracker : "***REMOVED***:8021"
-  mapred.job.tracker : "{{ job_tracker }}"
+  mapred.job.tracker : "{{ hadoop_job_tracker }}"
   # mapred.job.shuffle.input.buffer.percent: 0.5
   mapred.child.java.opts: "-Xmx6g"
   mapred.reduce.tasks: 20
@@ -94,14 +75,12 @@ loaderHadoop:
   mapred.reduce.tasks.speculative.execution: false
 
 indexerHadoop:
-  #fs.defaultFS: "***REMOVED***"
-  fs.defaultFS: "{{ default_fs }}"
+  fs.defaultFS: "{{ hadoop_fs_url }}"
 
   # temporarily lower the replication factor manually
   #dfs.replication: 2
 
-  #mapred.job.tracker : "***REMOVED***:8021"
-  mapred.job.tracker : "{{ job_tracker }}"
+  mapred.job.tracker : "{{ hadoop_job_tracker }}"
   # mapred.job.shuffle.input.buffer.percent: 0.5
   mapred.child.java.opts: "-Xmx6g"
   mapred.reduce.tasks: 20
@@ -124,7 +103,7 @@ indexerHadoop:
   # 2013-04-12: Reducers are big for the indexer. Disabling this may help prevent colocating reducers on a small cluseter.
   mapred.reduce.tasks.speculative.execution: false
 
-  #mapred.map.child.java.opts: "-Xmx64g -XX:MaxDirectMemorySize=32g"
+  mapred.map.child.java.opts: "-Xmx72g -XX:MaxDirectMemorySize=42g"
   mapred.map.child.java.opts: "-Xmx8g -XX:MaxDirectMemorySize=3g"
 
 # ICGC Client configuration
@@ -137,6 +116,6 @@ icgc:
   accessToken: "***REMOVED***"
   accessSecret: "***REMOVED***"
   cudAppId: "b2ljcl93ZWJkZXY6b3UzbGwzdHQzMjAxMg=="
-  strictSSLCertificates: true
+  strictSSLCertificates: false
   requestLoggingEnabled: true
 

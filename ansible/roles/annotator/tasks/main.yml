@@ -1,76 +1,40 @@
-- name: Clean copy
-  shell: "rm -rf /u/dcc_dev/dcc-annotator"
-  ignore_errors: yes
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 
-- name: Create directories
-  file: path="{{ item }}" state="directory" owner="dcc_dev"
-  with_items:
-    - "/u/dcc_dev"
-    - "{{ annotator_root }}"
-    - "{{ annotator_snpeff_dir }}"
-    - "{{ annotator_reference_dir }}"
+- name: Clean copy
+  file: path="{{ annotator_home }}"
+        state=absent
 
 - name: get dcc-annotator tarball from artifactory
-  get_url: url="{{ dcc_etl_annotator_tarball }}" dest="/tmp/dcc-annotator.tar.gz" mode=644
+  get_url:  url="{{ annotator_dist_url }}" 
+            dest="{{ staging_dir }}/{{ annotator_dist_filename }}" 
+            mode=644
 
 - name: Extract dcc-annotator ==> /u/dcc_dev/dcc_annotator
-  shell: "tar xzf /tmp/dcc-annotator.tar.gz --strip 1 -C /u/dcc_dev/dcc-annotator"
+  unarchive:  src="{{ staging_dir }}/{{ annotator_dist_filename }}"
+              dest="{{ dcc_home }}"
+              copy=no
 
-- name: Download Reference Genome
-  get_url: url="{{ reference_genome_url }}" dest={{ annotator_reference_dir }}
+- name: Update the symbolic link to the distribution
+  file: path="{{ annotator_home }}"
+        src="{{ dcc_home }}/{{ annotator_dist_fullname }}"
+        state=link 
+        owner="{{ dcc_user }}"
+        force=yes
 
-- name: Download SnpEff database
-  get_url: url="{{ snpeff_url }}" dest={{ annotator_snpeff_dir}}
-
-- name: Extract the reference genome 
-  shell: "tar xzf {{ annotator_reference_dir}}/{{ reference_genome_archive }} -C {{ annotator_reference_dir }}"
-
-- name: Rename reference genome for snpEff
-  shell: "mv {{ annotator_reference_dir }}/GRCh37.fasta {{ annotator_reference_dir }}/GRCh37.75.fasta"
-
-- name: Rename reference genome for snpEff
-  shell: "mv {{ annotator_reference_dir }}/GRCh37.fasta.fai {{ annotator_reference_dir }}/GRCh37.75.fasta.fai"
-
-- name: Rename snpEff
-  shell: "mv {{ annotator_snpeff_dir }}/{{ snpeff_archive }} {{ annotator_snpeff_dir }}/snpEffectPredictor.bin"
+- name: Create directories
+  file: path="{{ item }}" 
+        state="directory" 
+        owner="{{ dcc_user }}"
+  with_items:
+    - "{{ annotator_conf }}"
 
 - name: Copy over annotator configuration
-  template: src="annotator-config.sh.j2" dest="{{ annotator_root }}/bin/annotator-config.sh" mode=0755
+  template: src="annotator.yml.j2" 
+            dest="{{ annotator_conf }}/annotator.yml" 
+            mode=0755
 
-- name: Copy over snpEff configuration
-  template: src="snpEff.config.j2" dest="{{ annotator_root }}/conf/snpEff.config" mode=0755
-
-- name: Copy over workflow configuration
-  template: src="workflow.ini.j2" dest="{{ annotator_root }}/conf/workflow.ini" mode=0755
-
+# https://github.com/ansible/ansible/issues/548
 - name: Make sure dcc_dev owns everything
-  shell: "chown -R dcc_dev /u/dcc_dev"
-  ignore_errors: yes
-
-# FIXME: Comply with overarch's annotator hack
-- name: Annotator hack directory #1
-  shell: "mkdir -p /nfs/hadoop/workspace/annotator-fs-hack"
-  ignore_errors: yes
-
-# FIXME: Comply with overarch's annotator hack
-- name: Annotator hack directory #2
-  shell: "chown -R dcc_dev /nfs/hadoop/workspace/annotator-fs-hack"
-  ignore_errors: yes
-
-
-
-
-
-################################################################################
-# FIXME: Need to hack up the overarch scripts, we do not want overarch to control
-# the variables
-################################################################################
-- name: Patch overarching script for annotator temp_parent_dir
-  lineinfile: dest="{{ repo_dir }}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/annotator-facade.sh" regexp="temp_parent_dir" state="absent"
-  ignore_errors: yes 
-
-- name: Patch overarching script for annotator parallel_runtime
-  lineinfile: dest="{{ repo_dir }}/dcc-etl/dcc-etl-cli/src/main/scripts/overarch/facades/annotator-facade.sh" regexp="parallel_runtime" state="absent"
-  ignore_errors: yes 
-
-
+  file: path="{{ dcc_home }}" 
+        owner={{ dcc_user }}
+        recurse=yes

@@ -1,0 +1,14 @@
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- name: Check CM service existence and state
+  command:  service cloudera-scm-server status
+  register: cm_started
+  ignore_errors: yes
+
+- include: install.yml
+  when: cm_started.stdout.find('cloudera-scm-server is running') == -1
+
+- name: Wait for Cloudera Manager web interface to be ready
+  wait_for: host=localhost
+            port=7180
+            timeout=30

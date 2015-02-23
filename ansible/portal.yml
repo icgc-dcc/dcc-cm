@@ -1,13 +1,59 @@
-# has a dependancy on Java
-- name: Portal deployment
-  hosts: ["portal"]
+# Copyright 2014(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- include: tasks/setup.yml group=portal
+
+- name: Provision varnish
+  hosts: varnish
   gather_facts: no
-  user: ubuntu
   sudo: yes
   vars_files:
     - "vars/main.yml"
-  pre_tasks:
-    - name: Install Java
-      include: tasks/install-java.yml
+  roles:
+    - varnish
+
+- name: Provision nginx
+  hosts: nginx
+  gather_facts: no
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+  roles:
+    - nginx
+
+- name: Provision Elasticsearch
+  hosts: elasticsearch
+  gather_facts: no
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+  roles: 
+    - elasticsearch
+
+- name: Provision Postgres
+  hosts: postgres
+  gather_facts: no
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+  roles: 
+    - postgres
+
+- name: Configure Postgres
+  hosts: postgres
+  gather_facts: no
+  sudo_user: postgres
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+  roles: 
+    - portal_db
+
+- name: Provision Portal
+  hosts: portal_main
+  gather_facts: no
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+    - "vars/cud.yml"
   roles:
     - portal

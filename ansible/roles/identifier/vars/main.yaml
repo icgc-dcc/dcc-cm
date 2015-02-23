@@ -1,10 +1,14 @@
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+identifier_url: "{{postgresql_uri}}:5432/dcc_identifier"
+
 install_dir: /srv/dcc-identifier
 bin_dir: "{{ install_dir }}/bin"
 conf_dir: "{{ install_dir }}/conf"
 
-dist_version: 3.4.1
-dist_name: "dcc-identifier"
-dist_name_version: "{{ dist_name }}-{{ dist_version }}"
-dist_archive: "{{ dist_name_version }}-dist.tar.gz"
-dist_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ dist_name }}/{{ dist_version }}/{{ dist_archive }}"
+identifier_installer_name: dcc-etl-identifier
+identifier_dist_name: dcc-identifier
+identifier_dist_name_version: "{{ identifier_dist_name }}-{{ identifier_dist_version }}"
+identifier_dist_archive: "{{ identifier_dist_name_version }}-dist.tar.gz"
+identifier_dist_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{{ identifier_dist_name }}/{{ identifier_dist_version }}/{{ identifier_dist_archive }}"
 

@@ -1,28 +1,23 @@
 # Copyright 2013(c) The Ontario Institute for Cancer Research. All rights reserved.
 
+# Contact
+smtp_host: "{{ smtp_server }}"
+from_email: no-reply@oicr.on.ca
+from_name: DCC Validator
+support_email: dcc-support@lists.oicr.on.ca
+support_name: DCC Support
+notification_email: se-notifications@lists.oicr.on.ca
+notification_name: SE Notifications
+
 # Directories
 install_dir: /srv/dcc-submission
 web_dir: "{{ install_dir }}/www"
 data_dir: "{{ install_dir }}/data"
 bin_dir: "{{ install_dir }}/bin"
 conf_dir: "{{ install_dir }}/conf"
-root_dir: "/tmp/dcc_root_dir"
-
-# Distribution
-dist_name: "dcc-submission-server"
-dist_name_version: "{{ dist_name }}-{{ dist_version }}"
-dist_archive: "{{ dist_name_version }}-dist.tar.gz"
-dist_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ dist_name }}/{{ dist_version }}/{{ dist_archive }}"
 
 # Shiro password utility
-shiro_version: 1.2.1
 shiro_url: "http://repo1.maven.org/maven2/org/apache/shiro/tools/shiro-tools-hasher/{{ shiro_version }}/shiro-tools-hasher-{{ shiro_version }}-cli.jar"
-
-
-
-# === Copied over from default ===
-# The version of the dcc-submission-server to install
-dist_version: 3.4.1
 
 # Admin SFTP / HTTP username / password for the submission system which gets hashed and stored in ream.ini
 admin_username: admin
@@ -32,13 +27,14 @@ admin_password: password
 http_port: 5380
 sftp_port: 5322
 
+# Web HDFS url
+webhdfs_port: 50070
+webhdfs_url: "{{ hadoop_name_node_host }}:{{ webhdfs_port }}"
 
-
-# === Copied over from reference ===
-reference_genome_version: GRCh37
-target_dir: /tmp
-reference_genome_name: dcc-reference-genome
-reference_genome_archive: "{{ reference_genome_name }}-{{ reference_genome_version }}.tar.gz"
-reference_genome_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ reference_genome_name }}/{{ reference_genome_version }}/{{ reference_genome_archive }}"
-
-
+# DCC System Files
+system_files_artifact:  dcc-system-files
+system_files_basename: dcc-system-files
+system_files_version: 1
+system_files_filename: "{{ system_files_basename}}-{{ system_files_version }}"
+system_files_archive: "{{ system_files_artifact }}-{{ system_files_filename }}.tar.gz"
+system_files_url: "{{ artifactory_deps_url }}/{{ artifactory_dcc_path }}/{{ system_files_artifact }}/{{ system_files_version }}/{{ system_files_archive }}"

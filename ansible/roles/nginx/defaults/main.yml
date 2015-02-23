@@ -1,9 +1,0 @@
----
-# Copyright 2014(c) The Ontario Institute for Cancer Research. All rights reserved.
-
-# dcc_portal
-server_name: dcc.icgc.org
-
-# nginx.conf
-worker_connections: 768
-portal_port: 5381

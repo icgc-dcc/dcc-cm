@@ -1,0 +1,15 @@
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+# Install a few plugins to make debugging/interaction easier
+- shell: "/usr/share/elasticsearch/bin/plugin -remove head"
+  ignore_errors: yes
+
+- shell: "/usr/share/elasticsearch/bin/plugin -install mobz/elasticsearch-head"
+
+- shell: "/usr/share/elasticsearch/bin/plugin -remove knapsack"
+  ignore_errors: yes
+
+- shell: "/usr/share/elasticsearch/bin/plugin -url http://bit.ly/19zYGu2 -install knapsack" 
+
+- name: Restart Elastic search
+  service: name=elasticsearch state=restarted

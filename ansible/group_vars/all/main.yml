@@ -1,16 +1,45 @@
-################################################################################
-# Main vars for ETL
-################################################################################
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+#
+# Description:
+#     Main variables used across DCC components: ETL, Submission, Portal and Downloader.
 
 # Server name prefix
-server_prefix: "dcc"
+server_prefix: dcc
+
+# Username and directory
+dcc_user: dcc_dev
+dcc_home: "/u/{{dcc_user}}"
+
+# Some etl settings shared between roles.
+etl_home: "{{ dcc_home }}/dcc-etl"
+data_dir: "{{ etl_home }}/data"
+repo_dir: "{{ etl_home }}/git/dcc-etl"
 
 # Directories
-staging_dir: "/tmp"
+staging_dir: /tmp
 
+release_name: test18-0-0
 
 ################################################################################
-# DCC Resources, DCC Dependices
+# All Versions, Centralized for convenience.
+################################################################################
+
+dictionary_version: 0.10a
+elasticsearch_version: 0.90.1
+shiro_version: 1.2.1
+mongodb_version: 2.4.1
+postgresql_version: 9.2
+
+# DCC Components, typically retrieved from Artifactory
+annotator_version: 10-cdh-java8
+cli_version: 10-cdh-java8
+downloader_workflows_dist_version: 10-cdh-java8
+exporter_dist_version: 10-cdh-java8
+identifier_dist_version: 10-cdh-java8
+portal_dist_version: 10-cdh-java8
+
+################################################################################
+# DCC Resources, DCC Dependencies
 ################################################################################
 
 # DCC apt proxy.
@@ -18,51 +47,85 @@ proxy_env:
   http_proxy: ***REMOVED***
 
 # External URLs 
-external_submission_url: https://submissions.dcc.icgc.org
+external_submission_url: ***REMOVED***
 external_docs_url: http://docs.icgc.org
 
 # Artifactory URLS
 artifactory_url: http://seqwaremaven.oicr.on.ca/artifactory
-artifactory_release_url: "{{ artifactory_url }}/dcc-release" 
 artifactory_deps_url: "{{ artifactory_url }}/simple/dcc-dependencies" 
 artifactory_release_url: "{{ artifactory_url }}/simple/dcc-release"
 artifactory_snapshot_url: "{{ artifactory_url }}/simple/dcc-snapshot"
+artifactory_dcc_path: org/icgc/dcc
 
-reference_genome_version: GRCh37
+# Reference Genome
 reference_genome_name: dcc-reference-genome
-reference_genome_archive: "{{ reference_genome_name }}-{{ reference_genome_version }}.tar.gz"
-reference_genome_url: "{{ artifactory_deps_url }}/org/icgc/dcc/{{ reference_genome_name }}/{{ reference_genome_version }}/{{ reference_genome_archive }}"
+reference_genome_basename: GRCh37
+reference_genome_build: 75
+reference_genome_version: v1
+reference_genome_filename: "{{ reference_genome_basename}}.{{ reference_genome_build }}.{{ reference_genome_version }}"
+reference_genome_archive: "{{ reference_genome_name }}-{{ reference_genome_filename }}.tar.gz"
+reference_genome_url: "{{ artifactory_deps_url }}/{{ artifactory_dcc_path }}/{{ reference_genome_name }}/{{ reference_genome_filename }}/{{ reference_genome_archive }}"
 
-dcc_etl_annotator_tarball: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-etl-annotator/3.5.11-SNAPSHOT/dcc-etl-annotator-3.5.11-SNAPSHOT-dist.tar.gz"
-dcc_etl_cli_jar: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-etl-cli/3.5.11-SNAPSHOT/dcc-etl-cli-3.5.11-SNAPSHOT.jar"
-dcc_submission_server_jar: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-submission-server/3.5.11-SNAPSHOT/dcc-submission-server-3.5.11-SNAPSHOT.jar"
-dcc_submission_server_tarball_artifactory_url: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-submission-server/3.5.11-SNAPSHOT/dcc-submission-server-3.5.11-SNAPSHOT-dist.tar.gz"
-dcc_downloader_tarball: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-downloader/3.6.1.2-SNAPSHOT/dcc-downloader-3.6.1.2-SNAPSHOT-dist.tar.gz"
-dcc_exporter_tarball: "{{ artifactory_snapshot_url }}/org/icgc/dcc/dcc-etl-exporter/3.5.11-SNAPSHOT/dcc-etl-exporter-3.5.11-SNAPSHOT-dist.tar.gz"
+# Cloudera
+cloudera_major: 5
+cloudera_version: "{{ cloudera_major }}.3.1"
+cdh_version: "CDH{{ cloudera_major }}"
+cdh_version_number: "{{ cloudera_version }}"
+cm_version: "{{ cloudera_version }}"
+cm_api_version: 9
 
-################################################################################
-# DCC ETL 
-#
-# /dcc_etl
-#    /keys
-#    /etl_script (The git repository)
-#    /config
-#    /data
-#    /lib
-################################################################################
-etl_root_dir: "/dcc_etl"
-keys_dir: "{{ etl_root_dir }}/keys" 
-repo_dir: "{{ etl_root_dir }}/etl_script"   
-config_dir: "{{ etl_root_dir }}/config"
-data_dir: "{{ etl_root_dir }}/data"
-lib_dir: "{{ etl_root_dir }}/lib"
-fuse_root_dir: "/hdfs/dcc"
+# Hadoop Settings
+java_install_dir: /usr/java
+java_home: "{{ java_install_dir }}/jdk"
+hadoop_cluster_name: DCC
+hadoop_cloudera_manager: "{{ server_prefix }}-hadoop-manager"
+hadoop_workers: "{{ server_prefix }}-hadoop-worker-1,{{ server_prefix }}-hadoop-worker-2,{{ server_prefix }}-hadoop-worker-3,{{ server_prefix }}-hadoop-worker-4"
+hadoop_fs_url: "hdfs://{{ server_prefix }}-hadoop-worker-1"
+hadoop_job_tracker: "{{ server_prefix }}-hadoop-worker-1:8021"
+hadoop_name_node_host: "{{ server_prefix }}-hadoop-worker-1"
+hadoop_name_node: "hdfs://{{ server_prefix }}-hadoop-worker-1:8020"
+hadoop_zookeeper_quorum: "{{ server_prefix }}-hadoop-worker-1"
+hadoop_oozie_node: "http://{{ server_prefix }}-hadoop-worker-1:11000/oozie"
+hadoop_username: hdfs
+hdfs_fuse_mount_dir: /hdfs/dcc
 
+# Postgres Settings
+postgresql_user: dcc
+postgresql_password: dcc
+postgresql_uri: "jdbc:postgresql://{{ server_prefix }}-postgres"
+postgresql_fathmm_uri: "{{ postgresql_uri }}/fathmm?user={{postgresql_user}}&password={{postgresql_password}}"
+postgresql_portal_uri: "{{ postgresql_uri }}/dcc_portal"
 
+# Mongo
+mongo_host: "{{ server_prefix }}-mongo"
+mongo_base_uri: "mongodb://{{ mongo_host }}"
 
-################################################################################
-# DCC Portal 
-################################################################################
-es_index_name: "openstack-test"
+# ElasticSearch
+elasticsearch_host: "{{ server_prefix }}-elasticsearch"
+elasticsearch_uri: "es://{{ elasticsearch_host }}:9300"
 
+# Downloader Settings
+downloader_user_dir: /user/downloader
+downloader_user_workflows_dir: "{{ downloader_user_dir }}/workflows"
+download_app_path: "{{ hadoop_name_node }}{{ downloader_user_workflows_dir }}/archive-main"
+download_home_path: /tmp/download
+download_dynamic_home_path: "{{ download_home_path }}/dynamic"
+download_static_home_path: "{{ download_home_path }}/static"
 
+# DCC Submission Server
+submission_server_dist_name: dcc-submission-server
+submission_server_dist_version: 10-cdh-java8
+submission_server_dist_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}-dist.tar.gz"
+submission_server_jar_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}.jar"
+submission_server_dist_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{{ submission_server_dist_name }}/{{ submission_server_dist_version }}/{{ submission_server_dist_filename }}"
+submission_server_jar_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{{ submission_server_dist_name }}/{{ submission_server_dist_version }}/{{ submission_server_jar_filename }}"
+
+# Misc DCC
+identifier_uri: "http://{{ server_prefix }}-identifier:6381"
+reverse_proxy_url: "https://{{ server_prefix }}-nginx"
+icgc_url: https://***REMOVED***
+
+# DCC ETL Contact Settings
+smtp_server: ***REMOVED***
+sender: noreply@oicr.on.ca
+recipients: "***REMOVED***" # ';' separated

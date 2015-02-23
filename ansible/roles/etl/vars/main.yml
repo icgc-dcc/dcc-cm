@@ -1,9 +1,22 @@
-dcc_etl_version: 3.4.1
-dcc_etl_name: dcc-etl-cli
-dcc_etl_archive: "{{ dcc_etl_name }}-{{ dcc_etl_version }}.jar"
-dcc_etl_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ dcc_etl_name }}/{{ dcc_etl_version }}/{{ dcc_etl_archive }}"
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 
-dcc_validator_version: 3.4.1
-dcc_validator_name: dcc-submission-validator
-dcc_validator_archive: "{{ dcc_validator_name }}-{{ dcc_validator_version }}.jar"
-dcc_validator_url: "{{ artifactory_release_url }}/org/icgc/dcc/{{ dcc_validator_name }}/{{ dcc_validator_version }}/{{ dcc_validator_archive }}"
+cli_name: dcc-etl-cli
+cli_jar_filename: "{{ cli_name }}-{{ cli_version }}.jar"
+cli_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{{ cli_name }}/{{ cli_version }}/{{ cli_jar_filename }}"
+
+annotator_jar_name: dcc-etl-annotator
+annotator_jar_filename: "{{ annotator_jar_name }}-{{ annotator_version }}.jar"
+annotator_jar_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{{ annotator_jar_name }}/{{ annotator_version }}/{{ annotator_jar_filename }}"
+
+nfs_dir: /nfs
+hdfs_fuse_mount_dir: /hdfs/dcc
+hdfs_icgc_home_dir: /icgc
+hdfs_dcc_home_dir: "{{ hdfs_icgc_home_dir }}/dcc_home_dir"
+keys_dir: "{{ etl_home }}/keys" 
+config_dir: "{{ etl_home }}/conf"
+config_project_dir: "{{ config_dir }}/projects"
+config_dictionaries_dir: "{{ config_dir }}/dictionaries"
+jobs_dir: "{{ etl_home }}/jobs"
+lib_dir: "{{ etl_home }}/lib"
+overarch_dir: "{{ repo_dir}}/dcc-etl-cli/src/main/scripts/overarch"
+lisi_facade: "{{ overarch_dir}}/facades/lisi-facade.sh"

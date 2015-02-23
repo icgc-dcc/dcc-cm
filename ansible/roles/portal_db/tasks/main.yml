@@ -1,0 +1,23 @@
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- name: Creating script dir
+  file: dest="/tmp/scripts" state="directory"
+
+- name: Copy identifier script
+  copy: src="{{ item }}" dest="/tmp/scripts/{{ item }}" mode=0744
+  with_items:
+    - "portal_schema.sql"
+ 
+- name: Create identifier database
+  postgresql_db: name="{{ portal_username }}" state=present
+
+- name: Create DCC User
+  postgresql_user: db="{{ portal_username }}" name="dcc" login_password="dcc"
+
+# Explicit set password, otherwise have to use hash above
+- name: Set password
+  shell: "psql -d {{ portal_username }} -c \"ALTER USER dcc with PASSWORD 'dcc'\""
+  ignore_errors: yes
+
+- name: Initialize identifier
+  command: "psql -d {{ portal_username }} -f /tmp/scripts/portal_schema.sql"

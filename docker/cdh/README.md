@@ -1,7 +1,7 @@
 ICGC DCC - Docker CDH
 ===
 
-CDH 4.1.2 client environment with Pig, Oozie and HDFS fuse installed.
+CDH 5.3.1 client environment on JDK8 with Pig, Oozie and HDFS fuse installed.
 
 Available at Docker Hub:
 

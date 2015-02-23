@@ -1,0 +1,4 @@
+#!/usr/bin/expect -f
+set timeout 240
+spawn ./cloudera-manager-installer.bin --ui=stdio --noprompt --noreadme --nooptions --i-agree-to-all-licenses
+expect EOF

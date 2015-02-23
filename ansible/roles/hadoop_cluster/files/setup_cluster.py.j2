@@ -1,0 +1,368 @@
+# Copyright (c) 2014 The Ontario Institute for Cancer Research. All rights reserved.
+#
+# This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+# OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+# TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+# IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+from cm_api.api_client import ApiResource
+from cm_api.endpoints.clusters import create_cluster
+from cm_api.endpoints.parcels import get_parcel
+from cm_api.endpoints.cms import ClouderaManager
+from cm_api.endpoints.services import ApiServiceSetupInfo
+from cm_api.endpoints.role_config_groups import get_role_config_group
+from time import sleep
+import sys
+
+zookeeper_service_name = "ZOOKEEPER"
+hdfs_service_name = "HDFS"
+mapred_service_name = "MAPRED"
+hbase_service_name = "HBASE"
+oozie_service_name = "OOZIE"
+
+# Configuration
+service_types_and_names = {
+    "ZOOKEEPER": zookeeper_service_name,
+    "HDFS": hdfs_service_name,
+    "MAPREDUCE": mapred_service_name,
+    "HBASE": hbase_service_name,
+    "OOZIE": oozie_service_name}
+
+# Cluster name
+cluster_name = "{{ hadoop_cluster_name }}"
+
+# These include hosts that will run NameNode, DataNode, JobTracker,
+# TaskTracker, etc as well as things like gateways and zookeeper nodes
+host_list = "{{ hadoop_workers }}".split(",")
+
+cdh_version = "{{ cdh_version }}"
+cdh_version_number = "{{ cdh_version_number }}"
+
+java_home = "{{ java_home }}"
+
+gplextras_parcel_repo = "http://archive-primary.cloudera.com/gxplextras5/parcels/" + cdh_version_number
+
+cm_port = 7180
+cm_username = "admin"
+cm_password = "admin"
+cm_service_name = "mgmt"
+cm_repo_url = None
+cm_api_version = {{ cm_api_version }}
+
+reports_manager_host = "localhost"
+reports_manager_name = "rman"
+reports_manager_username = "rman"
+reports_manager_password = "" # need to read this from /etc/cloudera-scm-server/db.mgmt.properties
+reports_manager_database_type = "postgresql"
+
+host_username = "{{ openstack_ssh_user }}"
+cm_host = "{{ hostvars[hadoop_cloudera_manager]['cm_host'] }}"
+private_key_path = "{{ ansible_ssh_private_key_file }}"
+
+all_hosts_cnfig = {"java_home": java_home}
+
+def setup_cluster():
+    # get a handle on the instance of CM that we have running
+    api = ApiResource(cm_host, cm_port, cm_username, cm_password, version=cm_api_version)
+
+    # get the CM instance
+    cm = ClouderaManager(api)
+
+    # activate the CM trial license
+    try:
+        cm.begin_trial()
+    except:
+        pass
+
+    # create the management service
+    # TODO check for existence
+    service_setup = ApiServiceSetupInfo(name=cm_service_name, type="MGMT")
+    try:
+        cm.create_mgmt_service(service_setup)
+    except:
+        pass
+
+    # read private key
+    private_key = open(private_key_path, "rb").read()
+
+    cm.update_all_hosts_config(all_hosts_cnfig)
+
+    # install hosts on this CM instance
+    cmd = cm.host_install(
+        host_username,
+        host_list,
+        private_key=private_key,
+        cm_repo_url=cm_repo_url)
+    print "Installing hosts. This will take a while."
+    while cmd.success is None:
+        sleep(30)
+        cmd = cmd.fetch()
+
+    if cmd.success is not True:
+        print "cm_host_install failed: " + cmd.resultMessage
+        exit(0)
+
+    print "cm_host_install succeeded."
+
+    # first auto-assign roles and auto-configure the CM service
+    cm.auto_assign_roles()
+    cm.auto_configure()
+
+    # create a cluster on that instance
+    cluster = create_cluster(api, cluster_name, cdh_version)
+
+    # add all our hosts to the cluster
+    cluster.add_hosts(host_list)
+
+    cluster = api.get_cluster(cluster_name)
+
+    # deploy CDH parcel
+    deploy_parcel(api, "CDH")
+
+    # inspect hosts and print the result
+    print "Inspecting hosts. This might take a few minutes."
+
+    cmd = cm.inspect_hosts()
+    while cmd.success is None:
+        sleep(30)
+        cmd = cmd.fetch()
+
+    if cmd.success is not True:
+        print "Host inspection failed!"
+        exit(0)
+
+    print "Hosts successfully inspected: \n" + cmd.resultMessage
+
+    # create all the services we want to add; we will only create one instance
+    # of each
+    for s in service_types_and_names.keys():
+        cluster.create_service(service_types_and_names[s], s)
+
+    # we will auto-assign roles; you can manually assign roles using the
+    # /clusters/{clusterName}/services/{serviceName}/role endpoint or by using
+    # ApiService.createRole()
+    cluster.auto_assign_roles()
+    cluster.auto_configure()
+
+    # start the management service
+    cm_service = cm.get_service()
+    cm_service.start().wait()
+
+    # this will set the Reports Manager database password
+    # first we find the correct role
+    rm_role = None
+    for r in cm.get_service().get_all_roles():
+        if r.type == "REPORTSMANAGER":
+            rm_role = r
+
+    if rm_role is None:
+        print "No REPORTSMANAGER role found!"
+        exit(0)
+
+    # then we get the corresponding role config group -- even though there is
+    # only once instance of each CM management service, we do this just in case
+    # it is not placed in the base group
+    rm_role_group = rm_role.roleConfigGroupRef
+    rm_rcg = get_role_config_group(
+        api,
+        rm_role.type,
+        rm_role_group.roleConfigGroupName,
+        None)
+
+    # update the appropriate fields in the config
+    rm_rcg_config = {"headlamp_database_host": reports_manager_host,
+                     "headlamp_database_name": reports_manager_name,
+                     "headlamp_database_user": reports_manager_username,
+                     "headlamp_database_password": reports_manager_password,
+                     "headlamp_database_type": reports_manager_database_type}
+
+    rm_rcg.update_config(rm_rcg_config)
+
+    # restart the management service with new configs
+    cm_service.restart().wait()
+
+    # execute the first run command
+    print "Executing first run command. This might take a while."
+    cmd = cluster.first_run()
+
+    while cmd.success is None:
+        sleep(30)
+        cmd = cmd.fetch()
+
+    if cmd.success is not True:
+        print "The first run command failed: " + cmd.resultMessage()
+        exit(0)
+
+    print "First run successfully executed. Cluster has been set up!"
+
+    print "Starting service configuration...."
+    configure_services(api)
+
+    print "Starting GPL Extras installation...."
+    setup_gplextras(api)
+
+
+def configure_services(api):
+
+    cluster = api.get_cluster(cluster_name)
+
+    hdfs_service = cluster.get_service(hdfs_service_name)
+    mapred_service = cluster.get_service(mapred_service_name)
+    hbase_service = cluster.get_service(hbase_service_name)
+
+    print "Updating configurations for HBASE"
+    # See hbase.dynamic.jars.dir in http://hbase.apache.org/book.html
+    config_value = "<property><name>hbase.dynamic.jars.dir</name><value>/hbase-lib</value></property>"
+    hbase_service_config = {
+      "hbase_service_config_safety_valve" : config_value
+    }
+    hbase_service.update_config(hbase_service_config)
+
+    # Edit /etc/hbase/conf/hbase-site.xml in the main ETL node to get around hbase max hfile limitation
+    # See: http://stackoverflow.com/questions/24950393/trying-to-load-more-than-32-hfiles-to-one-family-of-one-region
+    gw = hbase_service.get_role_config_group("{0}-GATEWAY-BASE".format(hbase_service_name))
+    hbase_gw_config = {
+      "hbase_client_config_safety_valve" : "<property><name>hbase.mapreduce.bulkload.max.hfiles.perRegion.perFamily</name><value>5000</value></property>"
+    }
+    gw.update_config(hbase_gw_config)
+    # deploy client config again.
+    cluster.deploy_client_config()
+
+    print "Updating configurations for MAPREDUCE"
+    # Configure compression codecs for TaskTracker, a comma separated list
+    config_value = "org.apache.hadoop.io.compress.DefaultCodec," \
+            "org.apache.hadoop.io.compress.GzipCodec,"\
+            "org.apache.hadoop.io.compress.BZip2Codec,"\
+            "com.hadoop.compression.lzo.LzoCodec,"\
+            "com.hadoop.compression.lzo.LzopCodec,"\
+            "org.apache.hadoop.io.compress.SnappyCodec"
+    mapred_tt_config = {
+      "override_io_compression_codecs" : config_value
+    }
+    tt = mapred_service.get_role_config_group("{0}-TASKTRACKER-BASE".format(mapred_service_name))
+    tt.update_config(mapred_tt_config)
+
+    config_value = "HADOOP_CLASSPATH=$HADOOP_CLASSPATH:/usr/lib/hadoop/lib/*\n" \
+            "JAVA_LIBRARY_PATH=$JAVA_LIBRARY_PATH:/usr/lib/hadoop/lib/native"
+    mapred_service_config = {
+      "mapreduce_service_env_safety_valve" : config_value
+    }
+    mapred_service.update_config(mapred_service_config)
+
+    # Now restart the cluster for changes to take effect.
+    print "About to restart cluster"
+    cluster.stop().wait()
+    cluster.start().wait()
+    print "Done restarting cluster"
+
+def deploy_parcel(api, parcel_name):
+
+    cluster = api.get_cluster(cluster_name)
+
+    # get and list all available parcels
+    parcels_list = []
+    print "Available parcels:"
+    for p in cluster.get_all_parcels():
+        print "\t" + p.product + " " + p.version
+        if p.version.startswith(cdh_version_number) and p.product == parcel_name:
+            parcels_list.append(p)
+
+    if len(parcels_list) == 0:
+        print "No " + parcel_name + " parcel found!"
+        exit(0)
+
+    # find latest version
+    parcel = parcels_list[0]
+    for p in parcels_list:
+        if p.version > parcel.version:
+            parcel = p
+
+    # download the parcel
+    print "Starting parcel download. This might take a while."
+    cmd = parcel.start_download()
+    if cmd.success is not True:
+        print "Parcel download failed!"
+        exit(0)
+
+    # make sure the download finishes
+    while parcel.stage != "DOWNLOADED":
+        sleep(30)
+        parcel = get_parcel(
+            api,
+            parcel.product,
+            parcel.version,
+            cluster_name)
+
+    print parcel.product + " " + parcel.version + " downloaded"
+
+    # distribute the parcel
+    print "Starting parcel distribution. This might take a while."
+    cmd = parcel.start_distribution()
+    if cmd.success is not True:
+        print "Parcel distribution failed!"
+        exit(0)
+
+    # make sure the distribution finishes
+    while parcel.stage != "DISTRIBUTED":
+        sleep(30)
+        parcel = get_parcel(
+            api,
+            parcel.product,
+            parcel.version,
+            cluster_name)
+
+    print parcel.product + " " + parcel.version + " distributed"
+
+    # activate the parcel
+    cmd = parcel.activate()
+    if cmd.success is not True:
+        print "Parcel activation failed!"
+        exit(0)
+
+    # make sure the activation finishes
+    while parcel.stage != "ACTIVATED":
+        sleep(30)
+        parcel = get_parcel(
+            api,
+            parcel.product,
+            parcel.version,
+            cluster_name)
+
+    print parcel.product + " " + parcel.version + " activated"
+
+def setup_gplextras(api):
+
+    # get the CM instance
+    cm = ClouderaManager(api)
+
+    # Add GPL EXtra Parcel Repo to Cloudera Manager    
+    cm_config = cm.get_config(view="full")
+    repo_config = cm_config["REMOTE_PARCEL_REPO_URLS"]
+    value = repo_config.value or repo_config.default
+    # value is a comma-separated list
+    value += "," + gplextras_parcel_repo
+    cm.update_config({
+      "REMOTE_PARCEL_REPO_URLS": value})
+    # wait to make sure parcels are refreshed
+    sleep(10)
+
+    # deploy gplextras parcel
+    deploy_parcel(api, "GPLEXTRAS")
+
+def main(argv):
+    print "private_key_path = \"" + private_key_path + "\""
+    print "cm_host = \"" + cm_host + "\""
+    setup_cluster()
+
+if __name__ == "__main__":
+    main(sys.argv[1:])

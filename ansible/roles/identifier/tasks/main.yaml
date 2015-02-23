@@ -1,17 +1,17 @@
-# Install the distribution
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+
 - name: Create file system
   file: "path={{ item }} state=directory"
   with_items:
     - "{{ install_dir }}"
 
 - name: Download the distribution
-  get_url: "url={{ dist_url }} dest={{ staging_dir }}/{{ dist_archive }} mode=0444"
+  get_url: "url={{ identifier_dist_url }} dest={{ staging_dir }}/{{ identifier_dist_archive }} mode=0444"
 
 
 - name: Extract the dist 
-  command: "tar xzf {{ staging_dir }}/{{ dist_archive }} --strip 1 -C {{ install_dir }}" 
+  command: "tar xzf {{ staging_dir }}/{{ identifier_dist_archive }} --strip 1 -C {{ install_dir }}" 
   sudo: yes
-  
 
 # Configure the application
 - name: Configure application
@@ -20,10 +20,10 @@
 
 # Install and start service
 - name: Install service
-  command: "{{ bin_dir }}/{{ dist_name }} install creates=/etc/init.d/{{ dist_name }}"
+  command: "{{ bin_dir }}/{{ identifier_installer_name }} install creates=/etc/init.d/{{ identifier_dist_name }}"
   
 - name: Ensure daemon is running
-  service: name={{ dist_name }} state=started
+  service: name={{ identifier_dist_name }} state=started
 
 
 

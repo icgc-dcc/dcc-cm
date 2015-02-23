@@ -12,6 +12,7 @@
 
 origin_host=${1?} && shift
 destination_host=${1?} && shift
+webhdfs_url=${1?} && shift
 username=${1?} && shift
 passwd=${1?} && shift
 initial_release_name=${1?} && shift
@@ -19,11 +20,10 @@ project_key=${1?}
 project_name=$2 && project_name=${project_name:=${project_key?}}
 project_alias=$3 && project_alias=${project_alias:=${project_key?}}
 
+release_system_files=https://seqwaremaven.oicr.on.ca/artifactory/simple/dcc-dependencies/{{ artifactory_dcc_path }}/dcc-system-files/1/dcc-system-files-1.tar.gz
 
-tmp_dir="{{ target_dir }}/dcc" && mkdir -p ${tmp_dir?}
-dcc_root_dir="{{ root_dir }}"
+tmp_dir="{{ staging_dir }}/dcc" && mkdir -p ${tmp_dir?}
 mongodb_host="{{ mongo_host }}"
-
 
 dictionary_file="${tmp_dir?}/dictionary.json"
 codelists_file="${tmp_dir?}/codelists.json"
@@ -32,12 +32,18 @@ codelists_file="${tmp_dir?}/codelists.json"
 
 echo "origin_host=${origin_host?}"
 echo "destination_host=${destination_host?}"
+echo "webhdfs_url=${webhdfs_url?}"
 echo "username=${username?}"
 echo "passwd=[...]"
 echo "initial_release_name=${initial_release_name?}"
 echo "project_key=${project_key?}"
 echo "project_name=${project_name?}"
 echo "project_alias=${project_alias?}"
+echo "release_system_files=${release_system_files?}"
+echo "tmp_dir=${tmp_dir?}"
+echo "mongodb_host=${mongodb_host?}"
+echo "dictionary_file=${dictionary_file?}"
+echo "codelists_file=${codelists_file?}"
 
 # ===========================================================================
 
@@ -55,15 +61,10 @@ function extract_version() {
 echo "dropping mongo icgc-dev database"
 /usr/bin/mongo --host ${mongodb_host} icgc-dev --eval "db.dropDatabase()"
 
-
-# Clean file system, if it exists #TODO: This is in HDFS!!!!!
-#echo "removing /mnt/dcc-portal/dcc_root_dir/*"
-#rm -rvf ${dcc_root_dir?}
-
 # download origin dictionary and ensure state is OPENED
 echo "getting dictionary"
 echo "[" > ${dictionary_file?}
-curl ${origin_host?}/ws/nextRelease/dictionary   -H "Accept: application/json" | ensure_open >> ${dictionary_file?} && echo "OK" || echo "KO"
+curl -v -XGET ${origin_host?}/ws/nextRelease/dictionary -H "Accept: application/json" | ensure_open >> ${dictionary_file?} && echo "OK" || echo "KO"
 echo "]" >> ${dictionary_file?}
 
 # download origin codelists
@@ -110,6 +111,19 @@ curl -XPOST ${destination_host?}/ws/seed/dictionaries -H "Accept: application/js
 echo "creating initial release"
 curl -XPUT ${destination_host?}/ws/releases      -H "Accept: application/json" -H "Authorization: X-DCC-Auth $(echo -n ${username?}:${passwd?} | base64)" -H "Content-Type: application/json" \
  --data "{ \"name\" : \"${initial_release_name?}\", \"dictionaryVersion\" : \"${dictionary_version?}\", \"submissions\": [], \"state\" : \"OPENED\" }" && echo "OK" || echo "KO"
+
+echo "adding system file to release"
+# get the .system files
+cd $tmp_dir && curl -s -gq $release_system_files | tar xzv --strip-components=1
+path=icgc/submission/${initial_release_name?}/.system
+# Create the directory.
+curl -s -i -X PUT "${webhdfs_url?}/webhdfs/v1/${path?}?user.name=hdf&op=MKDIRS"
+for f in meth_array_probes.*.txt
+do
+  file=$path/$f
+  data_node_url=`curl -s -i -X PUT "${webhdfs_url?}/webhdfs/v1/${file?}?user.name=hdfs&op=CREATE" | awk '/Location: (.*)/ {print $2}' | tail -n 1`
+  curl -s -i -X PUT -T $f "${data_node_url?}/webhdfs/v1/${file?}?user.name=hdfs&op=CREATE"
+done
 
 # add a project
 echo "adding project"

@@ -1,0 +1,15 @@
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+#
+# Description:
+#   Downloader playbook:
+#     Uses ETL-Main node to put oozie workflow files and configurations in HDFS.
+
+- include: tasks/setup.yml group=downloader
+
+- hosts: etl_main
+  gather_facts: no
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+  roles:
+    - downloader
