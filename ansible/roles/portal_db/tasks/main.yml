@@ -9,17 +9,15 @@
     - "portal_schema.sql"
  
 - name: Create identifier database
-  postgresql_db: name="dcc_portal" state=present
+  postgresql_db: name="{{ portal_username }}" state=present
 
 - name: Create DCC User
-  postgresql_user: db="dcc_portal" name="dcc" login_password="dcc"
+  postgresql_user: db="{{ portal_username }}" name="dcc" login_password="dcc"
 
 # Explicit set password, otherwise have to use hash above
 - name: Set password
-  shell: psql -d dcc_portal -c "ALTER USER dcc with PASSWORD 'dcc'"
+  shell: "psql -d {{ portal_username }} -c \"ALTER USER dcc with PASSWORD 'dcc'\""
   ignore_errors: yes
 
 - name: Initialize identifier
-  command: psql -d dcc_portal -f {{ item }}
-  with_items:
-    - "/tmp/scripts/portal_schema.sql"
+  command: "psql -d {{ portal_username }} -f /tmp/scripts/portal_schema.sql"
