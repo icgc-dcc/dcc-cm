@@ -9,12 +9,12 @@
 
 - name: Extract dcc-exporter
   unarchive:  src="{{ staging_dir }}/{{ exporter_dist_filename }}"
-              dest="{{ dcc_user_directory }}"
+              dest="{{ dcc_home }}"
               copy=no
 
 - name: Update the symbolic link to the distribution
   file: path="{{ exporter_root }}"
-        src="{{ dcc_user_directory }}/{{ exporter_dist_fullname }}"
+        src="{{ dcc_home }}/{{ exporter_dist_fullname }}"
         state=link 
         force=yes
 
@@ -54,6 +54,6 @@
 
 # https://github.com/ansible/ansible/issues/548
 - name: Make sure dcc_dev owns everything
-  file: path="{{ dcc_user_directory }}" 
+  file: path="{{ dcc_home }}" 
         owner={{ dcc_user }}
         recurse=yes

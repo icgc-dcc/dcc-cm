@@ -9,12 +9,12 @@
 
 - name: Extract dcc-annotator ==> /u/dcc_dev/dcc_annotator
   unarchive:  src="{{ staging_dir }}/{{ annotator_dist_filename }}"
-              dest="{{ dcc_user_directory }}"
+              dest="{{ dcc_home }}"
               copy=no
 
 - name: Update the symbolic link to the distribution
   file: path="{{ annotator_root }}"
-        src="{{ dcc_user_directory }}/{{ annotator_dist_fullname }}"
+        src="{{ dcc_home }}/{{ annotator_dist_fullname }}"
         state=link 
         owner="{{ dcc_user }}"
         force=yes
@@ -33,6 +33,6 @@
 
 # https://github.com/ansible/ansible/issues/548
 - name: Make sure dcc_dev owns everything
-  file: path="{{ dcc_user_directory }}" 
+  file: path="{{ dcc_home }}" 
         owner={{ dcc_user }}
         recurse=yes
