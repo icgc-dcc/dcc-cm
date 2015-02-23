@@ -4,7 +4,7 @@
   file: path="{{ exporter_home }}"
         state=absent
 
-- name: get exporter tarball from artifactory
+- name: Get exporter tarball from artifactory
   get_url:  url="{{ exporter_dist_url }}" 
             dest="{{ staging_dir }}/{{ exporter_dist_filename }}" 
             mode=644

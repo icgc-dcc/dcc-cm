@@ -1,6 +1,0 @@
-# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
-
-jdk_version: 1.8.0_11
-jdk_download_url: "http://download.oracle.com/otn-pub/java/jdk/8u11-b12/jdk-8u11-linux-x64.tar.gz"
-jdk_download_filename: jdk-8u11-linux-x64.tar.gz
-java_install_dir: /usr/lib/jvm

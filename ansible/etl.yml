@@ -61,7 +61,7 @@
     - mongodb
 
 - hosts: hadoop_worker
-  gather_facts: False
+  gather_facts: no
   sudo: yes
   vars_files:
     - "vars/main.yml"

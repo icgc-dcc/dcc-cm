@@ -3,10 +3,10 @@
 - name: Update apt-get 
   apt:  update_cache=yes
 
-- name: install python-apt
+- name: Install python-apt
   raw:  "apt-get install -y python-apt"
 
-- name: install ntp
+- name: Install ntp
   apt:  pkg=ntp 
         state=latest
   notify: start ntp    
@@ -22,5 +22,5 @@
 - name: Copy over Cloudera Manager repo list
   template: src="cloudera.list.j2" dest="/etc/apt/sources.list.d/cloudera.list" mode=644 force=yes
 
-- name: update the repositories
+- name: Update the repositories
   apt: update_cache=yes
