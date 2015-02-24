@@ -51,8 +51,8 @@
 
 - name: Patch downloader user
   lineinfile: dest="{{ exporter_home }}/bin/setenv.sh" 
-              regexp="^JOB_USER=downloader" 
-              line="JOB_USER=hdfs"
+              regexp="^JOB_USER={{ downloader_user }}" 
+              line="JOB_USER={{ hadoop_username }}"
 
 # https://github.com/ansible/ansible/issues/548
 - name: Make sure dcc_dev owns everything

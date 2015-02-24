@@ -22,10 +22,10 @@ RUN pip install cm-api
 ENV ANSIBLE_HOST_KEY_CHECKING false
 
 # Define mountable directories.
-VOLUME ["/data"]
+VOLUME ["/Users"]
 
 # Define working directory.
-WORKDIR /data
+WORKDIR /Users
 
 # Define default command.
 CMD ["bash"]

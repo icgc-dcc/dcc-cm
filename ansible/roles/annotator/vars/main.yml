@@ -11,6 +11,6 @@ annotator_dist_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{
 
 snpeff_resource_dir: /tmp/dcc-etl-annotator
 snpeff_resource_url: "{{ artifactory_deps_url }}/{{ artifactory_dcc_path }}"
-snpeff_database_version: {{ reference_genome_filename }}
-snpeff_reference_genome_version: {{ reference_genome_filename }}
-snpeff_gene_build_version: {{ reference_genome_build }}
+snpeff_database_version: "{{ reference_genome_filename }}"
+snpeff_reference_genome_version: "{{ reference_genome_filename }}"
+snpeff_gene_build_version: "{{ reference_genome_build }}"

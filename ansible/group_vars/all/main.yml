@@ -105,6 +105,7 @@ elasticsearch_host: "{{ server_prefix }}-elasticsearch"
 elasticsearch_uri: "es://{{ elasticsearch_host }}:9300"
 
 # Downloader Settings
+downloader_user: downloader
 downloader_user_dir: /user/downloader
 downloader_user_workflows_dir: "{{ downloader_user_dir }}/workflows"
 download_app_path: "{{ hadoop_name_node }}{{ downloader_user_workflows_dir }}/archive-main"
