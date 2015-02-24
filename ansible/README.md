@@ -68,6 +68,6 @@ You can also execute playbooks individually:
 $ ansible-playbook -i config/hosts submission.yml
 ```
 
-### To Dos:
+### TODOs:
 
 A list can be found [here.](https://jira.oicr.on.ca/browse/DCC-2962)
