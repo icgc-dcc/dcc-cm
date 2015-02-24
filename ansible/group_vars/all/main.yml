@@ -6,7 +6,7 @@
 # Server name prefix
 server_prefix: dcc
 
-# Username and directory
+# User name and directory
 dcc_user: dcc_dev
 dcc_home: "/u/{{dcc_user}}"
 
@@ -17,6 +17,9 @@ repo_dir: "{{ etl_home }}/git/dcc-etl"
 
 # Directories
 staging_dir: /tmp
+nfs_dir: /nfs
+hdfs_icgc_home_dir: /icgc
+hdfs_fuse_mount_dir: /hdfs/dcc
 
 release_name: test18-0-0
 
@@ -87,7 +90,6 @@ hadoop_name_node: "hdfs://{{ server_prefix }}-hadoop-worker-1:8020"
 hadoop_zookeeper_quorum: "{{ server_prefix }}-hadoop-worker-1"
 hadoop_oozie_node: "http://{{ server_prefix }}-hadoop-worker-1:11000/oozie"
 hadoop_username: hdfs
-hdfs_fuse_mount_dir: /hdfs/dcc
 
 # Postgres Settings
 postgresql_user: dcc
