@@ -1,5 +1,4 @@
-ICGC DCC - Docker Ansible
-===
+# ICGC DCC - Docker & Ansible
 
 Ansible client environment with OpenStack python modules and Cloudera Manager python API module installed.
 
