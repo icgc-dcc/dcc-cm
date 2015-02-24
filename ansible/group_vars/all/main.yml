@@ -34,12 +34,12 @@ mongodb_version: 2.4.1
 postgresql_version: 9.2
 
 # DCC Components, typically retrieved from Artifactory
-annotator_version: 10-cdh-java8
-cli_version: 10-cdh-java8
-downloader_workflows_dist_version: 10-cdh-java8
-exporter_dist_version: 10-cdh-java8
-identifier_dist_version: 10-cdh-java8
-portal_dist_version: 10-cdh-java8
+annotator_version: 3.8.1.0-SNAPSHOT
+cli_version: 3.8.1.0-SNAPSHOT
+downloader_workflows_dist_version: 3.8.1.0-SNAPSHOT
+exporter_dist_version: 3.8.1.0-SNAPSHOT
+identifier_dist_version: 3.8.1.0-SNAPSHOT
+portal_dist_version: 3.8.1.0-SNAPSHOT
 
 ################################################################################
 # DCC Resources, DCC Dependencies
