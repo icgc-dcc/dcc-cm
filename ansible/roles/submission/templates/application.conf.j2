@@ -28,7 +28,7 @@ shiro {
 }
 fs {
   # Root directory of DCC filesystem
-  root : "/icgc/submission"
+  root : "{{ hdfs_submission_home_dir }}"
   # FileSystem Scheme. This sets hadoop's fs.defaultFS
   url: "{{ hadoop_fs_url }}"
 }

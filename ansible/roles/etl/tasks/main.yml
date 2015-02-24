@@ -169,10 +169,6 @@
   shell: "HADOOP_USER_NAME={{ hadoop_username }} hadoop fs -mkdir {{ hdfs_icgc_home_dir }}"
   ignore_errors: yes
 
-- name: Create dcc_home_dir dir
-  shell: "HADOOP_USER_NAME={{ hadoop_username }} hadoop fs -mkdir {{ hdfs_dcc_home_dir }}"
-  ignore_errors: yes
-
 - name: Give dcc_user ownership.
   file: path="{{ etl_home }}" 
         owner={{ dcc_user }} 

@@ -8,10 +8,6 @@ annotator_jar_name: dcc-etl-annotator
 annotator_jar_filename: "{{ annotator_jar_name }}-{{ annotator_version }}.jar"
 annotator_jar_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{{ annotator_jar_name }}/{{ annotator_version }}/{{ annotator_jar_filename }}"
 
-nfs_dir: /nfs
-hdfs_fuse_mount_dir: /hdfs/dcc
-hdfs_icgc_home_dir: /icgc
-hdfs_dcc_home_dir: "{{ hdfs_icgc_home_dir }}/dcc_home_dir"
 keys_dir: "{{ etl_home }}/keys" 
 config_dir: "{{ etl_home }}/conf"
 config_project_dir: "{{ config_dir }}/projects"
