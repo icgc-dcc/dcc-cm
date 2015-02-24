@@ -1,5 +1,4 @@
 # ICGC DCC - Ansible
-===
 
 Ansible scripts for provisioning ETL, Portal, Downloader and Submission systems
 
