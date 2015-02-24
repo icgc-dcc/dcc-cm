@@ -13,9 +13,6 @@
 #
 # Hacks:
 #   - Codelists and Dictionary should not use /ws/seed
-#   
-#
-################################################################################
 
 - include: tasks/setup.yml group=submission
 
