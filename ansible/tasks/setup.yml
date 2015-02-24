@@ -4,8 +4,6 @@
 #   Setup Task: 
 #     Creates the instances defined in inventory file using create-openstack-instances task.
 #     Creates and uploads the host file for above instances to all hosts
-#
-################################################################################
 
 - name: Create the host file to be uploaded to instances
   hosts: localhost
