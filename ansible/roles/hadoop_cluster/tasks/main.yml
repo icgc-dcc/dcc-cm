@@ -6,4 +6,4 @@
   ignore_errors: yes
 
 - include: setup_cluster.yml
-  when: cluster_output.stdout.find('{{ cdh_version }}') == -1 or cluster_output.stdout.find('{{ cluster_name }}') == -1
+  when: cluster_output.stdout.find('{{ cdh_version }}') == -1 or cluster_output.stdout.find('{{ hadoop_cluster_name }}') == -1

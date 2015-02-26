@@ -8,17 +8,12 @@
 - name: Download the distribution
   get_url: "url={{ identifier_dist_url }} dest={{ staging_dir }}/{{ identifier_dist_archive }} mode=0444"
 
-
 - name: Extract the dist 
   command: "tar xzf {{ staging_dir }}/{{ identifier_dist_archive }} --strip 1 -C {{ install_dir }}" 
-  sudo: yes
 
-# Configure the application
 - name: Configure application
   template: src=settings.yml.j2 dest="{{ conf_dir }}/settings.yml"
 
-
-# Install and start service
 - name: Install service
   command: "{{ bin_dir }}/{{ identifier_installer_name }} install creates=/etc/init.d/{{ identifier_dist_name }}"
   
