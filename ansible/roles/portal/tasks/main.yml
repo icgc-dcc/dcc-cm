@@ -33,5 +33,9 @@
 - name: Copy over portal configuraiton file
   template: src="settings.yml.j2" dest="{{ portal_conf }}/settings.yml" mode=644 force=yes
 
+- name: make sure to kill the potential previously running instance
+  action: shell pkill -IO -f WrapperSimpleApp || true
+  ignore_errors: True
+
 - name: Start dcc-portal
-  shell: "{{ portal_home }}/bin/dcc-portal-api restart"
+  shell: "{{ portal_home }}/bin/dcc-portal-api start"

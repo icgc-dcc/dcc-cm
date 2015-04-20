@@ -29,17 +29,17 @@
 
 # Patch configurations: FIXME: should be parameterized in overarch
 - name: Patch zookeeper location
-  lineinfile: dest="{{ exporter_home }}/scripts/pig/bucket.pig" 
+  lineinfile: dest="{{ exporter_home }}/pig/bucket.pig" 
               regexp="^set hbase.zookeeper.quorum" 
               line="set hbase.zookeeper.quorum '{{ hadoop_zookeeper_quorum }}'"
 
 - name: Patch zookeeper location
-  lineinfile: dest="{{ exporter_home }}/scripts/core.py" 
+  lineinfile: dest="{{ exporter_home }}/python/core.py" 
               regexp="hbase.zookeeper.quorum" 
               line="Pig.set('hbase.zookeeper.quorum', '{{ hadoop_zookeeper_quorum }}')"
 
 - name: Patch download directory location
-  lineinfile: dest="{{ exporter_home }}/scripts/core.py" 
+  lineinfile: dest="{{ exporter_home }}/python/core.py" 
               regexp="^root = \"/tmp/download\"" 
               line="root = \"{{ download_home_path }}\""
 
