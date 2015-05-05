@@ -27,7 +27,7 @@ release_name: test18-0-0
 # All Versions, Centralized for convenience.
 ################################################################################
 
-dictionary_version: 0.10a
+dictionary_version: 0.11c
 elasticsearch_version: 0.90.1
 shiro_version: 1.2.1
 mongodb_version: 2.4.1
