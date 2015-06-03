@@ -62,7 +62,7 @@ cm_api_version = {{ cm_api_version }}
 reports_manager_host = "localhost"
 reports_manager_name = "rman"
 reports_manager_username = "rman"
-reports_manager_password = "" # need to read this from /etc/cloudera-scm-server/db.mgmt.properties
+reports_manager_password = "{{ rman_pass.stdout }}" # need to read this from /etc/cloudera-scm-server/db.mgmt.properties
 reports_manager_database_type = "postgresql"
 
 host_username = "{{ openstack_ssh_user }}"
