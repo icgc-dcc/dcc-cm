@@ -1,0 +1,11 @@
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+spark_user: spark
+spark_dist_name: spark-1.3.0-bin-2.5.0-mr1-cdh5.3.1
+spark_dist_location: /Users/SMavedati/Downloads/Spark/
+spark_dist_filename: "{{ spark_dist_name }}.tgz"
+spark_dist_file: "{{ spark_dist_location}}/{{ spark_dist_filename }}"
+spark_home: /home/spark
+spark_ssh_dir: "{{ spark_home }}/.ssh"
+spark_install_dir: "{{ spark_home }}/{{ spark_dist_name }}"
+spark_conf_dir: "{{ spark_install_dir}}/conf"

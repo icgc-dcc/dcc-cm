@@ -1,0 +1,18 @@
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+#
+# Description:
+#   Spark playbook
+#   Current issues:
+#   Slaves are hard-coded in slaves.j2 template.
+#   Same ssh key is used across cluster to allow passwordless ssh.
+
+- include: tasks/setup.yml group=spark-master
+- include: tasks/setup.yml group=spark-slaves
+
+- hosts: hadoop_worker
+  sudo: yes
+  gather_facts: no
+  vars_files:
+    - "vars/main.yml"
+  roles: 
+    - spark

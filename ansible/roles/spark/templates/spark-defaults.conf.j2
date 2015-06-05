@@ -1,0 +1,14 @@
+# Default system properties included when running spark-submit.
+# This is useful for setting default environmental settings.
+
+spark.executor.extraClassPath   /opt/cloudera/parcels/GPLEXTRAS/lib/hadoop/lib/hadoop-lzo.jar 
+spark.executor.extraLibraryPath /opt/cloudera/parcels/CDH/lib/hadoop/lib/native:/opt/cloudera/parcels/GPLEXTRAS/lib/hadoop/lib/native
+spark.driver.extraLibraryPath   /opt/cloudera/parcels/CDH/lib/hadoop/lib/native:/opt/cloudera/parcels/GPLEXTRAS/lib/hadoop/lib/native
+
+# Example:
+# spark.master                     spark://master:7077
+spark.eventLog.enabled           true
+spark.eventLog.dir               /tmp/spark/eventlog
+# spark.serializer                 org.apache.spark.serializer.KryoSerializer
+# spark.driver.memory              5g
+# spark.executor.extraJavaOptions  -XX:+PrintGCDetails -Dkey=value -Dnumbers="one two three"
