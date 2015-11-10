@@ -1,6 +1,9 @@
 [localhost]
 127.0.0.1
 
+[elasticsearch]
+dcc-elasticsearch
+
 [etl]
 dcc-etl-main
 dcc-elasticsearch

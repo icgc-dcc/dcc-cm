@@ -28,7 +28,7 @@ release_name: test18-0-0
 ################################################################################
 
 dictionary_version: 0.11c
-elasticsearch_version: 0.90.1
+elasticsearch_version: 1.4.4
 shiro_version: 1.2.1
 mongodb_version: 2.4.1
 postgresql_version: 9.2

@@ -11,5 +11,15 @@
 
 - shell: "/usr/share/elasticsearch/bin/plugin -url http://bit.ly/19zYGu2 -install knapsack" 
 
+- shell: "/usr/share/elasticsearch/bin/plugin -remove marvel"
+  ignore_errors: yes
+
+- shell: "/usr/share/elasticsearch/bin/plugin -i elasticsearch/marvel/latest" 
+
+- shell: "/usr/share/elasticsearch/bin/plugin -remove elasticsearch-HQ"
+  ignore_errors: yes
+
+- shell: "/usr/share/elasticsearch/bin/plugin -i royrusso/elasticsearch-HQ/v1.0.0"
+
 - name: Restart Elastic search
   service: name=elasticsearch state=restarted
