@@ -1,0 +1,19 @@
+elasticsearch:
+  image: elasticsearch:latest
+  command: elasticsearch
+  ports:
+    - "9200:9200"
+    - "9300:9300"
+logstash:
+  build: logstash/
+  ports:
+    - "5000:5000"
+    - "5044:5044"
+  links:
+    - elasticsearch:elasticsearch
+kibana:
+  build: kibana/
+  ports:
+    - "5601:5601"
+  links:
+    - elasticsearch:elasticsearch
