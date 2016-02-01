@@ -77,6 +77,14 @@ cache:
 # Authorization
 crowd:
   ssoUrl: {{ crowd_sso_url }}
+  ssoUrlGoogle: "https://ssoUrlGoogle?continue="
+
+oauth:
+  serviceUrl: "http://localhost:8443"
+  clientId: "mgmt"
+  clientSecret: "pass"
+  enableStrictSSL: false
+  enableHttpLogging: true
 
 # In memory data grid
 hazelcast:
@@ -105,14 +113,6 @@ elastic:
   nodeAddresses:
      - host: {{ es_host }}
        port: 9300
-
-# Genomemaps
-browser:
-  dataSources:
-     - uri: gene
-       className: org.icgc.dcc.portal.browser.ds.GeneDataSource
-     - uri: mutation
-       className: org.icgc.dcc.portal.browser.ds.MutationDataSource  
 
 # Data download
 download:
@@ -230,12 +230,8 @@ setOperation:
   maxNumberOfHits: 20000
   maxMultiplier: 3
 
-  # Settings related to the demo record
-  demoListUuid: {{ set_operation_demo_list_uuid }}
-  # Gene demo list - top 50 mutated genes in Cancer Gene census. See https://wiki.oicr.on.ca/download/attachments/60561081/Cancer_Gene_Census_Top50.txt?version=1&modificationDate=1422392030000&api=v2
-  demoListFilterParam: "TP53,NRG1,FIP1L1,CAMTA1,FHIT,PIK3CA,ALK,RUNX1,NTRK3,PDE4DIP,LPP,KRAS,PTPRK,BRAF,ZNF521,FOXP1,STAG2,GPHN,EBF1,CUX1,RANBP17,PRDM16,NF1,SETBP1,CDH11,MAML2,GOPC,ERC1,PTEN,ATRX,APC,PBX1,EGFR,ARID1A,GAS7,NCOA2,CACNA1D,ERG,SRGAP3,AKAP9,CTNNB1,EIF3E,EXT1,LHFP,RSPO2,PTPRB,NOTCH2,KMT2D,PTPRC,GPC3"
-
 # Portal release configuration
 release:
   releaseDate: {{ release_release_date }}
+  dataVersion: 2
 

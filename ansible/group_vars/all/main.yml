@@ -7,8 +7,8 @@
 server_prefix: dcc
 
 # User name and directory
-dcc_user: dcc_dev
-dcc_home: "/u/{{dcc_user}}"
+dcc_user: ubuntu
+dcc_home: "/home/{{dcc_user}}"
 
 # Some etl settings shared between roles.
 etl_home: "{{ dcc_home }}/dcc-etl"
@@ -34,12 +34,12 @@ mongodb_version: 2.4.1
 postgresql_version: 9.2
 
 # DCC Components, typically retrieved from Artifactory
-annotator_version: 3.8.1.0-SNAPSHOT
-cli_version: 3.8.1.0-SNAPSHOT
-downloader_workflows_dist_version: 3.8.1.0-SNAPSHOT
-exporter_dist_version: 3.8.1.0-SNAPSHOT
-identifier_dist_version: 3.8.1.0-SNAPSHOT
-portal_dist_version: 3.8.1.0-SNAPSHOT
+annotator_version: 3.8.27-SNAPSHOT
+cli_version: 3.8.14.2-SNAPSHOT
+downloader_workflows_dist_version: 3.8.6.2-SNAPSHOT
+exporter_dist_version: 3.8.27-SNAPSHOT
+identifier_dist_version: 3.8.9.2-SNAPSHOT
+portal_dist_version: 4.0.3-SNAPSHOT
 
 ################################################################################
 # DCC Resources, DCC Dependencies
