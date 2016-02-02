@@ -20,7 +20,7 @@ backend_interval: 5
 backend_timeout: 1
 backend_window: 5
 backend_threshold: 3
-banners: ["localhost", "***REMOVED***", "***REMOVED***"]
+banners: ["localhost"]
 
 ####################
 # vcl_fetch settings
