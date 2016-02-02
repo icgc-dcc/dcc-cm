@@ -39,7 +39,7 @@ cli_version: 3.8.14.2-SNAPSHOT
 downloader_workflows_dist_version: 3.8.6.2-SNAPSHOT
 exporter_dist_version: 3.8.27-SNAPSHOT
 identifier_dist_version: 3.8.9.2-SNAPSHOT
-portal_dist_version: 4.0.3-SNAPSHOT
+portal_dist_version: 4.0.4-SNAPSHOT
 
 ################################################################################
 # DCC Resources, DCC Dependencies
@@ -96,7 +96,7 @@ postgresql_user: dcc
 postgresql_password: dcc
 postgresql_uri: "jdbc:postgresql://{{ server_prefix }}-postgres"
 postgresql_fathmm_uri: "{{ postgresql_uri }}/fathmm?user={{postgresql_user}}&password={{postgresql_password}}"
-postgresql_portal_uri: "{{ postgresql_uri }}/dcc_portal"
+postgresql_portal_uri: "{{ postgresql_uri }}/dcc-portal"
 
 # Mongo
 mongo_host: "{{ server_prefix }}-mongo"

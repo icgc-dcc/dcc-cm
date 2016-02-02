@@ -39,3 +39,4 @@
 
 - name: Start dcc-portal
   shell: "{{ portal_home }}/bin/dcc-portal-api start"
+  ignore_errors: True
