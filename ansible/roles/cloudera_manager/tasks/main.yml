@@ -11,4 +11,5 @@
 - name: Wait for Cloudera Manager web interface to be ready
   wait_for: host=localhost
             port=7180
-            timeout=30
+            timeout=60
+  ignore_errors: yes

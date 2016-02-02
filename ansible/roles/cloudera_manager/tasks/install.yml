@@ -3,7 +3,7 @@
 - include: dependencies.yml
 
 - name: Install Cloudera Manager Server
-  action: apt pkg={{ item }} state=latest
+  action: apt pkg={{ item }} state=latest force=yes
   with_items:
     - cloudera-manager-daemons
     - cloudera-manager-server-db
