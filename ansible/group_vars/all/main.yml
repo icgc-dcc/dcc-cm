@@ -38,7 +38,7 @@ annotator_version: 3.8.27-SNAPSHOT
 cli_version: 3.8.14.2-SNAPSHOT
 downloader_workflows_dist_version: 3.8.6.2-SNAPSHOT
 exporter_dist_version: 3.8.27-SNAPSHOT
-identifier_dist_version: 3.8.9.2-SNAPSHOT
+identifier_dist_version: 4.0.2-SNAPSHOT
 portal_dist_version: 4.0.4-SNAPSHOT
 
 ################################################################################
@@ -47,10 +47,10 @@ portal_dist_version: 4.0.4-SNAPSHOT
 
 # DCC apt proxy.
 proxy_env:
-  http_proxy: ***REMOVED***
+  http_proxy: fill-in
 
 # External URLs 
-external_submission_url: ***REMOVED***
+external_submission_url: fill-in
 external_docs_url: http://docs.icgc.org
 
 # Artifactory URLS
@@ -117,7 +117,7 @@ download_static_home_path: "{{ download_home_path }}/static"
 
 # DCC Submission Server
 submission_server_dist_name: dcc-submission-server
-submission_server_dist_version: 10-cdh-java8
+submission_server_dist_version: 4.0.4-SNAPSHOT
 submission_server_dist_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}-dist.tar.gz"
 submission_server_jar_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}.jar"
 submission_server_dist_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{{ submission_server_dist_name }}/{{ submission_server_dist_version }}/{{ submission_server_dist_filename }}"
@@ -126,9 +126,9 @@ submission_server_jar_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_pa
 # Misc DCC
 identifier_uri: "http://{{ server_prefix }}-identifier:6381"
 reverse_proxy_url: "https://{{ server_prefix }}-nginx"
-icgc_url: https://***REMOVED***
+icgc_url: "fill in"
 
 # DCC ETL Contact Settings
-smtp_server: ***REMOVED***
-sender: noreply@oicr.on.ca
-recipients: "***REMOVED***" # ';' separated
+smtp_server: "fill in"
+sender: "fill in"
+recipients: "fill in" # ';' separated
