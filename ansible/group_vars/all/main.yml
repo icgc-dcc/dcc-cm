@@ -51,7 +51,7 @@ proxy_env:
 
 # External URLs 
 external_submission_url: fill-in
-external_docs_url: http://docs.icgc.org
+external_docs_url: fill-in
 
 # Artifactory URLS
 artifactory_url: http://seqwaremaven.oicr.on.ca/artifactory

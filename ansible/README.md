@@ -44,6 +44,20 @@ $ cd ansible/vars
 $ ansible-vault edit cud.yml
 ```
 
+Furthermore, there are several variables that need to be set in: `group_vars/vars/main.yml`
+
+* Proxy
+ * http_proxy
+* External URLs
+ * external_submission_url
+ * external_docs_url
+* Misc
+ * icgc_url
+* Contact
+ * smtp_server
+ * sender
+ * recipients
+
 #### 5. (Optional) Edit ssh config
 
 Edit `/etc/ssh_config` and add the following to avoid having to accept connecting to each server.
@@ -53,6 +67,7 @@ Host 10.5.74.*
 	StrictHostKeyChecking no
 	UserKnownHostsFile=/dev/null
 ```
+
 
 ### Run
 
