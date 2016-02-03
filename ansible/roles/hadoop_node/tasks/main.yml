@@ -4,7 +4,7 @@
 #   Adds the host to hadoop cluster and sets it up as gateway for various services.
 
 - name: Check Cluster State
-  command:  "curl -u 'admin:admin' localhost:7180/api/v9/hosts"
+  command:  "curl -u 'admin:admin' dcc-hadoop-manager:7180/api/v9/hosts"
   register: cluster_output
   ignore_errors: yes
 
