@@ -15,7 +15,7 @@ portal_dist_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{{ p
 
 http_port: 5381
 http_admin_port: 5382
-crowd_sso_url: "https://***REMOVED***/user?continue="
+crowd_sso_url: "https://<fill-in>/user?continue="
 
 es_index_name: "{{ release_name }}"
 es_host: "{{ elasticsearch_host }}"

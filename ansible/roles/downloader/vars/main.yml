@@ -11,4 +11,4 @@ downloader_workflows_dist_fullname: "{{ downloader_workflows_dist_name }}-{{ dow
 downloader_workflows_dist_filename: "{{ downloader_workflows_dist_fullname }}-dist.tar.gz"
 downloader_workflows_dist_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{{downloader_workflows_dist_name}}/{{downloader_workflows_dist_version}}/{{downloader_workflows_dist_filename}}"
 
-downloader_support_email: "***REMOVED***"
+downloader_support_email: "fill-in"
