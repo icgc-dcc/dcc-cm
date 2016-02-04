@@ -7,8 +7,8 @@
 server_prefix: dcc
 
 # User name and directory
-dcc_user: dcc_dev
-dcc_home: "/u/{{dcc_user}}"
+dcc_user: ubuntu
+dcc_home: "/home/{{dcc_user}}"
 
 # Some etl settings shared between roles.
 etl_home: "{{ dcc_home }}/dcc-etl"
@@ -34,12 +34,12 @@ mongodb_version: 2.4.1
 postgresql_version: 9.2
 
 # DCC Components, typically retrieved from Artifactory
-annotator_version: 3.8.1.0-SNAPSHOT
-cli_version: 3.8.1.0-SNAPSHOT
-downloader_workflows_dist_version: 3.8.1.0-SNAPSHOT
-exporter_dist_version: 3.8.1.0-SNAPSHOT
-identifier_dist_version: 3.8.1.0-SNAPSHOT
-portal_dist_version: 3.8.1.0-SNAPSHOT
+annotator_version: 3.8.27-SNAPSHOT
+cli_version: 3.8.14.2-SNAPSHOT
+downloader_workflows_dist_version: 3.8.6.2-SNAPSHOT
+exporter_dist_version: 3.8.27-SNAPSHOT
+identifier_dist_version: 4.0.2-SNAPSHOT
+portal_dist_version: 4.0.4-SNAPSHOT
 
 ################################################################################
 # DCC Resources, DCC Dependencies
@@ -47,11 +47,11 @@ portal_dist_version: 3.8.1.0-SNAPSHOT
 
 # DCC apt proxy.
 proxy_env:
-  http_proxy: ***REMOVED***
+  http_proxy: fill-in
 
 # External URLs 
-external_submission_url: ***REMOVED***
-external_docs_url: http://docs.icgc.org
+external_submission_url: https://submissions.dcc.icgc.org
+external_docs_url: fill-in
 
 # Artifactory URLS
 artifactory_url: http://seqwaremaven.oicr.on.ca/artifactory
@@ -71,7 +71,7 @@ reference_genome_url: "{{ artifactory_deps_url }}/{{ artifactory_dcc_path }}/{{ 
 
 # Cloudera
 cloudera_major: 5
-cloudera_version: "{{ cloudera_major }}.3.1"
+cloudera_version: "{{ cloudera_major }}.3.9"
 cdh_version: "CDH{{ cloudera_major }}"
 cdh_version_number: "{{ cloudera_version }}"
 cm_version: "{{ cloudera_version }}"
@@ -82,7 +82,7 @@ java_install_dir: /usr/java
 java_home: "{{ java_install_dir }}/jdk"
 hadoop_cluster_name: DCC
 hadoop_cloudera_manager: "{{ server_prefix }}-hadoop-manager"
-hadoop_workers: "{{ server_prefix }}-hadoop-worker-1,{{ server_prefix }}-hadoop-worker-2,{{ server_prefix }}-hadoop-worker-3,{{ server_prefix }}-hadoop-worker-4"
+hadoop_workers: "{{ server_prefix }}-hadoop-worker-1,{{ server_prefix }}-hadoop-worker-2,{{ server_prefix }}-hadoop-worker-3,{{ server_prefix }}-hadoop-worker-4,{{ server_prefix }}-hadoop-worker-5,{{ server_prefix }}-hadoop-worker-6,{{ server_prefix }}-hadoop-worker-7,{{ server_prefix }}-hadoop-worker-8"
 hadoop_fs_url: "hdfs://{{ server_prefix }}-hadoop-worker-1"
 hadoop_job_tracker: "{{ server_prefix }}-hadoop-worker-1:8021"
 hadoop_name_node_host: "{{ server_prefix }}-hadoop-worker-1"
@@ -91,12 +91,16 @@ hadoop_zookeeper_quorum: "{{ server_prefix }}-hadoop-worker-1"
 hadoop_oozie_node: "http://{{ server_prefix }}-hadoop-worker-1:11000/oozie"
 hadoop_username: hdfs
 
+# Spark Settings
+spark_master: "{{ server_prefix }}-hadoop-worker-1"
+spark_slaves: "{{ server_prefix }}-hadoop-worker-2,{{ server_prefix }}-hadoop-worker-3,{{ server_prefix }}-hadoop-worker-4,{{ server_prefix }}-hadoop-worker-5,{{ server_prefix }}-hadoop-worker-6,{{ server_prefix }}-hadoop-worker-7,{{ server_prefix }}-hadoop-worker-8"
+
 # Postgres Settings
 postgresql_user: dcc
 postgresql_password: dcc
 postgresql_uri: "jdbc:postgresql://{{ server_prefix }}-postgres"
 postgresql_fathmm_uri: "{{ postgresql_uri }}/fathmm?user={{postgresql_user}}&password={{postgresql_password}}"
-postgresql_portal_uri: "{{ postgresql_uri }}/dcc_portal"
+postgresql_portal_uri: "{{ postgresql_uri }}/dcc-portal"
 
 # Mongo
 mongo_host: "{{ server_prefix }}-mongo"
@@ -117,7 +121,7 @@ download_static_home_path: "{{ download_home_path }}/static"
 
 # DCC Submission Server
 submission_server_dist_name: dcc-submission-server
-submission_server_dist_version: 10-cdh-java8
+submission_server_dist_version: 4.0.4-SNAPSHOT
 submission_server_dist_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}-dist.tar.gz"
 submission_server_jar_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}.jar"
 submission_server_dist_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{{ submission_server_dist_name }}/{{ submission_server_dist_version }}/{{ submission_server_dist_filename }}"
@@ -126,9 +130,9 @@ submission_server_jar_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_pa
 # Misc DCC
 identifier_uri: "http://{{ server_prefix }}-identifier:6381"
 reverse_proxy_url: "https://{{ server_prefix }}-nginx"
-icgc_url: https://***REMOVED***
+icgc_url: "fill in"
 
 # DCC ETL Contact Settings
-smtp_server: ***REMOVED***
-sender: noreply@oicr.on.ca
-recipients: "***REMOVED***" # ';' separated
+smtp_server: "fill in"
+sender: "fill in"
+recipients: "fill in" # ';' separated

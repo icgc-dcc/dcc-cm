@@ -3,6 +3,11 @@
 - name: Set python script variable
   set_fact: python_script="roles/hadoop_cluster/files/setup_cluster.py"
 
+- name: Read embedded postgres password from Manager host
+  sudo: yes
+  shell:  "grep REPORTSMANAGER.db.password /etc/cloudera-scm-server/db.mgmt.properties | rev | cut -d= -f1 | rev"
+  register: rman_pass
+
 - name: Remove previous setup script
   local_action: "command rm -f {{ python_script }}"
   sudo: no

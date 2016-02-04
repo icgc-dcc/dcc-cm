@@ -32,6 +32,8 @@
   lineinfile: dest="{{ exporter_home }}/pig/bucket.pig" 
               regexp="^set hbase.zookeeper.quorum" 
               line="set hbase.zookeeper.quorum '{{ hadoop_zookeeper_quorum }}'"
+              state=present
+              create=yes
 
 - name: Patch zookeeper location
   lineinfile: dest="{{ exporter_home }}/python/core.py" 

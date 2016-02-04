@@ -50,7 +50,7 @@ cdh_version_number = "{{ cdh_version_number }}"
 
 java_home = "{{ java_home }}"
 
-gplextras_parcel_repo = "http://archive-primary.cloudera.com/gxplextras5/parcels/" + cdh_version_number
+gplextras_parcel_repo = "http://archive-primary.cloudera.com/gplextras5/parcels/" + cdh_version_number
 
 cm_port = 7180
 cm_username = "admin"
@@ -62,7 +62,7 @@ cm_api_version = {{ cm_api_version }}
 reports_manager_host = "localhost"
 reports_manager_name = "rman"
 reports_manager_username = "rman"
-reports_manager_password = "" # need to read this from /etc/cloudera-scm-server/db.mgmt.properties
+reports_manager_password = "{{ rman_pass.stdout }}" # need to read this from /etc/cloudera-scm-server/db.mgmt.properties
 reports_manager_database_type = "postgresql"
 
 host_username = "{{ openstack_ssh_user }}"
@@ -200,7 +200,7 @@ def setup_cluster():
         cmd = cmd.fetch()
 
     if cmd.success is not True:
-        print "The first run command failed: " + cmd.resultMessage()
+        print "The first run command failed: " + cmd.resultMessage
         exit(0)
 
     print "First run successfully executed. Cluster has been set up!"

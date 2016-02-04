@@ -25,6 +25,7 @@
   with_items:
     - { dest: '/etc/profile', regexp: '^JAVA_HOME={{ java_install_dir }}/jdk', line: 'JAVA_HOME={{ java_install_dir }}/jdk', state: 'present' }
     - { dest: '/etc/profile', regexp: '^PATH=.*JAVA_HOME.*', line: 'PATH=$PATH:$HOME/bin:$JAVA_HOME/bin', state: 'present' }
+    - { dest: '/etc/environment', regexp: '^JAVA_HOME={{ java_install_dir }}/jdk', line: 'JAVA_HOME={{ java_install_dir }}/jdk', state: 'present' }
 
 - name: Inform the system where JDK is located
   command: "{{ item }}"

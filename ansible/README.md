@@ -44,6 +44,20 @@ $ cd ansible/vars
 $ ansible-vault edit cud.yml
 ```
 
+Furthermore, there are several variables that need to be set in: `group_vars/vars/main.yml`
+
+* Proxy
+ * http_proxy
+* External URLs
+ * external_submission_url
+ * external_docs_url
+* Misc
+ * icgc_url
+* Contact
+ * smtp_server
+ * sender
+ * recipients
+
 #### 5. (Optional) Edit ssh config
 
 Edit `/etc/ssh_config` and add the following to avoid having to accept connecting to each server.
@@ -53,6 +67,7 @@ Host 10.5.74.*
 	StrictHostKeyChecking no
 	UserKnownHostsFile=/dev/null
 ```
+
 
 ### Run
 
@@ -66,6 +81,47 @@ You can also execute playbooks individually:
 
 ```bash
 $ ansible-playbook -i config/hosts submission.yml
+```
+
+### Extra Tips and Notes:
+
+#### Data
+
+The playbooks do not load any production data into either Elasticsearch or Postgres. This
+is left up to the user. 
+
+#### Hosts
+Ensure that the host images for the openstack instances provide enough resources. 
+The hosts provisioned by the playbook in testing had the following configuration
+
+|   |   |
+|---|---|
+| OS | Ubuntu 12.04 |
+| RAM | 16GB |
+| # CPU | 8 |
+| Storage | 160GB |
+
+#### Hadoop and Cloudera
+
+Be aware that during setup of the hadoop cluster timeouts could occur, such as waiting for the
+Cloudera manager to come up. Generally, simply rerunning the playbook should be fine.
+
+The python setup script responsible for obtaining the parcels for CDH however is not idempotent, 
+so a failure here might require a rebuild of the cluster.
+
+It is a good idea that once the hadoop cluster is provisioned, that you inspect the manager to ensure
+the nodes are up and their services are enabled. The created NameNode can easily provision more 
+RAM than you provided it, so that is something to be aware of. Also ensure the configuration on the nodes
+is not stale.
+
+#### Software
+All downloaded software from ICGC comes with install scripts. Should you require a more up to date
+version of any of the software, the install script should provide you with the functionality to update
+the software. 
+
+Example installing a specific version:
+```bash
+$ ./install -r 4.0.4
 ```
 
 ### TODOs:

@@ -1,5 +1,4 @@
 # Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 
 dependencies:
-  - { role: jdk}
-  - { role: cloudera_manager}
+  - { role: jdk, java_install_dir: "{{ java_install_dir }}" }

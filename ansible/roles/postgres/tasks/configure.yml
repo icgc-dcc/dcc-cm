@@ -6,7 +6,7 @@
           state=present
   register: shmmax
 
-- name: Set kerel shared memory
+- name: Set kernel shared memory
   sysctl: name=kernel.shmall 
           value=4194304
           state=present

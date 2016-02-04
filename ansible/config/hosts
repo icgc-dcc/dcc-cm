@@ -11,7 +11,7 @@ dcc-mongo
 dcc-identifier
 dcc-postgres
 dcc-hadoop-manager
-dcc-hadoop-worker-[1:4]
+dcc-hadoop-worker-[1:8]
 
 [submission]
 dcc-submission-main
@@ -29,3 +29,9 @@ dcc-hadoop-worker-[1:4]
 
 [downloader]
 dcc-etl-main
+
+[spark-master]
+dcc-hadoop-worker-1
+
+[spark-slaves]
+dcc-hadoop-worker-[2:8]

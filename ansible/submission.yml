@@ -16,6 +16,14 @@
 
 - include: tasks/setup.yml group=submission
 
+- hosts: hadoop_worker
+  gather_facts: no
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+  roles: 
+    - jdk
+
 - hosts: hadoop_manager
   gather_facts: no
   sudo: yes

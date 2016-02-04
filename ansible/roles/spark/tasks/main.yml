@@ -1,0 +1,63 @@
+# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- name: Wipe out the spark user home
+  file: path="{{ spark_home }}"
+        state=absent
+
+- name: Ensure spark user is present
+  user: name={{ spark_user }} home={{ spark_home }} shell=/bin/bash state=present
+
+- name: Ensure spark user directories are present
+  file: path={{ item }} state=directory
+  with_items:
+     - "{{ spark_home }}"
+     - "{{ spark_ssh_dir }}"
+
+- name: Copy private key
+  copy: src="keys/{{ item }}" dest="{{ spark_ssh_dir }}/{{ item }}" mode=0600
+  with_items:
+    - id_rsa
+
+- name: Copy public key
+  copy: src="keys/{{ item }}" dest="{{ spark_ssh_dir }}/{{ item }}" mode=0644
+  with_items:
+    - id_rsa.pub
+
+- name: Copy public key to authorized keys
+  copy: src="keys/{{ item }}" dest="{{ spark_ssh_dir }}/authorized_keys" mode=0644
+  with_items:
+    - id_rsa.pub
+
+
+# Currently there are no supported Spark distributions for CDH5
+# When that's available, use this method for downloading Spark 
+# - name: Download Spark distribution
+#   command: "wget '{{ spark_download_url }}' chdir=/tmp creates=/tmp/{{ spark_download_filename }}"
+
+# For now, copy our custom version.
+- name: Copy custom Spark distribution file to the temp location.
+  copy: src={{ spark_dist_file }} dest=/tmp
+
+- name: Unpack the compressed Spark distribution
+  command: tar -xvzf /tmp/{{ spark_dist_filename }} chdir={{ spark_home }} creates={{ spark_home }}/{{ spark_dist_name }}
+
+- name: configure spark
+  template: src={{ item }}.j2 
+            dest={{ spark_conf_dir }}/{{ item }} 
+            owner={{ spark_user }} 
+            force=yes
+  with_items:
+     - spark-defaults.conf
+     - spark-env.sh
+     - slaves
+
+- name: Give spark ownership.
+  file: path="{{ spark_home }}" 
+        owner={{ spark_user }} 
+        recurse=yes
+
+- name: Start Spark cluster  
+  remote_user: spark
+  shell: "{{ spark_home }}/{{ spark_dist_name }}/sbin/start-all.sh"
+  when: ansible_hostname == "dcc-hadoop-worker-1"
+  ignore_errors: true
