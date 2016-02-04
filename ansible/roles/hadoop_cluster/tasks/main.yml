@@ -1,7 +1,7 @@
 # Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 
 - name: Check Cluster State
-  command:  "curl -u 'admin:admin' dcc-hadoop-manager:7180/api/v9/clusters/"
+  command:  "curl -u 'admin:admin' localhost:7180/api/v9/clusters/"
   register: cluster_output
   ignore_errors: yes
 

@@ -200,7 +200,7 @@ def setup_cluster():
         cmd = cmd.fetch()
 
     if cmd.success is not True:
-        print "The first run command failed: " + cmd.resultMessage()
+        print "The first run command failed: " + cmd.resultMessage
         exit(0)
 
     print "First run successfully executed. Cluster has been set up!"

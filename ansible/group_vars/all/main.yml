@@ -50,7 +50,7 @@ proxy_env:
   http_proxy: fill-in
 
 # External URLs 
-external_submission_url: fill-in
+external_submission_url: https://submissions.dcc.icgc.org
 external_docs_url: fill-in
 
 # Artifactory URLS
@@ -71,7 +71,7 @@ reference_genome_url: "{{ artifactory_deps_url }}/{{ artifactory_dcc_path }}/{{ 
 
 # Cloudera
 cloudera_major: 5
-cloudera_version: "{{ cloudera_major }}.3.1"
+cloudera_version: "{{ cloudera_major }}.3.9"
 cdh_version: "CDH{{ cloudera_major }}"
 cdh_version_number: "{{ cloudera_version }}"
 cm_version: "{{ cloudera_version }}"
