@@ -127,3 +127,31 @@ $ ./install -r 4.0.4
 ### TODOs:
 
 A list can be found [here.](https://jira.oicr.on.ca/browse/DCC-2962)
+
+### Misc
+
+##### Java Install
+Installs the latest Oracle Java 8 using PPA repository.
+
+- Create a custom playbook
+
+```
+- name: Installs Oracle JDK with PPA
+  hosts: all
+  gather_facts: no
+  sudo: yes
+  roles:
+    - jdk-ppa
+```
+- Create a custom hosts file
+
+```
+[java]
+127.0.0.1
+```
+
+- Run the playbook
+
+```
+ansible-playbook -i java_hosts java.yml
+```
