@@ -5,6 +5,8 @@
 # /_____/\____/\____/  /_/    \____/_/   \__/\__,_/_/  /_____/\___/_/ /_/ /_/\____/ 
 #                                                                                  
 # Banner @ http://goo.gl/WVEzIZ
+#
+# A docker container created from this Dockerfile is located following the link https://hub.docker.com/r/icgcdcc/dcc-portal-demo/
 
 FROM java:8-jre
 MAINTAINER ICGC <dcc-support@icgc.org>
@@ -44,7 +46,7 @@ RUN \
   mv dcc-download-server-* dcc-download-server && \
   sed -i.bak s/spring.profiles.active=.*$/spring.profiles.active=development/ $DCC_HOME/dcc-download-server/conf/wrapper.conf && \
   rm $DCC_HOME/dcc-download-server/conf/wrapper.conf.bak
-COPY download-application.yml $DCC_HOME/dcc-download-server/conf/application.yml
+COPY conf/download.yml $DCC_HOME/dcc-download-server/conf/application.yml
 
 #
 # Download import utility installation
@@ -64,14 +66,15 @@ RUN \
   rm $DCC_HOME/dcc-portal-server/conf/wrapper.conf.bak && \
   sed -i.bak '2iunset MAIL' $DCC_HOME/dcc-portal-server/bin/dcc-portal-server && \
   rm $DCC_HOME/dcc-portal-server/bin/dcc-portal-server.bak
-COPY portal-application.yml $DCC_HOME/dcc-portal-server/conf/application.yml
+COPY conf/portal.yml $DCC_HOME/dcc-portal-server/conf/application.yml
 
 #
 # Post-installation
 #
 RUN \ 
+  mkdir $DCC_HOME/bin \
   chown -R dcc:dcc $DCC_HOME && \
   rm -r /var/log/elasticsearch /tmp/* /var/lib/apt/lists/*
 
-ENTRYPOINT ["/opt/dcc/import_data.sh"]
-COPY import_data.sh $DCC_HOME/import_data.sh
+ENTRYPOINT ["/opt/dcc/bin/portal.sh"]
+COPY bin/portal.sh $DCC_HOME/bin/portal.sh

@@ -1,7 +1,7 @@
 # ICGC DCC - Portal Demo
 
 
-ICGC DCC Portal Demo is a docker container that allows to configure and run a standalone version of the [ICGC DCC Portal.](https://dcc.icgc.org/)
+ICGC DCC Portal Demo is a docker container that allows to configure and run a standalone version of the [ICGC DCC Portal.](https://dcc.icgc.org/).
 
 **NOTE:** A portal demo container should be used to demo purposes only and is not intended for production environments.
 
@@ -47,24 +47,24 @@ With this command a smaller amount of data will be downloaded and loaded into th
 
 #### Manual data download
 
-Sometime users might experience difficulties with data downloads because of various reasons. It is possible to manually download the required data and place it to appropriate location in the DCC data directory. After the data is downloaded it is possible to skip the download step during the data import process.
+Sometime users might experience difficulties with data downloads because of various reasons. For example, user's organization might allow large data downloads during defined period of time. It is possible to manually download the required data and place it to appropriate location in the DCC data directory. After the data is downloaded it is possible to skip the download step during the data import process.
 
-To download data manually following steps should be performed. Here we assume that the DCC data directory is located in `/mnt/dcc_data` directory.
+To download data manually following steps should be performed. Here we assume that the DCC data directory is located in `/mnt` directory.
 
  - create temporary download directory
 
 ```shell
-mkdir /mnt/dcc_data/tmp
+mkdir /mnt/tmp
 ```
  - download the archives
 
 ```shell
-wget --no-check-certificate -O /mnt/dcc_data/repository.tar.gz https://download.icgc.org/exports/repository.tar.gz
-wget --no-check-certificate -O /mnt/dcc_data/data.open.tar https://download.icgc.org/exports/data.open.tar
+wget --no-check-certificate -O /mnt/repository.tar.gz https://download.icgc.org/exports/repository.tar.gz
+wget --no-check-certificate -O /mnt/data.open.tar https://download.icgc.org/exports/data.open.tar
 
 # Or the following command instead of the previous one if only one project should be imported
-wget --no-check-certificate -O /mnt/dcc_data/data.open.tar https://download.icgc.org/exports/data.open.tar?project=<project_code>
-wget --no-check-certificate -O /mnt/dcc_data/release.tar https://download.icgc.org/exports/release.tar
+wget --no-check-certificate -O /mnt/data.open.tar https://download.icgc.org/exports/data.open.tar?project=<project_code>
+wget --no-check-certificate -O /mnt/release.tar https://download.icgc.org/exports/release.tar
 ```
 
 **Note:** `wget` command does not recognize our SSL certificate as a valid one thus `--no-check-certificate` flag should be used.
@@ -72,13 +72,13 @@ wget --no-check-certificate -O /mnt/dcc_data/release.tar https://download.icgc.o
 After the data is downloaded use the `-s` flag with the `import` command to skip data download.
 
 ```shell
-docker run -v </path/to/mount/point>:/mnt/dcc_data -it --rm icgcdcc/dcc-portal-demo import -s
+docker run -v /mnt:/mnt/dcc_data -it --rm icgcdcc/dcc-portal-demo import -s
 ```
 
 or the next command in case of one project import
 
 ```shell
-docker run -v </path/to/mount/point>:/mnt/dcc_data -it --rm icgcdcc/dcc-portal-demo import -p <project_name> -s
+docker run -v /mnt:/mnt/dcc_data -it --rm icgcdcc/dcc-portal-demo import -p <project_name> -s
 ```
 
 After the data is successfully imported it can be deleted from the `/mnt/dcc_data/tmp` directory.
