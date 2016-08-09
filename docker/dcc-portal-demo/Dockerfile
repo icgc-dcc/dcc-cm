@@ -72,7 +72,7 @@ COPY conf/portal.yml $DCC_HOME/dcc-portal-server/conf/application.yml
 # Post-installation
 #
 RUN \ 
-  mkdir $DCC_HOME/bin \
+  mkdir $DCC_HOME/bin && \
   chown -R dcc:dcc $DCC_HOME && \
   rm -r /var/log/elasticsearch /tmp/* /var/lib/apt/lists/*
 
