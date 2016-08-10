@@ -1,13 +1,13 @@
 # ICGC DCC - Portal Demo
 
 
-ICGC DCC Portal Demo is a docker container that allows to configure and run a standalone version of the [ICGC DCC Portal.](https://dcc.icgc.org/).
+The ICGC DCC Portal Demo is a docker container that allows a user to configure and run a standalone version of the [ICGC DCC Portal](https://dcc.icgc.org/).
 
-**NOTE:** A portal demo container should be used to demo purposes only and is not intended for production environments.
+**NOTE:** This container should be used for demo purposes only and is not intended for production environments.
 
 ## Download
 
-A portal demo container could be downloaded from the [Docker Hub](https://hub.docker.com/r/icgcdcc/dcc-portal-demo/).
+A portal demo container can be downloaded from [Docker Hub](https://hub.docker.com/r/icgcdcc/dcc-portal-demo/).
 
 Docker pull command:
 
@@ -15,9 +15,9 @@ Docker pull command:
 docker pull icgcdcc/dcc-portal-demo
 ```
 
-## Import data
+## Import Data
 
-Data which is required to power the portal is stored outside of the container making it reusable and reducing size of the container. The container expects that data directory is attached to the container as a volume to `/mnt/dcc_data` directory. Make sure it has enough hard drive space and the production dataset is quite large: 
+The data which is required to power the portal is stored outside of the container, making it reusable and reducing size of the container image. The container expects that data directory be bind mounted from the host machine to the container as a volume to the `/mnt/dcc_data` directory. Make sure it has enough hard drive space and the production dataset is quite large: 
 
  - DCC data release ~ 70GB
  - Elasticsearch indices ~ 40GB
@@ -28,28 +28,28 @@ Data which is required to power the portal is stored outside of the container ma
 docker run -v </path/to/mount/point>:/mnt/dcc_data -it --rm icgcdcc/dcc-portal-demo import
 ``` 
 
-Once the data import is finished terminate the container.
+Once the data import is finished, terminate the container.
 
-#### Partial data import
+#### Partial Data Import
 
-Production dataset is quite large thus it might be problematic to run it in a single container. There is a possibility to load a single cancer project.
+The production dataset is quite large thus it might be problematic to run it in a single container. For this reason, there is the ability to load a single cancer project.
 
-To load a single data project the following command could be used:
+To load a single data project the following command can be used:
 
 ```shell
 docker run -v </path/to/mount/point>:/mnt/dcc_data -it --rm icgcdcc/dcc-portal-demo import -p <project_name>
 ```
-where `<project_name>` is a code name of the project to load. For example `PACA-CA`.
+where `<project_name>` is the [code](https://dcc.icgc.org/projects/details) of the project to load. For example, `PACA-CA`.
 
-With this command a smaller amount of data will be downloaded and loaded into the Elasticsearch engine.
+With this command, a smaller amount of data will be downloaded and loaded into the Elasticsearch engine.
 
-**Note:** Because of how the Elasticsearch index archive is created it is not possible to download only content related to the project requested. The whole index archive will be downloaded, however only documents required by the project will be actually indexed.
+**Note:** Because of how the Elasticsearch index archive is created, it is not possible to download only content related to the project requested: the whole index archive will be downloaded.  However only documents required by the project will be actually indexed.
 
 #### Manual data download
 
-Sometime users might experience difficulties with data downloads because of various reasons. For example, user's organization might allow large data downloads during defined period of time. It is possible to manually download the required data and place it to appropriate location in the DCC data directory. After the data is downloaded it is possible to skip the download step during the data import process.
+Sometime users might experience difficulties with data downloads for various reasons. For example, user's organization may only allow large data downloads within a fixed duration. It is possible to manually download the required data and place it to appropriate location in the DCC data directory. After the data is downloaded it is possible to skip the download step during the data import process.
 
-To download data manually following steps should be performed. Here we assume that the DCC data directory is located in `/mnt` directory.
+To download data manually the following steps should be performed. Here we assume that the DCC data directory is located in `/mnt` directory.
 
  - create temporary download directory
 
@@ -86,7 +86,7 @@ After the data is successfully imported it can be deleted from the `/mnt/dcc_dat
 Run
 ---
 
-To start a container after the data import step has been successfully execute the following command should be used:
+To start a container after the data import step has been successfully, execute the following command:
 
 ```shell
 docker run -v </path/to/mount/point>:/mnt/dcc_data -p 8080:8080 -p 9090:9090 -it --rm icgcdcc/dcc-portal-demo start <public_ip_address_of_the_docker_host>
