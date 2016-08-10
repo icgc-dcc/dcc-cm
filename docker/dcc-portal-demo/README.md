@@ -7,7 +7,7 @@ The ICGC DCC Portal Demo is a docker container that allows a user to configure a
 
 ## Download
 
-A portal demo container can be downloaded from [Docker Hub](https://hub.docker.com/r/icgcdcc/dcc-portal-demo/).
+The container image can be downloaded from [Docker Hub](https://hub.docker.com/r/icgcdcc/dcc-portal-demo/).
 
 Docker pull command:
 
