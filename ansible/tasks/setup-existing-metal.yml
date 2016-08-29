@@ -1,0 +1,50 @@
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- name: Get server info
+  hosts: "{{ group }}"
+  gather_facts: no
+  serial: 1
+  vars_files:
+    - "../vars/main.yml"
+  tasks:
+
+    - name: Add public IP to group
+      # This hack allows adding each hostname to a group that will be used downstream. The regex strips "prefix-" from beginning
+      # and potential "-xx" from the end of hostname and uses that as a group name, allowing us to use group names 
+      # like postgres or hadoop-worker in include statements. ex. dcc-hadoop-worker-1 -> hadoop-worker
+      add_host: name={{ inventory_hostname }}
+                groups={{ inventory_hostname | regex_replace('^[a-z]*-([a-z]*-?\w*)(-\d*$)?', '\\1') | replace("-", "_") }}
+                hostname={{ inventory_hostname }}
+      
+    - name: Add public IP to all_instances catchall group
+      add_host: name={{ inventory_hostname }}
+                groups=all_instances
+                hostname={{ inventory_hostname }}
+
+    - name: Writing some debug information about hosts
+      shell: echo "{{ server_data.ansible_facts.openstack_servers[0].public_v4 }} \t {{ inventory_hostname }} \t {{ inventory_hostname | regex_replace('^[a-z]*-([a-z]*-?\w*)(-\d*$)?', '\\1') | replace("-", "_") }}" >> {{ group }}_bootstrap_hosts_debug
+      delegate_to: localhost
+
+- name: Check if SSH is ready on hosts
+  hosts: "all_instances"
+  gather_facts: no
+  tasks:
+    - name: Wait for ssh
+      wait_for: host={{ inventory_hostname }}
+                port=22
+                timeout=900
+      delegate_to: localhost
+
+- name: Update /etc/hosts with new hosts
+  hosts: "all_instances"
+  sudo: yes
+  vars_files:
+    - "../vars/main.yml"
+  tasks:
+    - name: "Build hosts file"
+      lineinfile: dest=/etc/hosts 
+                  regexp='.*{{ hostvars[item].ansible_hostname }}$' 
+                  line="{{ hostvars[item].ansible_default_ipv4.address }} {{ hostvars[item].ansible_hostname }}" 
+                  state=present
+      when: hostvars[item].ansible_default_ipv4.address is defined
+      with_items: "{{groups['all_instances']}}"
