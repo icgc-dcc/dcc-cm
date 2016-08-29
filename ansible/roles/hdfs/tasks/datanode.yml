@@ -1,0 +1,44 @@
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- name: Install ACL
+  apt: pkg={{ item }}
+       state=present
+  with_items:
+    - acl
+
+- name: Install Hadoop DataNode and client
+  apt: pkg={{ item }}
+       state=present
+  with_items:
+    - hadoop-hdfs-datanode
+    - hadoop-client
+
+- name: Add the JAVA_HOME for CDH packages
+  lineinfile:
+    dest: /etc/default/bigtop-utils
+    regexp: ^export JAVA_HOME
+    line: export JAVA_HOME={{ jdk_home }}
+
+- name: Configure Hadoop HDFS DataNode
+  template: src={{ item }}.xml.j2 dest={{ hdfs_conf_dir }}/{{ item | replace("datanode-", "") }}.xml
+  with_items:
+    - core-site
+    - datanode-hdfs-site
+  notify:
+    - Restart Hadoop HDFS DataNode
+
+- name: Create Hadoop HDFS DataNode data directories
+  file: path={{ item.mount_point }}
+        state=directory
+  register: existing_data_directory
+  with_items: hdfs_disks
+
+- name: Ensure Hadoop HDFS DataNode data directory ownership
+  file: path={{ item.mount_point }}
+        owner=hdfs
+        group=hadoop
+        state=directory
+  with_items: hdfs_disks
+
+- name: Enable and start the Hadoop HDFS DataNode service
+  service: name=hadoop-hdfs-datanode enabled=yes state=started

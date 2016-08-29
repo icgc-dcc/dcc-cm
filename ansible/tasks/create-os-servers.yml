@@ -1,0 +1,41 @@
+# Creates a new instance and attaches to a network and passes metadata to
+# the instance
+- name: Creating VM Insances with Shade
+  os_server:
+    state: present
+    auth:
+      auth_url: "{{ auth_url }}"
+      username: "{{ login_username }}"
+      password: "{{ login_password }}"
+      tenant_name: "{{ login_tenant_name }}"
+    name: "{{ inventory_hostname }}"
+    auto_ip: no
+    image: "{{ image_id }}"
+    key_name: "{{ keypair_name }}"
+    timeout: 200
+    flavor: "{{ flavor_id }}"
+    nics:
+      - net-id: "{{ private_net }}"
+    meta:
+      hostname: "{{ inventory_hostname }}"
+      group: ansible
+    security_groups: all
+    timeout: 300
+  delegate_to: localhost
+  register: creation_data
+
+- name: Assign IP address to cluster VM
+  os_floating_ip:
+    state: present
+    auth:
+      auth_url: "{{ auth_url }}"
+      username: "{{ login_username }}"
+      password: "{{ login_password }}"
+      tenant_name: "{{ login_tenant_name }}"
+    network: "{{ ip_pool }}"
+    server: "{{ inventory_hostname }}"
+    wait: yes
+  delegate_to: localhost
+  register: ip_data
+
+- debug: msg="{{ip_data}}"

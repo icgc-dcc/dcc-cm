@@ -1,9 +1,6 @@
 [localhost]
 127.0.0.1
 
-[elasticsearch]
-dcc-elasticsearch
-
 [etl]
 dcc-etl-main
 dcc-elasticsearch
@@ -19,16 +16,21 @@ dcc-mongo
 dcc-hadoop-manager
 dcc-hadoop-worker-[1:4]
 
+[download]
+dcc-download-server
+
 [portal]
-dcc-portal-main-[1:2]
+dcc-portal-main-1
 dcc-varnish
 dcc-nginx
 dcc-postgres
 dcc-elasticsearch
-dcc-hadoop-worker-[1:4]
 
-[downloader]
-dcc-etl-main
+[hdfs-namenode]
+dcc-hadoop-master
+
+[hdfs-datanode]
+dcc-hadoop-worker-[1:2]
 
 [spark-master]
 dcc-hadoop-worker-1

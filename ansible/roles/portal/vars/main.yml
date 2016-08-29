@@ -1,11 +1,11 @@
 # Copyright 2014(c) The Ontario Institute for Cancer Research. All rights reserved.
 
 install_dir: /srv
-portal_name: dcc-portal-api
+portal_name: dcc-portal-server
 portal_home: "{{ install_dir }}/{{ portal_name }}"
 portal_conf: "{{ portal_home }}/conf"
 
-portal_dist_name: dcc-portal-api
+portal_dist_name: dcc-portal-server
 portal_dist_fullname: "{{ portal_dist_name }}-{{ portal_dist_version }}"
 portal_dist_filename: "{{ portal_dist_fullname }}-dist.tar.gz"
 portal_dist_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{{ portal_dist_name }}/{{ portal_dist_version }}/{{ portal_dist_filename }}"

@@ -1,0 +1,9 @@
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- name: Restart Hadoop HDFS NameNode
+  service: name=hadoop-hdfs-namenode state=restarted
+  when: hdfs_namenode
+
+- name: Restart Hadoop HDFS DataNode
+  service: name=hadoop-hdfs-datanode state=restarted
+  when: not hdfs_namenode

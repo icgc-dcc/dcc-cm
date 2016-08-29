@@ -90,7 +90,7 @@ http {
 
 	# web cluster nodes
 	upstream web-cluster {
-	{% for host in groups.portal_main %}
+	{% for host in groups.varnish %}
 		server {{ host }}:{{ portal_port }}; 
 	{% endfor %}
 	}

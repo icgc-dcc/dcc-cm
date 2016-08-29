@@ -39,7 +39,7 @@ cli_version: 3.8.14.2-SNAPSHOT
 downloader_workflows_dist_version: 3.8.6.2-SNAPSHOT
 exporter_dist_version: 3.8.27-SNAPSHOT
 identifier_dist_version: 4.0.2-SNAPSHOT
-portal_dist_version: 4.0.4-SNAPSHOT
+portal_dist_version: 4.3.6-SNAPSHOT
 
 ################################################################################
 # DCC Resources, DCC Dependencies

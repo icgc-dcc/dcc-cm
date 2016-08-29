@@ -1,0 +1,147 @@
+# API
+server:
+  port: 8080
+
+# Management
+management:
+  port: 8081
+
+# Datasource
+spring.datasource:
+  driver-class-name: org.h2.Driver
+  url: jdbc:h2:mem:genelist;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;INIT=runscript from '/srv/dcc-portal-server/conf/schema.sql'
+  username:
+  password:
+  max-active: 10
+  max-idle: 1
+  min-idle: 1
+
+# Controls generation of "Last-Modified" and "ETag" HTTP headers
+cache:
+  enabled: true
+
+  # Enable Last-Modified HTTP header generation
+  enableLastModified: true
+
+  # List of resources for which Last-Modified HTTP header should not be generated. Format: regex accepted by java.lang.String
+  excludeLastModified: ["^v\\d+/short$", "^v\\d+/auth/.*$", "^v\\d+/download.*$", "^v\\d+/analysis.*$", "^v\\d+/entityset.*$", "^v\\d+/settings.*$", "^v\\d+/repository/files.*$" ]
+
+  # Enable ETag HTTP header generation
+  enableETag: false
+
+  # List of resources for which ETag HTTP header should not be generated. Format: regex accepted by java.lang.String
+  excludeETag: []
+
+# Authentication
+crowd:
+  ssoUrl: ""
+  
+oauth:
+  serviceUrl: "https://localhost:8443"
+  clientId: "mgmt"
+  clientSecret: "pass"
+  enableHttpLogging: true
+  enableStrictSSL: false
+
+# In memory data grid
+hazelcast:
+  enabled: true
+
+  # NB: Below hazelcast settings do not have default values. The portal won't start if they're unset
+
+  # Credentials to enter a group. E.g. dev, uat, prod groups
+  groupName: "dcc-prod"
+  groupPassword: "DccProdPasswd"
+
+  # Time-to-live settings.
+  # Maximum number of seconds for each entry to stay in the cache. Entries that are
+  # older than the set value and not updated for that time
+  # will get automatically evicted from the cache.
+
+  # Expire inactive users in 15 minutes
+  usersCacheTTL: 900
+
+  # Expire openId authentication attempt in 2 minutes
+  openidAuthTTL: 120
+
+
+# ElasticSearch index and hosts
+elastic:
+  indexName: {{ es_index_name }}
+  nodeAddresses:
+     - host: {{ es_host }}
+       port: 9300
+  # List of TransportClient settings. 
+  # E.g. 
+  # "client.transport.sniff": true 
+  client:
+    "client.transport.sniff": true
+
+# Mail
+mail:
+  enabled: false
+  recipientEmail:
+
+# Data download
+download:
+  enabled: true
+  serverUrl: "http://localhost:9090"
+  publicServerUrl: "http://localhost:9090"
+  sharedSecret: "deadbeefdeadbeefdeadbeefdeadbeef"
+  aesKey: "deadbeefdeadbeef"
+
+web:
+  # Defines an external URL when the portal is behind a reverse proxy / load balancer. E.g. shortUrl resource uses it for generation of valid URLs
+  baseUrl: {{ web_base_url }}
+
+# ICGC Client configuration
+icgc:
+
+  # CGP/DACO API endpoint
+  cgpUrl: "http://localhost"
+
+  # ShortUrl API endpoint
+  shortUrl: "http://localhost"
+
+  # CUD API endpoint
+  cudUrl: "http://localhost"
+
+  # CMS API endpoint
+  cmsUrl: "http://localhost"
+
+  # CUD credentials. Obtained from webdev@oicr.on.ca
+  cudAppId: "<fill in>"
+  cudUser: "<fill in>"
+  cudPassword: "<fill in>"
+
+  # OAuth credentials
+  # To generate the credentials go to icgc.org, log in, go to the "OAuth Settings" tab and request "Regenerate all tokens"
+  consumerKey: "<fill in>"
+  consumerSecret: "<fill in>"
+  accessToken: "<fill in>"
+  accessSecret: "<fill in>"
+
+  # Log HTTP requests to the API
+  enableHttpLogging: false
+
+  # Disallow self-signed SSL certificates
+  enableStrictSSL: true
+
+# Set analysis configuration
+setOperation:
+
+  # Limit for number of items to return from ElasticSearch
+  maxPreviewNumberOfHits: 1000
+  maxNumberOfHits: 20000
+  maxMultiplier: 3
+
+# Release metadata configuration
+release:
+  releaseDate: "placeholder"
+  dataVersion: 2
+  
+# Feature Flags
+features:
+  AUTH_TOKEN: true
+  ICGC_CLOUD: true
+  SOFTWARE_PAGE: true

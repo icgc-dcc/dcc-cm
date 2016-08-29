@@ -1,0 +1,30 @@
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- include: tasks/setup.yml group=hdfs-namenode:hdfs-datanode:download
+- include: tasks/setup-existing.yml group=hdfs-namenode:hdfs-datanode:download
+
+# HDFS - NameNode    
+- hosts: hadoop_master
+  become: yes
+  vars_files:
+    - "vars/main.yml"
+  roles:
+    - { role: hdfs, hdfs_namenode: True }
+
+# HDFS - DataNode    
+- hosts: hadoop_worker
+  become: yes
+  vars_files:
+  - "vars/main.yml"
+  roles:
+    - { role: hdfs, hdfs_namenode: False }
+
+# Download Server
+- name: Provision download server
+  hosts: download_server
+  gather_facts: no
+  sudo: yes
+  vars_files:
+    - "vars/main.yml"
+  roles:
+    - download

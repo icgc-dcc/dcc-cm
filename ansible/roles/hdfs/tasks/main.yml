@@ -1,0 +1,13 @@
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- name: Configure Cloudera APT key
+  apt_key: url="http://archive.cloudera.com/cdh5/ubuntu/{{ ansible_distribution_release }}/amd64/cdh/archive.key"
+           state=present
+
+- name: Configure the Cloudera APT repositories
+  apt_repository: repo="deb [arch=amd64] http://archive.cloudera.com/cdh5/ubuntu/{{ ansible_distribution_release }}/amd64/cdh {{ ansible_distribution_release }}-{{ hdfs_cloudera_distribution }} contrib"
+                  state=present
+
+- { include: namenode.yml, when: hdfs_namenode }
+- { include: datanode.yml, when: not hdfs_namenode }
+

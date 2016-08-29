@@ -1,0 +1,135 @@
+# Copyright (c) 2016 The Ontario Institute for Cancer Research. All rights reserved.
+#
+# This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+# OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+# TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+# IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+---
+#
+# Common
+#
+
+# Server
+server:
+  port: 9090
+server.compression.enabled: true
+server.compression.mime-types: application/json,application/xml,text/html,text/xml,text/plain
+
+management:
+  security.enabled: false
+  context-path: /srv-info
+
+jwt:
+  sharedSecret: "secret678901234567890123456789012"
+  aesKey: "0123456789012345"
+  ttlHours: 1
+
+exports:
+  exportsPath: "/icgc/export"
+
+auth.server:
+  url:
+  clientId:
+  clientsecret:
+---
+#
+# Production
+#
+
+# Spring
+spring:
+  profiles: production
+  
+download.server:
+  user: user
+  password: pass
+
+---
+#
+# Development
+#
+
+# Spring
+spring:
+  profiles: development
+  
+# Hadoop
+hadoop:
+  properties:
+    fs.defaultFS: file:///
+
+# Mongo
+spring.data.mongodb:
+  uri: mongodb://localhost/dcc-download
+
+# Spark Job configuration
+job:
+  # The inputDir is configured to be used in Eclipse
+  inputDir: ../dcc-download-server/src/test/resources/fixtures/input
+
+
+---
+
+# Spring
+spring:
+  profiles: remote
+
+# Hadoop
+hadoop:
+  properties:
+    fs.defaultFS: hdfs://{{ hdfs_uri }}
+
+# Mongo
+spring.data.mongodb:
+  uri: mongodb://localhost/dcc-download
+
+# Spark Job configuration
+job:
+  # The inputDir is configured to be used in Eclipse
+  inputDir: /tmp/export-test
+
+download.server:
+  hdfsUri: "hdfs://localhost"
+  user: user
+  password: pass
+  
+mail:
+  enabled: false
+
+---
+
+# Spring
+spring:
+  profiles: secure
+  
+server:
+  port: 8443
+  ssl:
+    key-store: src/main/conf/keystore.p12
+    key-store-type: PKCS12
+    key-store-password: P@ssw0rd
+  
+download.server:
+  user: user
+  password: pass
+  adminUser: admin
+  adminPassword: secret
+  
+auth.server:
+  url: https://localhost/oauth/check_token
+  clientId:
+  clientsecret:
+  
+management.security.enabled: true
+
+---

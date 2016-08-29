@@ -1,0 +1,1 @@
+- include: tasks/setup.yml group="{{ group }}"

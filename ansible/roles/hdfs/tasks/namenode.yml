@@ -1,0 +1,45 @@
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- name: Install ACL
+  apt: pkg={{ item }}
+       state=present
+  with_items:
+    - acl
+
+- name: Install Hadoop HDFS NameNode
+  apt: pkg=hadoop-hdfs-namenode
+       state=present
+
+- name: Add the JAVA_HOME for CDH packages
+  lineinfile:
+    dest: /etc/default/bigtop-utils
+    regexp: ^export JAVA_HOME
+    line: export JAVA_HOME={{ jdk_home }}
+
+- name: Configure Hadoop HDFS NameNode
+  template: src={{ item }}.xml.j2 dest={{ hdfs_conf_dir }}/{{ item | replace("namenode-", "") }}.xml
+  with_items:
+    - core-site
+    - namenode-hdfs-site
+  notify:
+    - Restart Hadoop HDFS NameNode
+
+- name: Create Hadoop HDFS NameNode data directories
+  file: path={{ item }}
+        owner=hdfs
+        group=hdfs
+        state=directory
+  register: created_hdfs_namenode_data_dir
+  with_items:
+    - /media/persistent0
+
+- name: Format HDFS NameNode data directories
+  become: yes
+  become_user: hdfs
+  command: "hdfs namenode -format"
+  when: created_hdfs_namenode_data_dir | changed
+  with_items:
+    - /media/persistent0
+
+- name: Enable and start the Hadoop HDFS NameNode service
+  service: name=hadoop-hdfs-namenode enabled=yes state=started

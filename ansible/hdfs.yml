@@ -1,0 +1,20 @@
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+# HDFS - Namenode
+- include: tasks/setup.yml group=hdfs-namenode:hdfs-datanode
+- include: tasks/setup-existing.yml group=hdfs-namenode:hdfs-datanode
+
+- hosts: hadoop_master
+  become: yes
+  vars_files:
+    - "vars/main.yml"
+  roles:
+    - { role: hdfs, hdfs_namenode: True }
+
+# HDFS - Datanode    
+- hosts: hadoop_worker
+  become: yes
+  vars_files:
+  - "vars/main.yml"
+  roles:
+    - { role: hdfs, hdfs_namenode: False }

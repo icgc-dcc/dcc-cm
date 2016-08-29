@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+{% for property in hdfs_namenode_properties -%}
+  <property>
+    <name>{{ property.name }}</name>
+    <value>{{ property.value }}</value>
+  </property>
+{% endfor -%}
+{% for property in hdfs_datanode_properties -%}
+  <property>
+    <name>{{ property.name }}</name>
+    <value>{{ property.value }}</value>
+  </property>
+{% endfor -%}
+</configuration>
+

@@ -1,46 +1,30 @@
 # Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 
-- name: Make sure openjdk is uninstalled
-  apt: pkg=openjdk state=absent purge=true
+- name: Install add-apt-repostory
+  become: yes
+  apt: name=software-properties-common state=latest
 
-- name: Make a directory that holds the Java binaries
-  file: path={{ java_install_dir }} state=directory
+- name: Add Oracle Java Repository
+  become: yes
+  apt_repository: repo='ppa:webupd8team/java'
 
-- name: Download JDK
-  command: "wget --max-redirect=2 --header 'Cookie: oraclelicense=accept-securebackup-cookie' '{{ jdk_download_url }}' chdir=/tmp creates=/tmp/{{ jdk_download_filename }}"
+- name: Accept Java 8 License
+  become: yes
+  debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
 
-- name: Unpack the compressed JDK binaries
-  command: tar -xvzf /tmp/{{ jdk_download_filename }} chdir={{ java_install_dir }} creates={{ java_install_dir }}/jdk{{ jdk_version }}
-
-- name: Update the symbolic link to the JDK install
-  file: path={{ item }} 
-        src="{{ java_install_dir }}/jdk{{ jdk_version }}"
-        state=link 
-        force=yes
+- name: Install Oracle Java 8
+  become: yes
+  apt: name={{item}} state=latest
   with_items:
-    - "{{ java_install_dir }}/jdk"
+    - oracle-java8-installer
+    - ca-certificates
+    - oracle-java8-set-default
 
-- name: Add the JDK binaries to the system path (/etc/profile)
-  lineinfile: "dest={{ item.dest }} line={{ item.line }} state={{ item.state }}"
-  with_items:
-    - { dest: '/etc/profile', regexp: '^JAVA_HOME={{ java_install_dir }}/jdk', line: 'JAVA_HOME={{ java_install_dir }}/jdk', state: 'present' }
-    - { dest: '/etc/profile', regexp: '^PATH=.*JAVA_HOME.*', line: 'PATH=$PATH:$HOME/bin:$JAVA_HOME/bin', state: 'present' }
-    - { dest: '/etc/environment', regexp: '^JAVA_HOME={{ java_install_dir }}/jdk', line: 'JAVA_HOME={{ java_install_dir }}/jdk', state: 'present' }
+- name: Set JAVA_HOME system wide
+  lineinfile: "dest=/etc/environment state=present regexp=^JAVA_HOME line=JAVA_HOME={{ jdk_home }}"
 
-- name: Inform the system where JDK is located
-  command: "{{ item }}"
-  with_items:
-    - update-alternatives --install "/usr/bin/java" "java" "{{ java_install_dir }}/jdk/bin/java" 1
-    - update-alternatives --install "/usr/bin/javac" "javac" "{{ java_install_dir }}/jdk/bin/javac" 1
-    - update-alternatives --install "/usr/bin/javaws" "javaws" "{{ java_install_dir }}/jdk/bin/javaws" 1
-    - update-alternatives --install "/usr/bin/javah" "javah" "{{ java_install_dir }}/jdk/bin/javah" 1
-    - update-alternatives --install "/usr/bin/jar" "jar" "{{ java_install_dir }}/jdk/bin/jar" 1
-
-- name: Inform the system that JDK must be the default
-  command: "{{ item }}"
-  with_items:
-    - update-alternatives --set java {{ java_install_dir }}/jdk/bin/java
-    - update-alternatives --set javac {{ java_install_dir }}/jdk/bin/javac
-    - update-alternatives --set javaws {{ java_install_dir }}/jdk/bin/javaws
-    - update-alternatives --set javah {{ java_install_dir }}/jdk/bin/javah
-    - update-alternatives --set jar {{ java_install_dir }}/jdk/bin/jar
+- name: Add the JAVA_HOME to the system environment (/etc/profile)
+  lineinfile:
+    dest: /etc/profile
+    regexp: ^export JAVA_HOME
+    line: export JAVA_HOME={{ jdk_home }}

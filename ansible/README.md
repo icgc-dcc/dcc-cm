@@ -14,35 +14,18 @@ $ brew install ansible
 
 For other platforms, refer to [Ansible documentation.](http://docs.ansible.com/intro_installation.html)
 
-#### 2. Install Open Stack clients, Nova and Neutron.
+#### 2. Install Open Stack shade client.
 
 ```bash
-$ sudo pip install python-novaclient
-$ sudo pip install python-neutronclient
+$ sudo pip install shade
 ```
 
 They install the required dependencies, but you might need to install additional clients from [here.](http://docs.openstack.org/user-guide/content/install_clients.html)
 
-#### 3. Install Cloudera Manager API Python Client
 
-Cloudera provides wrappers for REST API access to manager [here.](https://github.com/cloudera/cm_api)
-
-```bash
-$ git clone https://github.com/cloudera/cm_api.git
-$ cd cm_api/python
-$ python setup.py install
-```
-
-#### 4. Provide the settings.
+#### 3. Provide the settings.
 
 Create a new file, `vars/main.yml` using `vars/main.yml.template` as template, providing necessary settings.
-
-To run Portal successfully, you also need to provide required values for CUD credentials in cud.yml, which is referenced in portal.yml. You can provide your own, or provide Ansible vault password to unlock the provided values:
-
-```bash
-$ cd ansible/vars
-$ ansible-vault edit cud.yml
-```
 
 Furthermore, there are several variables that need to be set in: `group_vars/vars/main.yml`
 
@@ -58,7 +41,7 @@ Furthermore, there are several variables that need to be set in: `group_vars/var
  * sender
  * recipients
 
-#### 5. (Optional) Edit ssh config
+#### 4. (Optional) Edit ssh config
 
 Edit `/etc/ssh_config` and add the following to avoid having to accept connecting to each server.
 
@@ -84,6 +67,26 @@ $ ansible-playbook -i config/hosts submission.yml
 ```
 
 ### Extra Tips and Notes:
+
+#### Ansible in memory inventory
+
+During the running of a playbook, our tasks and roles are configured to add new groups of hosts to the in memory inventory.
+
+For the following explanations, we will use the first few lines of the `download.yml` playbook as an example:
+```
+- include: tasks/setup.yml group=hdfs-namenode:hdfs-datanode:download
+- include: tasks/setup-existing.yml group=hdfs-namenode:hdfs-datanode:download
+```
+
+* `all_instances` - All hosts from all groups that are either being provisioned and/or used are lumped together into a single host group.
+The purpose of this group is so we can write out the hostname and ips of every server to the `/etc/hosts` file of every server. This way, 
+every server, knows about every other server.
+
+* We do some parsing of host names to generate groups of related servers based on the the way they are named. For example,
+in the `hdfs-datanode` group we have the hostnames `dcc-hadoop-worker-[1:2]`. A group called `hadoop_worker` is created containing 
+the hosts `dcc-hadoop-worker-1` and `dcc-hadoop-worker-2`. The utility of this becomes more obvious when you look at groups and playbooks that use
+a wider array of servers with different purposes, such as the `portal.yml` playbook with the `portal` host group. 
+
 
 #### Data
 

@@ -14,7 +14,7 @@ varnish_memlock: 82000
 # portal.vcl configuration
 ##########################
 
-backend_port: 5381
+backend_port: 8080
 backend_url: /
 backend_interval: 5
 backend_timeout: 1

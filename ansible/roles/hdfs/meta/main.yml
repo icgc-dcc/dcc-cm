@@ -1,0 +1,5 @@
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+dependencies:
+  - { role: jdk }
+  

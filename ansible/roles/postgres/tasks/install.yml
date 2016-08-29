@@ -1,5 +1,11 @@
 # Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 
+- name: Install ACL
+  apt: pkg={{ item }}
+       state=present
+  with_items:
+    - acl
+
 - name: Install postgresql
   apt:  pkg="postgresql-{{ postgresql_version }}" 
         state=installed 

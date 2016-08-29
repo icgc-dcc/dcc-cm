@@ -1,6 +1,8 @@
 # Copyright 2014(c) The Ontario Institute for Cancer Research. All rights reserved.
 
 - include: tasks/setup.yml group=portal
+# Ensures hosts files are written correctly. 
+- include: tasks/setup-existing.yml group=portal
 
 - name: Provision varnish
   hosts: varnish
@@ -54,6 +56,5 @@
   sudo: yes
   vars_files:
     - "vars/main.yml"
-    - "vars/cud.yml"
   roles:
     - portal

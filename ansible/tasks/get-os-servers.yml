@@ -1,0 +1,12 @@
+- name: Getting Instance Info with Shade
+  os_server_facts:
+    auth:
+      auth_url: "{{ auth_url }}"
+      username: "{{ login_username }}"
+      password: "{{ login_password }}"
+      tenant_name: "{{ login_tenant_name }}"
+    server: "{{ inventory_hostname }}"
+    timeout: 300
+    detailed: yes
+  delegate_to: localhost
+  register: server_data
