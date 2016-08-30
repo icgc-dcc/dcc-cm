@@ -121,7 +121,7 @@ download_static_home_path: "{{ download_home_path }}/static"
 
 # DCC Submission Server
 submission_server_dist_name: dcc-submission-server
-submission_server_dist_version: 4.0.4-SNAPSHOT
+submission_server_dist_version: 4.3.3-SNAPSHOT
 submission_server_dist_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}-dist.tar.gz"
 submission_server_jar_filename: "{{ submission_server_dist_name }}-{{ submission_server_dist_version }}.jar"
 submission_server_dist_url: "{{ artifactory_snapshot_url }}/{{ artifactory_dcc_path }}/{{ submission_server_dist_name }}/{{ submission_server_dist_version }}/{{ submission_server_dist_filename }}"

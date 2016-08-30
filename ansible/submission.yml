@@ -1,46 +1,25 @@
-# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
-#
-# Description:
-#   Submission playbook
-#     1) Instances
-#     2) CDH Manager
-#     3) MongoDB
-#     4) Submission Node
-#
-# TODO:
-#   - System (.system) need to be set in place
-#   - Need to clear root_dir on HDFS
-#
-# Hacks:
-#   - Codelists and Dictionary should not use /ws/seed
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
 
-- include: tasks/setup.yml group=submission
+#- include: tasks/setup.yml group=hdfs-namenode:hdfs-datanode:submission
+- include: tasks/setup-existing.yml group=hdfs-namenode:hdfs-datanode:submission
 
-- hosts: hadoop_worker
-  gather_facts: no
-  sudo: yes
-  vars_files:
-    - "vars/main.yml"
-  roles: 
-    - jdk
-
-- hosts: hadoop_manager
-  gather_facts: no
-  sudo: yes
+# HDFS - NameNode    
+- hosts: hadoop_master
+  become: yes
   vars_files:
     - "vars/main.yml"
   roles:
-    - hadoop_cluster
+    - { role: hdfs, hdfs_namenode: True }
 
-- hosts: mongo
-  gather_facts: no
-  sudo: yes
+# HDFS - DataNode    
+- hosts: hadoop_worker
+  become: yes
   vars_files:
-    - "vars/main.yml"
-  roles: 
-    - mongodb
+  - "vars/main.yml"
+  roles:
+    - { role: hdfs, hdfs_namenode: False }
 
-- hosts: submission_main
+- hosts: submission
   gather_facts: no
   sudo: yes
   vars_files:

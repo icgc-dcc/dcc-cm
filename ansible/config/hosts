@@ -11,10 +11,7 @@ dcc-hadoop-manager
 dcc-hadoop-worker-[1:8]
 
 [submission]
-dcc-submission-main
-dcc-mongo
-dcc-hadoop-manager
-dcc-hadoop-worker-[1:4]
+dcc-submission
 
 [download]
 dcc-download-server
