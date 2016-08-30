@@ -1,15 +1,20 @@
-# Copyright 2013(c) The Ontario Institute for Cancer Research. All rights reserved.
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
 
 - name: Fetch 10Gen signing key
-  apt_key: keyserver=keyserver.ubuntu.com id=7F0CEB10
+  become: yes
+  apt_key: keyserver=keyserver.ubuntu.com id=EA312927
 
-- name: Add 10Gen repository
-  shell: 
-    echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/10gen.list
-    creates=/etc/apt/sources.list.d/10gen.list
+- name: Add mongo sources list
+  become: yes
+  lineinfile: >
+    line="deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.2 multiverse"
+    dest=/etc/apt/sources.list.d/mongodb.list
+    state=present
+    create=yes
 
-- name: Install specific release 
-  apt: pkg=mongodb-10gen="{{ mongodb_version }}" state=present update_cache=yes
+- name: Install mongo
+  become: yes
+  apt: name=mongodb-org state=latest update_cache=yes
 
 - name: Ensure daemon is running
   service: name=mongodb state=started

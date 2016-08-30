@@ -19,6 +19,14 @@
   roles:
     - { role: hdfs, hdfs_namenode: False }
 
+# Mongodb - currently on same host as download server   
+- hosts: download_server
+  become: yes
+  vars_files:
+  - "vars/main.yml"
+  roles:
+    - mongodb
+
 # Download Server
 - name: Provision download server
   hosts: download_server
