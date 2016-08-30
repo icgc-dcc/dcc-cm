@@ -1,0 +1,31 @@
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- name: Writing dirs to hdfs
+  shell: hdfs dfs -mkdir /icgc/
+  become: true 
+  become_user: hdfs
+
+- name: Writing dirs to hdfs
+  shell: hdfs dfs -mkdir /icgc/input
+  become: true 
+  become_user: hdfs
+
+- name: Writing dirs to hdfs
+  shell: hdfs dfs -mkdir /icgc/input/release_22
+  become: true 
+  become_user: hdfs
+
+- name: Writing dirs to hdfs
+  shell: hdfs dfs -mkdir /icgc/input/release_22/data
+  become: true 
+  become_user: hdfs
+
+- name: Writing dirs to hdfs
+  shell: hdfs dfs -mkdir /icgc/input/release_22/headers
+  become: true 
+  become_user: hdfs
+
+- name: Writing dirs to hdfs
+  shell: hdfs dfs -mkdir /icgc/export
+  become: true 
+  become_user: hdfs

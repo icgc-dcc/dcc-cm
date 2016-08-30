@@ -27,3 +27,10 @@
 
 - name: Copy application.yml
   template: src=application.yml.j2 dest="{{ download_conf }}/application.yml" mode=644 force=yes
+
+- name: Copy wrapper.yml
+  template: src=wrapper.conf dest="{{ download_conf }}/wrapper.conf" mode=644 force=yes
+
+- name: Start dcc-download-server
+  shell: "{{ download_home }}/bin/dcc-download-server start"
+  ignore_errors: True

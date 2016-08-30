@@ -49,24 +49,15 @@ auth.server:
 # Spring
 spring:
   profiles: production
-  
-download.server:
-  user: user
-  password: pass
 
----
-#
-# Development
-#
-
-# Spring
-spring:
-  profiles: development
-  
 # Hadoop
 hadoop:
   properties:
-    fs.defaultFS: file:///
+    fs.defaultFS: {{ hdfs_uri }}
+
+download.server:
+  user: user
+  password: pass
 
 # Mongo
 spring.data.mongodb:
@@ -74,62 +65,6 @@ spring.data.mongodb:
 
 # Spark Job configuration
 job:
-  # The inputDir is configured to be used in Eclipse
-  inputDir: ../dcc-download-server/src/test/resources/fixtures/input
+  inputDir: "/icgc/input/"
 
-
----
-
-# Spring
-spring:
-  profiles: remote
-
-# Hadoop
-hadoop:
-  properties:
-    fs.defaultFS: hdfs://{{ hdfs_uri }}
-
-# Mongo
-spring.data.mongodb:
-  uri: mongodb://localhost/dcc-download
-
-# Spark Job configuration
-job:
-  # The inputDir is configured to be used in Eclipse
-  inputDir: /tmp/export-test
-
-download.server:
-  hdfsUri: "hdfs://localhost"
-  user: user
-  password: pass
   
-mail:
-  enabled: false
-
----
-
-# Spring
-spring:
-  profiles: secure
-  
-server:
-  port: 8443
-  ssl:
-    key-store: src/main/conf/keystore.p12
-    key-store-type: PKCS12
-    key-store-password: P@ssw0rd
-  
-download.server:
-  user: user
-  password: pass
-  adminUser: admin
-  adminPassword: secret
-  
-auth.server:
-  url: https://localhost/oauth/check_token
-  clientId:
-  clientsecret:
-  
-management.security.enabled: true
-
----
