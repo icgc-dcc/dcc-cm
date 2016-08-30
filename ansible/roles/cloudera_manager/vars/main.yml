@@ -1,6 +1,0 @@
-# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
-
-# Binary Installer version and location
-# http://archive.cloudera.com/cm5/installer/5.3.0/cloudera-manager-installer.bin
-cm_installer: cloudera-manager-installer.bin
-cm_download: http://archive.cloudera.com/cm5/installer/{{ cm_version }}/{{ cm_installer }}
