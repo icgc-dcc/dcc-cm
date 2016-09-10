@@ -1,0 +1,37 @@
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- name: Clean copy
+  file: path="{{ install_dir }}"
+        state=absent
+
+- name: Ensure directories
+  file: path={{ item }} state=directory
+  with_items:
+    - "{{ install_dir }}"
+
+- name: Download the distribution
+  get_url:  url="{{ id_dist_url }}"
+            dest="{{ staging_dir }}/{{ id_dist_filename }}"
+            mode=0444
+
+- name: Extract the dist
+  unarchive:  src="{{ staging_dir }}/{{ id_dist_filename }}"
+              dest="{{ install_dir }}"
+              copy=no
+
+- name: Update the symbolic link to the distribution
+  file: path="{{ id_home }}"
+        src="{{ install_dir }}/{{ id_dist_fullname }}"
+        state=link
+        force=yes
+
+- name: Copy over portal configuraiton file
+  template: src="application.yml.j2" dest="{{ id_conf }}/application.yml" mode=644 force=yes
+
+- name: make sure to kill the potential previously running instance
+  action: shell pkill -IO -f WrapperSimpleApp || true
+  ignore_errors: True
+
+- name: Start dcc-portal
+  shell: "{{ id_home }}/bin/dcc-id-server start"
+  ignore_errors: True

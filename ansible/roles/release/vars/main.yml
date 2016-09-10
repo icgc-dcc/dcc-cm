@@ -1,0 +1,13 @@
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+install_dir: /srv
+release_name: dcc-release-client
+release_home: "{{ install_dir }}/{{ release_name }}"
+release_conf: "{{ release_home }}/conf"
+
+release_dist_version: 4.2.4
+
+release_dist_name: dcc-release-client
+release_dist_fullname: "{{ release_dist_name }}-{{ release_dist_version }}"
+release_dist_filename: "{{ release_dist_fullname }}.jar"
+release_dist_url: "{{ artifactory_release_url }}/{{ artifactory_dcc_path }}/{{ release_dist_name }}/{{ release_dist_version }}/{{ release_dist_filename }}"

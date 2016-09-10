@@ -1,0 +1,13 @@
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+install_dir: /srv
+import_name: dcc-import-client
+import_home: "{{ install_dir }}/{{ import_name }}"
+import_conf: "{{ import_home }}/conf"
+
+import_dist_version: 4.2.1
+
+import_dist_name: dcc-import-client
+import_dist_fullname: "{{ import_dist_name }}-{{ import_dist_version }}"
+import_dist_filename: "{{ import_dist_fullname }}-dist.tar.gz"
+import_dist_url: "{{ artifactory_release_url }}/{{ artifactory_dcc_path }}/{{ import_dist_name }}/{{ import_dist_version }}/{{ import_dist_filename }}"

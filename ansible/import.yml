@@ -1,0 +1,23 @@
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- include: tasks/setup.yml group=etl
+- include: tasks/setup-existing.yml group=etl
+
+- name: Provision Mongodb server
+  hosts: etl_server
+  gather_facts: no
+  become: yes
+  vars_files:
+    - "vars/main.yml"
+  roles: 
+    - mongodb
+
+
+- name: Provision Mongodb server
+  hosts: etl_server
+  gather_facts: no
+  become: yes
+  vars_files:
+    - "vars/main.yml"
+  roles: 
+    - import

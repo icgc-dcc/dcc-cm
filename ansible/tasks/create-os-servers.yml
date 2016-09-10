@@ -12,7 +12,6 @@
     auto_ip: no
     image: "{{ image_id }}"
     key_name: "{{ keypair_name }}"
-    timeout: 200
     flavor: "{{ flavor_id }}"
     nics:
       - net-id: "{{ private_net }}"

@@ -31,14 +31,14 @@
   file: path={{ item.mount_point }}
         state=directory
   register: existing_data_directory
-  with_items: hdfs_disks
+  with_items: "{{ hdfs_disks }}"
 
 - name: Ensure Hadoop HDFS DataNode data directory ownership
   file: path={{ item.mount_point }}
         owner=hdfs
         group=hadoop
         state=directory
-  with_items: hdfs_disks
+  with_items: "{{ hdfs_disks }}"
 
 - name: Enable and start the Hadoop HDFS DataNode service
   service: name=hadoop-hdfs-datanode enabled=yes state=started

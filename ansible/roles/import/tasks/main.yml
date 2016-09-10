@@ -10,14 +10,17 @@
     - "{{ install_dir }}"
 
 - name: Download the distribution
-  get_url:  url="{{ spark_artifactory }}"
-            dest="{{ install_dir }}/"
+  get_url:  url="{{ import_dist_url }}"
+            dest="{{ staging_dir }}/{{ import_dist_filename }}"
             mode=0444
 
 - name: Extract the dist
-  unarchive:  src="{{ install_dir }}/{{ spark_archive }}"
+  unarchive:  src="{{ staging_dir }}/{{ import_dist_filename }}"
               dest="{{ install_dir }}"
               copy=no
 
-- { include: master.yml, when: master }
-- { include: worker.yml, when: not master }
+- name: Update the symbolic link to the distribution
+  file: path="{{ import_home }}"
+        src="{{ install_dir }}/{{ import_dist_fullname }}"
+        state=link
+        force=yes

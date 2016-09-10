@@ -1,15 +1,6 @@
 [localhost]
 127.0.0.1
 
-[etl]
-dcc-etl-main
-dcc-elasticsearch
-dcc-mongo
-dcc-identifier
-dcc-postgres
-dcc-hadoop-manager
-dcc-hadoop-worker-[1:8]
-
 [submission]
 dcc-submission
 
@@ -29,8 +20,11 @@ dcc-hadoop-master
 [hdfs-datanode]
 dcc-hadoop-worker-[1:2]
 
-[spark-master]
-dcc-hadoop-worker-1
+[mongo]
+dcc-mongo
 
-[spark-slaves]
-dcc-hadoop-worker-[2:8]
+[id-group]
+dcc-id-server
+
+[etl]
+dcc-etl-server-1

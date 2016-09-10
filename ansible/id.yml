@@ -1,0 +1,35 @@
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- include: tasks/setup.yml group=id-group
+- include: tasks/setup-existing.yml group=id-group
+
+# Id Postgres Server
+- name: Provision download server with postgres
+  hosts: id_server
+  gather_facts: no
+  become: yes
+  vars_files:
+    - "vars/main.yml"
+  roles:
+    - postgres
+
+# Configure Postgres
+- name: Configure Postgres
+  hosts: id_server
+  gather_facts: no
+  become: yes
+  become_user: postgres
+  vars_files:
+    - "vars/main.yml"
+  roles:
+    - id_db
+
+# Id Server
+- name: Install ID Server
+  hosts: id_server
+  gather_facts: no
+  become: yes
+  vars_files:
+    - "vars/main.yml"
+  roles:
+    - id

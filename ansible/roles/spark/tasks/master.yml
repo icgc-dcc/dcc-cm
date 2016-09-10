@@ -1,0 +1,4 @@
+- name: Configure Spark Master
+  template: src=slaves.j2 dest=/srv/{{ spark_archive_output }}/conf/slaves
+  notify:
+    - Start Spark Master

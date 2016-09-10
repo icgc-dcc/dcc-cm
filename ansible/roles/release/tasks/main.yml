@@ -1,0 +1,15 @@
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- name: Clean copy
+  file: path="{{ install_dir }}"
+        state=absent
+
+- name: Ensure directories
+  file: path={{ item }} state=directory
+  with_items:
+    - "{{ install_dir }}"
+
+- name: Download the Jar
+  get_url:  url="{{ release_dist_url }}"
+            dest="{{ staging_dir }}/{{ release_dist_filename }}"
+            mode=0444

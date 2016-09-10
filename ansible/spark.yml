@@ -1,18 +1,38 @@
-# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
-#
-# Description:
-#   Spark playbook
-#   Current issues:
-#   Slaves are hard-coded in slaves.j2 template.
-#   Same ssh key is used across cluster to allow passwordless ssh.
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
 
-- include: tasks/setup.yml group=spark-master
-- include: tasks/setup.yml group=spark-slaves
+- include: tasks/setup.yml group=hdfs-namenode:hdfs-datanode
+- include: tasks/setup-existing.yml group=hdfs-namenode:hdfs-datanode
 
-- hosts: hadoop_worker
-  sudo: yes
-  gather_facts: no
+
+# HDFS - Namenode
+- hosts: hadoop_master
+  become: yes
   vars_files:
     - "vars/main.yml"
-  roles: 
-    - spark
+  roles:
+    - { role: hdfs, hdfs_namenode: True }
+
+# HDFS - Datanode    
+- hosts: hadoop_worker
+  become: yes
+  vars_files:
+  - "vars/main.yml"
+  roles:
+    - { role: hdfs, hdfs_namenode: False }
+
+
+# Spark - Master
+- hosts: hadoop_master
+  become: yes
+  vars_files:
+    - "vars/main.yml"
+  roles:
+    - { role: spark, master: True }
+
+# Spark - Slave    
+- hosts: hadoop_worker
+  become: yes
+  vars_files:
+  - "vars/main.yml"
+  roles:
+    - { role: spark, master : False }

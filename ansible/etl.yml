@@ -1,90 +1,88 @@
-# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
-#
-# Description:
-#   ETL playbook
-#     Provision ElasticSearch server
-#     Provision Postgresql server
-#     Seed Postgresql server with ICGC schemas
-#     Provision DCC Identifier
-#     Provision MongoDB server
-#     Provision ETL Worker Nodes
-#     Provision Cloudera Manager
-#     Provision ETL Main Node#
-#
-#   Post provisioning steps: Do these before starting an ETL run 
-#     Copy projects' submission files to hdfs
-#     Create project.json configuration
-#     Download the dictionary for the ETL run
-#     Download codelist for the ETL run??
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
 
-- include: tasks/setup.yml group=etl
+- include: tasks/setup.yml group=hdfs-namenode:hdfs-datanode:id-group:etl
+- include: tasks/setup-existing.yml group=hdfs-namenode:hdfs-datanode:id-group:etl
 
-- hosts: elasticsearch
-  gather_facts: no
-  sudo: yes
+
+# HDFS - Namenode
+- hosts: hadoop_master
+  become: yes
   vars_files:
     - "vars/main.yml"
-  roles: 
-    - { role: elasticsearch, tags: [ 'elasticsearch' ] }
+  roles:
+    - { role: hdfs, hdfs_namenode: True }
 
-- hosts: postgres
-  gather_facts: no
-  sudo: yes
+# HDFS - Datanode    
+- hosts: hadoop_worker
+  become: yes
+  vars_files:
+  - "vars/main.yml"
+  roles:
+    - { role: hdfs, hdfs_namenode: False }
+
+
+# Spark - Master
+- hosts: hadoop_master
+  become: yes
   vars_files:
     - "vars/main.yml"
-  roles: 
+  roles:
+    - { role: spark, master: True }
+
+# Spark - Slave    
+- hosts: hadoop_worker
+  become: yes
+  vars_files:
+  - "vars/main.yml"
+  roles:
+    - { role: spark, master : False }
+
+# Id Postgres Server
+- name: Provision download server with postgres
+  hosts: id_server
+  gather_facts: no
+  become: yes
+  vars_files:
+    - "vars/main.yml"
+  roles:
     - postgres
 
-- hosts: postgres
+# Configure Postgres
+- name: Configure Postgres
+  hosts: id_server
   gather_facts: no
-  sudo_user: postgres
-  sudo: yes
+  become: yes
+  become_user: postgres
   vars_files:
     - "vars/main.yml"
-  roles: 
-    - identifier_db
+  roles:
+    - id_db
 
-- hosts: identifier
+# Id Server
+- name: Install ID Server
+  hosts: id_server
   gather_facts: no
-  sudo: yes
+  become: yes
   vars_files:
     - "vars/main.yml"
-  roles: 
-    - identifier
+  roles:
+    - id
 
-- hosts: mongo
+- name: Provision Mongodb server
+  hosts: etl_server
   gather_facts: no
-  sudo: yes
+  become: yes
   vars_files:
     - "vars/main.yml"
   roles: 
     - mongodb
 
-- hosts: hadoop_worker
+- name: Provision Import and Release
+  hosts: etl_server
   gather_facts: no
-  sudo: yes
+  become: yes
   vars_files:
     - "vars/main.yml"
   roles: 
-    - worker
-
-- hosts: hadoop_manager
-  gather_facts: no
-  sudo: yes
-  vars_files:
-    - "vars/main.yml"
-  roles:
-    - hadoop_cluster
-
-- hosts: etl_main
-  gather_facts: no
-  sudo: yes
-  vars_files:
-    - "vars/main.yml"
-  roles:
-    - hadoop_node 
-    - mongodb
-    - etl
-    - annotator
-    - exporter
-    - hdfs_fuse
+    - import
+    - release

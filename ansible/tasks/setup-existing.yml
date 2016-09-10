@@ -40,7 +40,7 @@
 
 - name: Update /etc/hosts with new hosts
   hosts: "all_instances"
-  sudo: yes
+  become: yes
   vars_files:
     - "../vars/main.yml"
   tasks:

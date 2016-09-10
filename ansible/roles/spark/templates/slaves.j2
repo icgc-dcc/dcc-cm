@@ -1,8 +1,4 @@
-# A Spark Worker will be started on each of the machines listed below.
-dcc-hadoop-worker-2
-dcc-hadoop-worker-3
-dcc-hadoop-worker-4
-dcc-hadoop-worker-5
-dcc-hadoop-worker-6
-dcc-hadoop-worker-7
-dcc-hadoop-worker-8
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
+{% for host in groups['hadoop_worker'] %}
+{{ hostvars[host].ansible_default_ipv4.address }}
+{% endfor %}
