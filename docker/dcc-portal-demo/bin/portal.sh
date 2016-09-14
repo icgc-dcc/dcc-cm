@@ -77,14 +77,6 @@ import_files() {
   import_es 
 }
 
-alias_repository_index() {
-  index_name=$(curl -s 'localhost:9200/_cat/indices?v' | grep icgc-repository | awk '{print $3}')
-  echo -n '{"actions":[{"add":{"index":"' >> /tmp/icgc-repo-alias.json
-  echo -n ${index_name} >> /tmp/icgc-repo-alias.json
-  echo -n '","alias":"icgc-repository"}}]}' >> /tmp/icgc-repo-alias.json
-  curl -XPOST 'http://localhost:9200/_aliases' -d@/tmp/icgc-repo-alias.json
-}
-
 import_data() {
   echo Importing download data...
   tar -C $DCC_DATA/downloads -xf $DCC_DATA/tmp/data.open.tar
@@ -92,17 +84,12 @@ import_data() {
 }
 
 import_es() {
-  echo Installing Knapsack plugin
-  /usr/share/elasticsearch/bin/plugin -url http://bit.ly/29A1hsz -install knapsack
-  echo Import Elasticsearch indices...
   service elasticsearch start
-
   # Give ES some time to start
   sleep 30
-  curl -XPOST "http://localhost:9200/_import?path=$DCC_DATA/tmp/repository.tar.gz"
-  # Give ES some time to index the repository index
-  sleep 60
-  alias_repository_index
+
+  echo "Importing the repository.tar.gz..."
+  java -jar $DCC_HOME/dcc-download-import.jar -i $DCC_DATA/tmp/repository.tar.gz -es es://localhost:9300
 
   if [[ -z $PROJECT ]]; then
     java -jar $DCC_HOME/dcc-download-import.jar -i $DCC_DATA/tmp/release.tar -es es://localhost:9300
