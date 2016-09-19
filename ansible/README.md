@@ -56,10 +56,6 @@ Host 10.5.74.*
 
 Execute the following command:
 
-```bash
-$ ansible-playbook -i config/hosts site.yml --ask-vault-pass
-```
-
 You can also execute playbooks individually:
 
 ```bash
@@ -104,15 +100,9 @@ The hosts provisioned by the playbook in testing had the following configuration
 | # CPU | 8 |
 | Storage | 160GB |
 
-#### Hadoop and Cloudera
+#### HDFS & Spark
 
-Be aware that during setup of the hadoop cluster timeouts could occur, such as waiting for the
-Cloudera manager to come up. Generally, simply rerunning the playbook should be fine.
-
-The python setup script responsible for obtaining the parcels for CDH however is not idempotent, 
-so a failure here might require a rebuild of the cluster.
-
-It is a good idea that once the hadoop cluster is provisioned, that you inspect the manager to ensure
+It is a good idea that once the hadoop cluster is provisioned, that you inspect the web UI of the NameNode/Master to ensure
 the nodes are up and their services are enabled. The created NameNode can easily provision more 
 RAM than you provided it, so that is something to be aware of. Also ensure the configuration on the nodes
 is not stale.
