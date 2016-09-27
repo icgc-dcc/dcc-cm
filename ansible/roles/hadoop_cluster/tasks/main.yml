@@ -1,9 +1,0 @@
-# Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
-
-- name: Check Cluster State
-  command:  "curl -u 'admin:admin' localhost:7180/api/v9/clusters/"
-  register: cluster_output
-  ignore_errors: yes
-
-- include: setup_cluster.yml
-  when: cluster_output.stdout.find('{{ cdh_version }}') == -1 or cluster_output.stdout.find('{{ hadoop_cluster_name }}') == -1
