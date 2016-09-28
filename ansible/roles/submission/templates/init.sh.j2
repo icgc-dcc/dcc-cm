@@ -83,7 +83,7 @@ curl_state=0
 for idx in {1..8}
 do
    echo "Checking submission server is ready..."
-   curl --silent --write-out %{http_code} -H "Accept: application/json" -H "Authorization: X-DCC-Auth $(echo -n ${username?}:${passwd?} | base64)" ${destination_host?}/ws/systems/sftp -o /tmp/foo > /tmp/curl_state
+   curl --silent --write-out %{http_code} -H "Accept: application/json" -u "${username?}:${passwd?}" ${destination_host?}/ws/systems/ -o /tmp/foo > /tmp/curl_state
    curl_state=$(</tmp/curl_state)
    if [ ${curl_state} = "200" ]; then
       break

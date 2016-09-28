@@ -23,7 +23,7 @@ shiro_url: "http://repo1.maven.org/maven2/org/apache/shiro/tools/shiro-tools-has
 
 # Admin SFTP / HTTP username / password for the submission system which gets hashed and stored in ream.ini
 admin_username: admin
-admin_password: password
+admin_password: adminspasswd
 
 # Application ports
 http_port: 5380
