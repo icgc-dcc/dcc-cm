@@ -18,7 +18,7 @@ dcc-elasticsearch
 dcc-hadoop-master
 
 [hdfs-datanode]
-dcc-hadoop-worker-[1:2]
+dcc-hadoop-worker-1
 
 [mongo]
 dcc-mongo

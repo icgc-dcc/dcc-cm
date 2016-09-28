@@ -1,18 +1,19 @@
 #!/bin/bash
-# Copyright 2013(c) The Ontario Institute for Cancer Research. All rights reserved.
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
 #
-# DCC Submission Server - VM initialization script
+# DCC Submission - Docker initialization script
 #
 # Descripton: 
 #   initializes the submission system after installation
 # Usage: 
 #   ./init.sh https://submissions.dcc.icgc.org http://localhost:5380 guest password my_initial_release my_project_key [my_project_name] [my_project_alias]
+
 #
-# ===========================================================================
+# Variables
+#
 
 origin_host=${1?} && shift
 destination_host=${1?} && shift
-webhdfs_url=${1?} && shift
 username=${1?} && shift
 passwd=${1?} && shift
 initial_release_name=${1?} && shift
@@ -20,52 +21,51 @@ project_key=${1?}
 project_name=$2 && project_name=${project_name:=${project_key?}}
 project_alias=$3 && project_alias=${project_alias:=${project_key?}}
 
-release_system_files=https://artifacts.oicr.on.ca/artifactory/simple/dcc-dependencies/{{ artifactory_dcc_path }}/dcc-system-files/1/dcc-system-files-1.tar.gz
-
-tmp_dir="{{ staging_dir }}/dcc" && mkdir -p ${tmp_dir?}
-mongodb_host="{{ mongo_host }}"
-
+tmp_dir="/tmp/dcc" && mkdir -p ${tmp_dir?}
 dictionary_file="${tmp_dir?}/dictionary.json"
-codelists_file="${tmp_dir?}/codelists.json"
+ codelists_file="${tmp_dir?}/codelists.json"
 
-# ===========================================================================
-
+#
+# Show
+#
 echo "origin_host=${origin_host?}"
 echo "destination_host=${destination_host?}"
-echo "webhdfs_url=${webhdfs_url?}"
 echo "username=${username?}"
 echo "passwd=[...]"
 echo "initial_release_name=${initial_release_name?}"
 echo "project_key=${project_key?}"
 echo "project_name=${project_name?}"
 echo "project_alias=${project_alias?}"
-echo "release_system_files=${release_system_files?}"
-echo "tmp_dir=${tmp_dir?}"
-echo "mongodb_host=${mongodb_host?}"
-echo "dictionary_file=${dictionary_file?}"
-echo "codelists_file=${codelists_file?}"
 
-# ===========================================================================
-
+#
+# Utilities
+#
 function ensure_open() {
-  awk '{gsub(/"state" *: *"CLOSED"/,"\"state\":\"OPENED\"")}1'
+ awk '{gsub(/"state" *: *"CLOSED"/,"\"state\":\"OPENED\"")}1'
 }
 
 function extract_version() {
-  python -c "import json,sys;print json.loads(sys.stdin.read())[0]['version'];"
+ python -c "import json,sys;print json.loads(sys.stdin.read())['version'];"
 }
 
-# ===========================================================================
-
+#
+# Execute
+#
 # Drop database, if it exists
 echo "dropping mongo icgc-dev database"
-/usr/bin/mongo --host ${mongodb_host} icgc-dev --eval "db.dropDatabase()"
+/usr/bin/mongo icgc-dev --eval "db.dropDatabase()"
+#/usr/bin/mongo --verbose icgc-dev --eval "db.Project.drop()"
+#/usr/bin/mongo --verbose icgc-dev --eval "db.Release.drop()"
+#/usr/bin/mongo --verbose icgc-dev --eval "db.User.drop()"
+
+# Clean file system, if it exists
+echo "removing /mnt/dcc-portal/submission/*"
+rm -rvf /mnt/dcc-portal/submission/*
+#rm -rvf /tmp/submission/*
 
 # download origin dictionary and ensure state is OPENED
 echo "getting dictionary"
-echo "[" > ${dictionary_file?}
-curl -v -XGET ${origin_host?}/ws/nextRelease/dictionary -H "Accept: application/json" | ensure_open >> ${dictionary_file?} && echo "OK" || echo "KO"
-echo "]" >> ${dictionary_file?}
+curl ${origin_host?}/ws/nextRelease/dictionary   -H "Accept: application/json" | ensure_open > ${dictionary_file?} && echo "OK" || echo "KO"
 
 # download origin codelists
 echo "getting codelists"
@@ -97,41 +97,29 @@ if [ ${curl_state} != "200" ]; then
 fi
 
 
-# upload codelists to destination
+# Upload codelists to destination
 echo "uploading codelists"
-curl -XPOST ${destination_host?}/ws/seed/codelists    -H "Accept: application/json" -H "Authorization: X-DCC-Auth $(echo -n ${username?}:${passwd?} | base64)" -H "Content-Type: application/json" \
+curl -XPOST ${destination_host?}/ws/codeLists    -H "Accept: application/json" -H "Authorization: X-DCC-Auth $(echo -n ${username?}:${passwd?} | base64)" -H "Content-Type: application/json" \
  --data @${codelists_file?} && echo "OK" || echo "KO"
 
-# upload dictionary to destination
+# Upload dictionary to destination
 echo "uploading dictionary"
-curl -XPOST ${destination_host?}/ws/seed/dictionaries -H "Accept: application/json" -H "Authorization: X-DCC-Auth $(echo -n ${username?}:${passwd?} | base64)" -H "Content-Type: application/json" \
+curl -XPOST ${destination_host?}/ws/dictionaries -H "Accept: application/json" -H "Authorization: X-DCC-Auth $(echo -n ${username?}:${passwd?} | base64)" -H "Content-Type: application/json" \
  --data @${dictionary_file?} && echo "OK" || echo "KO"
 
-# upload an initial release (should probably be a POST rather...)
+# Upload an initial release (should probably be a POST rather...)
 echo "creating initial release"
 curl -XPUT ${destination_host?}/ws/releases      -H "Accept: application/json" -H "Authorization: X-DCC-Auth $(echo -n ${username?}:${passwd?} | base64)" -H "Content-Type: application/json" \
  --data "{ \"name\" : \"${initial_release_name?}\", \"dictionaryVersion\" : \"${dictionary_version?}\", \"submissions\": [], \"state\" : \"OPENED\" }" && echo "OK" || echo "KO"
 
-echo "adding system file to release"
-# get the .system files
-cd $tmp_dir && curl -s -gq $release_system_files | tar xzv --strip-components=1
-path=icgc/submission/${initial_release_name?}/.system
-# Create the directory.
-curl -s -i -X PUT "${webhdfs_url?}/webhdfs/v1/${path?}?user.name=hdf&op=MKDIRS"
-for f in meth_array_probes.*.txt
-do
-  file=$path/$f
-  data_node_url=`curl -s -i -X PUT "${webhdfs_url?}/webhdfs/v1/${file?}?user.name=hdfs&op=CREATE" | awk '/Location: (.*)/ {print $2}' | tail -n 1`
-  curl -s -i -X PUT -T $f "${data_node_url?}/webhdfs/v1/${file?}?user.name=hdfs&op=CREATE"
-done
-
-# add a project
+# Add a project
 echo "adding project"
 curl -H "Accept: application/json" -XPOST ${destination_host?}/ws/projects     -H "Authorization: X-DCC-Auth $(echo -n ${username?}:${passwd?} | base64)" -H "Content-Type: application/json" \
  --data "{\"key\": \"${project_key?}\", \"name\": \"${project_name?}\", \"alias\": \"${project_alias?}\", \"users\": [\"guest\"], \"groups\": []}" && echo "OK" || echo "KO"
 
-# ===========================================================================
-
+#
+# Cleanup
+#
 
 echo "cleaning up"
 rm -v ${tmp_dir?}/*
@@ -144,5 +132,3 @@ if [ "${dictionary_version}" = "" ]; then
    exit 1
 fi
 exit 0
-# ===========================================================================
-

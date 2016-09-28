@@ -20,8 +20,8 @@
   command: "tar xzf {{ staging_dir }}/{{ submission_server_dist_filename }} --strip 1 -C {{ install_dir }}" 
 
 - name: Configure application
-  template: src=application.conf.j2 
-            dest="{{ conf_dir }}/application.conf"
+  template: src=application.yml.j2 
+            dest="{{ conf_dir }}/application.yml"
 
 - name: Download Shiro password utility
   get_url:  url="{{ shiro_url }}"
@@ -31,10 +31,6 @@
   shell: "java -jar {{ staging_dir }}/password.jar -f shiro1 -a SHA-256 -i 500000 -gs '{{ admin_password }}'"
   register: password_hash
 - set_fact: "admin_password_hash={{ password_hash.stdout }}"
-
-- name: Create users, passwords and roles
-  template: src=realm.ini.j2 
-            dest="{{ conf_dir }}/realm.ini"
 
 - name: Install service
   command: "{{ bin_dir }}/dcc-submission-server install creates=/etc/init.d/dcc-submission-server"

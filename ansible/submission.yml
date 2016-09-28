@@ -19,6 +19,23 @@
   roles:
     - { role: hdfs, hdfs_namenode: False }
 
+
+# Hadoop - JobTracker    
+- hosts: hadoop_master
+  become: yes
+  vars_files:
+    - "vars/main.yml"
+  roles:
+    - { role: hadoop-mapreduce, jobtracker: True }
+
+# Hadoop - TaskTracker    
+- hosts: hadoop_worker
+  become: yes
+  vars_files:
+  - "vars/main.yml"
+  roles:
+    - { role: hadoop-mapreduce, jobtracker: False }
+
 - hosts: submission
   gather_facts: no
   sudo: yes

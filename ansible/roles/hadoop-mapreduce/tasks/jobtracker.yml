@@ -1,0 +1,16 @@
+- name: Install ACL
+  apt: pkg={{ item }}
+       state=present
+  with_items:
+    - acl
+
+- name: Install Hadoop MapReduce Job Tracker
+  apt: pkg=hadoop-0.20-mapreduce-jobtracker
+       state=present
+
+- name: Configure Job Tracker
+  template: src={{ item }}.xml.j2 dest={{ conf_dir }}/mapred-site.xml
+  with_items:
+    - mapred-site.jobtracker
+  notify:
+    - Restart Job Tracker

@@ -1,0 +1,9 @@
+# Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- name: Restart Job Tracker
+  service: name=hadoop-0.20-mapreduce-jobtracker state=restarted
+  when: jobtracker
+
+- name: Restart Task Tracker
+  service: name=hadoop-0.20-mapreduce-tasktracker state=restarted
+  when: not jobtracker

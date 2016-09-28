@@ -8,6 +8,8 @@
   apt_repository: repo="deb [arch=amd64] http://archive.cloudera.com/cdh5/ubuntu/{{ ansible_distribution_release }}/amd64/cdh {{ ansible_distribution_release }}-{{ hdfs_cloudera_distribution }} contrib"
                   state=present
 
+- apt: update_cache=yes
+
 - { include: namenode.yml, when: hdfs_namenode }
 - { include: datanode.yml, when: not hdfs_namenode }
 
