@@ -53,10 +53,11 @@ function extract_version() {
 #
 # Drop database, if it exists
 echo "dropping mongo icgc-dev database"
-/usr/bin/mongo icgc-dev --eval "db.dropDatabase()"
-#/usr/bin/mongo --verbose icgc-dev --eval "db.Project.drop()"
-#/usr/bin/mongo --verbose icgc-dev --eval "db.Release.drop()"
-#/usr/bin/mongo --verbose icgc-dev --eval "db.User.drop()"
+/usr/bin/mongo icgc-local --eval "db.dropDatabase()"
+#/usr/bin/mongo --verbose icgc-local --eval "db.Project.drop()"
+#/usr/bin/mongo --verbose icgc-local --eval "db.Release.drop()"
+#/usr/bin/mongo --verbose icgc-local --eval "db.User.drop()"
+/usr/bin/mongo --verbose icgc-local --eval "db.User.save({username: 'admin'})"
 
 # Clean file system, if it exists
 echo "removing /mnt/dcc-portal/submission/*"
@@ -99,22 +100,22 @@ fi
 
 # Upload codelists to destination
 echo "uploading codelists"
-curl -XPOST ${destination_host?}/ws/codeLists    -H "Accept: application/json" -H "Authorization: X-DCC-Auth $(echo -n ${username?}:${passwd?} | base64)" -H "Content-Type: application/json" \
+curl -XPOST ${destination_host?}/ws/codeLists    -H "Accept: application/json" -u "${username?}:${passwd?}" -H "Content-Type: application/json" \
  --data @${codelists_file?} && echo "OK" || echo "KO"
 
 # Upload dictionary to destination
 echo "uploading dictionary"
-curl -XPOST ${destination_host?}/ws/dictionaries -H "Accept: application/json" -H "Authorization: X-DCC-Auth $(echo -n ${username?}:${passwd?} | base64)" -H "Content-Type: application/json" \
+curl -XPOST ${destination_host?}/ws/dictionaries -H "Accept: application/json" -u "${username?}:${passwd?}" -H "Content-Type: application/json" \
  --data @${dictionary_file?} && echo "OK" || echo "KO"
 
 # Upload an initial release (should probably be a POST rather...)
 echo "creating initial release"
-curl -XPUT ${destination_host?}/ws/releases      -H "Accept: application/json" -H "Authorization: X-DCC-Auth $(echo -n ${username?}:${passwd?} | base64)" -H "Content-Type: application/json" \
+curl -XPUT ${destination_host?}/ws/releases      -H "Accept: application/json" -u "${username?}:${passwd?}" -H "Content-Type: application/json" \
  --data "{ \"name\" : \"${initial_release_name?}\", \"dictionaryVersion\" : \"${dictionary_version?}\", \"submissions\": [], \"state\" : \"OPENED\" }" && echo "OK" || echo "KO"
 
 # Add a project
 echo "adding project"
-curl -H "Accept: application/json" -XPOST ${destination_host?}/ws/projects     -H "Authorization: X-DCC-Auth $(echo -n ${username?}:${passwd?} | base64)" -H "Content-Type: application/json" \
+curl -H "Accept: application/json" -XPOST ${destination_host?}/ws/projects    -u "${username?}:${passwd?}" -H "Content-Type: application/json" \
  --data "{\"key\": \"${project_key?}\", \"name\": \"${project_name?}\", \"alias\": \"${project_alias?}\", \"users\": [\"guest\"], \"groups\": []}" && echo "OK" || echo "KO"
 
 #
