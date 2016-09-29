@@ -1,7 +1,7 @@
 # Copyright 2014(c) The Ontario Institute for Cancer Research. All rights reserved.
 
 # Daemon configuration
-varnish_version: 3.0
+varnish_version: 4.1
 varnish_host: localhost
 varnish_port: 5381
 varnish_admin_port: 5383

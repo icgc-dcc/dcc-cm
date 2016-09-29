@@ -1,4 +1,7 @@
 # Copyright 2014(c) The Ontario Institute for Cancer Research. All rights reserved.
+vcl 4.0;
+import directors;
+import std;
 
 # Backend servers
 {% for host in groups.portal_main %}
@@ -16,10 +19,10 @@ backend www{{ loop.index }} {
 
 {% endfor %}
 
-# Round-robin director
-director www round-robin {
+sub vcl_init {
+        new www = directors.round_robin();
 {% for host in groups.portal_main %}
-	{ .backend = www{{ loop.index }}; }
+        www.add_backend(www{{ loop.index }});
 {% endfor %}
 }
 
@@ -37,82 +40,146 @@ acl banners {
 # - Executing re-write rules needed for specific web applications.
 # - Deciding which Web server to use.
 sub vcl_recv {
-        set req.backend = www;
+  if (std.port(server.ip) == 5381) {
+    set req.backend_hint = www.backend();
 
-        /* Force banning for remote application cache coherence */
-        if (req.request == "BAN") {
-                if (!client.ip ~ banners) {
-                        error 405 "Not allowed.";
-                }
+    /*
+      set req.backend = member;
+      set client.identity = client.ip;
+    */
 
-                /* This option is to clear any cached object containing the req.url */
-                ban("req.url ~ "+req.url);
+    /* Force banning for remote application cache coherence */
+    if (req.method == "BAN") {
+      if (!client.ip ~ banners) {
+        return (synth(405,"Not allowed."));
+      }
 
-                error 200 "Cache cleared successfully.";
-        }
+      /* This option is to clear any cached object containing the req.url */
+      ban("req.url ~ "+req.url);
 
-        if (req.request == "GET" && req.url ~ "^/api/.*/download.*$") {
-                /* Never cache downloads */
-                return(pipe);
-        }
+      return (synth(200,"Cache cleared successfully."));
+    }
 
-        if (req.request == "GET" && req.url ~ "^/api/.*/auth.*$") {
-                /* Never cache login related*/
-                return(pipe);
-        }
+    if (req.method == "GET" && req.url ~ "^/api/.*/download.*$") {
+      /* Don't reuse connection. See https://www.varnish-cache.org/docs/3.0/tutorial/vcl.html#actions pipe paragraph */
+      set req.http.Connection = "close";
 
-	if (req.request == "GET" && req.url ~ "^/api/short\?.*$") {
-	/* Never cache short URL API */
-		return(pipe);
-	}
+      /* Never cache downloads */
+      return(pipe);
+    }
 
-        if (req.http.X-Bypass) {
-                /* Never cache bypass requests for load testing */
-                return(pipe);
-        }
+    if (req.url ~ "^/api/.*/auth.*$") {
+      /* Don't reuse connection. See https://www.varnish-cache.org/docs/3.0/tutorial/vcl.html#actions pipe paragraph */
+      set req.http.Connection = "close";
 
-        /* Remove cache busting cookies */
+      /* Never cache login related*/
+      return(pipe);
+    }
 
-        remove req.http.Cookie;
+    if (req.method == "GET" && req.url ~ "^/api/.*/short\?.*$") {
+      /* Don't reuse connection. See https://www.varnish-cache.org/docs/3.0/tutorial/vcl.html#actions pipe paragraph */
+      set req.http.Connection = "close";
+
+      /* Never cache short URL API */
+      return(pipe);
+    }
+
+    if (req.url ~ "^/api/.*/analysis.*$") {
+      /* Don't reuse connection. See https://www.varnish-cache.org/docs/3.0/tutorial/vcl.html#actions pipe paragraph */
+      set req.http.Connection = "close";
+
+      /* Never cache analysis path */
+      return(pipe);
+    }
+
+    if (req.url ~ "^/api/.*/entityset.*$") {
+      /* Don't reuse connection. See https://www.varnish-cache.org/docs/3.0/tutorial/vcl.html#actions pipe paragraph */
+      set req.http.Connection = "close";
+
+      /* Never cache analysis path */
+      return(pipe);
+    }
+
+    if (req.url ~ "^/api/.*/settings.*$") {
+      /* Don't reuse connection. See https://www.varnish-cache.org/docs/3.0/tutorial/vcl.html#actions pipe paragraph */
+      set req.http.Connection = "close";
+
+      /* Never cache analysis path */
+      return(pipe);
+    }
+
+    if (req.url ~ "^/api/.*/repository/files.*$") {
+      /* Don't reuse connection. See https://www.varnish-cache.org/docs/3.0/tutorial/vcl.html#actions pipe paragraph */
+      set req.http.Connection = "close";
+
+      /* Never cache the 'repository/files/' path */
+      return(pipe);
+    }
+
+    if (req.url ~ "^/api/.*/ui/software/.*$") {
+      set req.http.Connection = "close";
+      return(pipe);
+    }
+
+    if (req.url ~ "^/api/.*/manifests.*$") {
+      /* Don't reuse connection. See https://www.varnish-cache.org/docs/3.0/tutorial/vcl.html#actions pipe paragraph */
+      set req.http.Connection = "close";
+
+      /* Never cache manifests path */
+      return(pipe);
+    }
+
+    if (req.http.X-Bypass) {
+      /* Never cache bypass requests for load testing */
+      return(pipe);
+    }
+
+    /* Remove cache busting cookies */
+    unset req.http.Cookie;
+
+    /* Add a unique header containing the client address */
+    unset req.http.X-Forwarded-For;
+    set req.http.X-Forwarded-For = client.ip;
+  }
 }
 
 # The backend-counterpart to vcl_recv. In vcl_recv you can use information
 # provided by the client to decide on caching policy, while you use information provided by the server
 # to further decide on a caching policy in vcl_fetch.
-sub vcl_fetch {
-	if (beresp.status == 200 && req.request == "GET" && req.url ~ "{{ index_url_regex }}") {
-		/* Short duration for the index page */
-		set beresp.ttl = {{ index_ttl }}{{ index_ttl_units }};
-		set beresp.http.cache-control = "max-age={{ index_maxage }}";
-	} else if (beresp.status == 200 && req.request == "GET" && req.url ~ "{{ static_url_regex }}") {
-		/* Static resources */
-		set beresp.ttl = {{ static_ttl }}{{ static_ttl_units }};
-		set beresp.http.cache-control = "max-age={{ static_maxage }}";
-	} else if (beresp.status == 200 && req.request == "GET") {
-		/* Long duration for everything else that was successful */
-		set beresp.ttl = {{ default_ttl }}{{ default_ttl_units }};
-		set beresp.http.cache-control = "max-age={{ default_maxage }}";
-	} else {
-		/* No TTL on everything else */
-		set beresp.ttl = 0s;
-	}
+sub vcl_backend_response {
+  if (beresp.status == 200 && bereq.method == "GET" && bereq.url ~ "^/(index\.html)?$") {
+    /* Short duration for the index page */
+    set beresp.ttl = 1m;
+    set beresp.http.cache-control = "max-age=0";
+  } else if (beresp.status == 200 && bereq.method == "GET" && bereq.url ~ "^/(vendor|styles|scripts|views)/.*$") {
+    /* Static resources */
+    set beresp.ttl = 1h;
+    set beresp.http.cache-control = "max-age=3600";
+  } else if (beresp.status == 200 && bereq.method == "GET") {
+    /* Long duration for everything else that was successful */
+    set beresp.ttl = 30d;
+    set beresp.http.cache-control = "max-age=3600";
+  } else {
+    /* No TTL on everything else */
+    set beresp.ttl = 0s;
+  }
 
-	/* Prevent cookie cache-busting */
-	unset beresp.http.set-cookie;
+  /* Prevent cookie cache-busting */
+  unset beresp.http.set-cookie;
 }
 
 # While the vcl_deliver function is simple, it is also very useful for modifying the output of Varnish.
 # If you need to remove or add a header that isn’t supposed to be stored in the cache, vcl_deliver
 # is the place to do it.
 sub vcl_deliver {
-        /* For debugging */
-        set resp.http.X-Served-By = server.hostname;
-        if (obj.hits > 0) {
-                set resp.http.X-Cache = "HIT";
-                set resp.http.X-Cache-Hits = obj.hits;
-        } else {
-                set resp.http.X-Cache = "MISS";
-        }
+  /* For debugging */
+  set resp.http.X-Served-By = server.hostname;
+  if (obj.hits > 0) {
+    set resp.http.X-Cache = "HIT";
+    set resp.http.X-Cache-Hits = obj.hits;
+  } else {
+    set resp.http.X-Cache = "MISS";
+  }
 
-        return(deliver);
+  return(deliver);
 }
