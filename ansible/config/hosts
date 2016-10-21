@@ -14,10 +14,10 @@ dcc-nginx
 dcc-postgres
 dcc-elasticsearch
 
-[hdfs-namenode]
+[hadoop-master]
 dcc-hadoop-master
 
-[hdfs-datanode]
+[hadoop-worker]
 dcc-hadoop-worker-1
 
 [mongo]

@@ -4,7 +4,7 @@
 - include: tasks/setup-existing.yml group=hdfs-namenode:hdfs-datanode
 
 # HDFS - Namenode
-- hosts: hadoop_master
+- hosts: hadoop-master
   become: yes
   vars_files:
     - "vars/main.yml"
@@ -12,7 +12,7 @@
     - { role: hdfs, hdfs_namenode: True }
 
 # HDFS - Datanode    
-- hosts: hadoop_worker
+- hosts: hadoop-worker
   become: yes
   vars_files:
   - "vars/main.yml"

@@ -8,6 +8,8 @@ Ansible scripts for provisioning ETL, Portal, Downloader and Submission systems
 
 Easiest way for MacOSX to get the latest Ansible is using Homebrew:
 
+Note: Ansible version should be at least `1.9`
+
 ```bash
 $ brew install ansible
 ```
