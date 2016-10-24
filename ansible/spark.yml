@@ -1,7 +1,7 @@
 # Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
 
-- include: tasks/setup.yml group=hdfs-namenode:hdfs-datanode
-- include: tasks/setup-existing.yml group=hdfs-namenode:hdfs-datanode
+- include: tasks/setup.yml group=hadoop-master:hadoop-worker
+- include: tasks/setup-existing.yml group=hadoop-master:hadoop-worker
 
 
 # HDFS - Namenode

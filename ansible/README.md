@@ -72,8 +72,8 @@ During the running of a playbook, our tasks and roles are configured to add new 
 
 For the following explanations, we will use the first few lines of the `download.yml` playbook as an example:
 ```
-- include: tasks/setup.yml group=hdfs-namenode:hdfs-datanode:download
-- include: tasks/setup-existing.yml group=hdfs-namenode:hdfs-datanode:download
+- include: tasks/setup.yml group=hadoop-master:hadoop-worker:download
+- include: tasks/setup-existing.yml group=hadoop-master:hadoop-worker:download
 ```
 
 * `all_instances` - All hosts from all groups that are either being provisioned and/or used are lumped together into a single host group.
@@ -81,7 +81,7 @@ The purpose of this group is so we can write out the hostname and ips of every s
 every server, knows about every other server.
 
 * We do some parsing of host names to generate groups of related servers based on the the way they are named. For example,
-in the `hdfs-datanode` group we have the hostnames `dcc-hadoop-worker-[1:2]`. A group called `hadoop_worker` is created containing 
+in the `hadoop-worker` group we have the hostnames `dcc-hadoop-worker-[1:2]`. A group called `hadoop_worker` is created containing 
 the hosts `dcc-hadoop-worker-1` and `dcc-hadoop-worker-2`. The utility of this becomes more obvious when you look at groups and playbooks that use
 a wider array of servers with different purposes, such as the `portal.yml` playbook with the `portal` host group. 
 
