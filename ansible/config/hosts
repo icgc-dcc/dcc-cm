@@ -28,3 +28,15 @@ dcc-id-server
 
 [etl]
 dcc-etl-server-1
+
+[ga4gh-cluster]
+ga4gh-elasticsearch-1
+ga4gh-elasticsearch-2
+ga4gh-elasticsearch-3
+ga4gh-elasticsearch-4
+ga4gh-elasticsearch-5
+ga4gh-elasticsearch-6
+ga4gh-elasticsearch-7
+ga4gh-elasticsearch-8
+ga4gh-elasticsearch-9
+ga4gh-elasticsearch-10

@@ -1,0 +1,13 @@
+# Copyright 2014(c) The Ontario Institute for Cancer Research. All rights reserved.
+
+- name: Provision Elasticsearch 5.0.0
+  hosts: ga4gh-cluster1
+  gather_facts: no
+  sudo: yes
+  vars:
+    elasticsearch_version: 5.0.0
+  vars_files:
+    - "vars/main.yml"
+  roles: 
+    - elasticsearch
+
