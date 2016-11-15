@@ -1,8 +1,13 @@
 # Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 
 # See http://stackoverflow.com/questions/18132719/how-to-change-elasticsearch-max-size
-- name: Setting limits
+- name: Setting limits for elasticsearch_major_version < 5
   copy: src="limits.conf" dest="/etc/security/limits.d/elasticsearch.conf" mode=644 force=yes
+  when:  elasticsearch_major_version < "5"
+
+- name: Setting limits for elasticsearch_major_version >= 5 
+  copy: src="limits.conf" dest="/etc/security/limits.conf" mode=644 force=yes
+  when:  elasticsearch_major_version >= "5"
 
 - name: Setting limits
   lineinfile: dest="/etc/pam.d/common-session" line="session required pam_limits.so"
@@ -21,9 +26,6 @@
 
 - name: Patch elasticsearch init.d to add jdk location 
   lineinfile: dest="/etc/init.d/elasticsearch" regexp="^JDK_DIRS=" line="JDK_DIRS=\"/usr/lib/jvm/jdk\""
-
-#- name: Patch elasticsearch yml
-#  lineinfile: dest="/etc/elasticsearch/elasticsearch.yml" regexp="bootstrap.mlockall" line="bootstrap.mlockall:true"
 
 - name: Restart ElasticSearch
   service: name=elasticsearch state=restarted

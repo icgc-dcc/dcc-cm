@@ -30,4 +30,5 @@
   shell: "/usr/share/elasticsearch/bin/plugin -i royrusso/elasticsearch-HQ/v1.0.0"
 
 - name: Restart Elastic search
+  become: yes #TODO: remove this and see if it still works
   service: name=elasticsearch state=restarted

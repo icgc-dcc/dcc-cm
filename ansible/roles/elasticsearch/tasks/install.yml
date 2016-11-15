@@ -1,24 +1,26 @@
 # Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 
+# TODO:  setup md5 checking for download
+#- name: Fetch Elasticsearch MD5 checksum for download first - {{ elasticsearch_download_checksum }}
+#  get_url: url={{ elasticsearch_download_checksum }}/{{ elasticsearch_package }} dest="/tmp/{{ elasticsearch_package }}.deb.md5  mode=644
 
-- name: Fetch Elasticsearch for {{ elasticsearch_version }} using url - {{ elasticsearch_download }}
+# TODO: setup md5 storing from download md5 
+#- set_fact:
+#    md5_value: "{{ lookup('file', '/tmp/{{ elasticsearch_package }}.deb.md5' ) }}"
+
+- name: Fetch Elasticsearch for elasticsearch_major_version < 5 using url - {{ elasticsearch_download }}
   get_url: url={{ elasticsearch_download }}/{{ elasticsearch_package }} dest=/tmp  mode=644
   when: elasticsearch_major_version < "5"  
+  #TODO:    checksum: "md5:{{ md5_value }}" # add this once md5 checking implemented
 
-- name: Fetch Elasticsearch for {{ elasticsearch_version }} using url - {{ elasticsearch_download2 }}
-  get_url: url={{ elasticsearch_download2 }}/{{ elasticsearch_package }} dest=/tmp  mode=644
+- name: Fetch Elasticsearch for elasticsearch_major_version >= 5 using url - {{ elasticsearch_download2 }}
+  get_url: url={{ elasticsearch_download2 }}/{{ elasticsearch_package }} dest=/tmp  mode=644 
   when: elasticsearch_major_version >= "5"  
+  #TODO:    checksum: "md5:{{ md5_value }}" # add this once md5 checking implemented
 
 - name: Install Elasticsearch package
   shell: dpkg -i -E --force-depends "/tmp/{{ elasticsearch_package }}"
 
-- name: Create path.data directories - "{{ elasticsearch_path_data }}"
-  become: yes
-  shell: mkdir -p "{{ elasticsearch_path_data }}/nodes"
-  
-- name: Create path.log directories - "{{ elasticsearch_path_log }}"
-  become: yes
-  shell: mkdir -p "{{ elasticsearch_path_log }}"
 
 - name: make sure Elasticsearch is enabled and started
   service: name=elasticsearch enabled=yes state=started

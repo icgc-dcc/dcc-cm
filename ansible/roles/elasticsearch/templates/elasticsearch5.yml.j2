@@ -11,19 +11,13 @@ cluster:
 # Node name, refer to : https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#node.name
 node.name: ${HOSTNAME}-node
 #
-# ----------------------------------- Paths ------------------------------------
-#
-# Path to directory where to store the data (separate multiple locations by comma):
-# Refer to : https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#path-settings
-path.data: /var/data/elasticsearch
-path.logs: /var/log/elasticsearch
-#
 # ----------------------------------- Memory -----------------------------------
 #
 # Lock the memory on startup:
 # Refer to: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#bootstrap.memory_lock
 #
 bootstrap.memory_lock: true
+#removed this as nolonger supported         bootstrap.mlockall: true
 #
 # Make sure that the heap size is set to about half the memory available
 # on the system and that the owner of the process is allowed to use this
@@ -35,7 +29,7 @@ bootstrap.memory_lock: true
 #
 # Set the bind address to a specific IP (IPv4 or IPv6):
 #
-#network.host: 192.168.0.1
+network.host: ${HOSTNAME}
 #
 # Set a custom port for HTTP:
 #
@@ -49,7 +43,6 @@ bootstrap.memory_lock: true
 # Pass an initial list of hosts to perform discovery when new node is started:
 # The default list of hosts is ["127.0.0.1", "[::1]"]
 #
-discovery.zen.ping.multicast.enabled: false
 discovery.zen.ping.unicast.hosts: ["ga4gh-elasticsearch-1","ga4gh-elasticsearch-2","ga4gh-elasticsearch-3","ga4gh-elasticsearch-4","ga4gh-elasticsearch-5","ga4gh-elasticsearch-6","ga4gh-elasticsearch-7","ga4gh-elasticsearch-8","ga4gh-elasticsearch-9","ga4gh-elasticsearch-10"]
 
 http:
