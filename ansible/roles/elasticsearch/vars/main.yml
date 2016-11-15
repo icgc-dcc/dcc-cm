@@ -13,5 +13,3 @@ elasticsearch_download: http://download.elasticsearch.org/elasticsearch/elastics
 elasticsearch_download2: https://artifacts.elastic.co/downloads/elasticsearch
 
 es_cluster_name: elasticsearch
-elasticsearch_path_data: /var/data/elasticsearch
-elasticsearch_path_log: /var/log/elasticsearch
