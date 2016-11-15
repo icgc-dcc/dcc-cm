@@ -1,0 +1,85 @@
+cluster:
+  name: {{ es_cluster_name }}
+
+#These are default values. Refer to:
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#master-node
+# node.master: true
+# node.data: true
+# node.ingest: true
+
+
+# Node name, refer to : https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#node.name
+node.name: ${HOSTNAME}-node
+#
+# ----------------------------------- Paths ------------------------------------
+#
+# Path to directory where to store the data (separate multiple locations by comma):
+# Refer to : https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#path-settings
+path.data: /var/data/elasticsearch
+path.logs: /var/log/elasticsearch
+#
+# ----------------------------------- Memory -----------------------------------
+#
+# Lock the memory on startup:
+# Refer to: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#bootstrap.memory_lock
+#
+bootstrap.memory_lock: true
+#
+# Make sure that the heap size is set to about half the memory available
+# on the system and that the owner of the process is allowed to use this
+# limit.
+#
+# Elasticsearch performs poorly when the system is swapping the memory.
+#
+# ---------------------------------- Network -----------------------------------
+#
+# Set the bind address to a specific IP (IPv4 or IPv6):
+#
+#network.host: 192.168.0.1
+#
+# Set a custom port for HTTP:
+#
+#http.port: 9200
+#
+# For more information, see the documentation at:
+# <http://www.elastic.co/guide/en/elasticsearch/reference/current/modules-network.html>
+#
+# --------------------------------- Discovery ----------------------------------
+#
+# Pass an initial list of hosts to perform discovery when new node is started:
+# The default list of hosts is ["127.0.0.1", "[::1]"]
+#
+discovery.zen.ping.multicast.enabled: false
+discovery.zen.ping.unicast.hosts: ["ga4gh-elasticsearch-1","ga4gh-elasticsearch-2","ga4gh-elasticsearch-3","ga4gh-elasticsearch-4","ga4gh-elasticsearch-5","ga4gh-elasticsearch-6","ga4gh-elasticsearch-7","ga4gh-elasticsearch-8","ga4gh-elasticsearch-9","ga4gh-elasticsearch-10"]
+
+http:
+  max_initial_line_length: 1000kb
+  max_content_length: 1500mb
+  max_header_size: 100kb
+#
+# Prevent the "split brain" by configuring the majority of nodes (total number of nodes / 2 + 1):
+# Refer to : https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#split-brain
+#
+discovery.zen.minimum_master_nodes: 6
+#
+# For more information, see the documentation at:
+# <http://www.elastic.co/guide/en/elasticsearch/reference/current/modules-discovery.html>
+#
+# ---------------------------------- Gateway -----------------------------------
+#
+# Block initial recovery after a full cluster restart until N nodes are started:
+#
+#gateway.recover_after_nodes: 3
+#
+# For more information, see the documentation at:
+# <http://www.elastic.co/guide/en/elasticsearch/reference/current/modules-gateway.html>
+#
+# ---------------------------------- Various -----------------------------------
+#
+# Disable starting multiple nodes on a single system:
+#
+#node.max_local_storage_nodes: 1
+#
+# Require explicit names when deleting indices:
+#
+action.destructive_requires_name: true

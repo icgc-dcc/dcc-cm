@@ -2,7 +2,13 @@
 
 - include: install.yml tags=elasticsearch-install
 - include: configure.yml tags=elasticsearch-configure
+
+  #TODO: current plugins setup only for major version less than 5. mobz/elasticsearch-head site plug in not supported for 5 and up:
+  # https://github.com/mobz/elasticsearch-head#running-as-a-plugin-of-elasticsearch
 - include: plugins.yml tags=elasticsearch-plugins
+  when: elasticsearch_major_version < "5"  
+
+  
 
 
 

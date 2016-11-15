@@ -1,25 +1,33 @@
 # Copyright 2015(c) The Ontario Institute for Cancer Research. All rights reserved.
 
 # Install a few plugins to make debugging/interaction easier
-- shell: "/usr/share/elasticsearch/bin/plugin -remove head"
+- name: "Plugin - remove head"
+  shell: "/usr/share/elasticsearch/bin/plugin -remove head"
   ignore_errors: yes
 
-- shell: "/usr/share/elasticsearch/bin/plugin -install mobz/elasticsearch-head"
+- name: "Plugin - install mobz/elasticsearch-head"
+  shell: "/usr/share/elasticsearch/bin/plugin -install mobz/elasticsearch-head"
 
-- shell: "/usr/share/elasticsearch/bin/plugin -remove knapsack"
+- name : "Plugin  - remove knapsack"
+  shell: "/usr/share/elasticsearch/bin/plugin -remove knapsack"
   ignore_errors: yes
 
-- shell: "/usr/share/elasticsearch/bin/plugin -url http://bit.ly/19zYGu2 -install knapsack" 
+- name: "Plugin - install knapsack"
+  shell: "/usr/share/elasticsearch/bin/plugin -url http://bit.ly/19zYGu2 -install knapsack" 
 
-- shell: "/usr/share/elasticsearch/bin/plugin -remove marvel"
+- name: "Plugin - remove marvel"
+  shell: "/usr/share/elasticsearch/bin/plugin -remove marvel"
   ignore_errors: yes
 
-- shell: "/usr/share/elasticsearch/bin/plugin -i elasticsearch/marvel/latest" 
+- name: "Plugin - install elasticsearch/marvel/latest"
+  shell: "/usr/share/elasticsearch/bin/plugin -i elasticsearch/marvel/latest" 
 
-- shell: "/usr/share/elasticsearch/bin/plugin -remove elasticsearch-HQ"
+- name: "Plugin - remove elasticsearch-HQ"
+  shell: "/usr/share/elasticsearch/bin/plugin -remove elasticsearch-HQ"
   ignore_errors: yes
 
-- shell: "/usr/share/elasticsearch/bin/plugin -i royrusso/elasticsearch-HQ/v1.0.0"
+- name: "Plugin - install royrusso/elastisearch-HG/v1.0.0"
+  shell: "/usr/share/elasticsearch/bin/plugin -i royrusso/elasticsearch-HQ/v1.0.0"
 
 - name: Restart Elastic search
   service: name=elasticsearch state=restarted

@@ -7,8 +7,13 @@
 - name: Setting limits
   lineinfile: dest="/etc/pam.d/common-session" line="session required pam_limits.so"
 
-- name: Copy over elasticsearch conf
+- name: Copy over elasticsearch.yml.j3 conf for version - {{ elasticsearch_version }}
   template: src="elasticsearch.yml.j2" dest="/etc/elasticsearch/elasticsearch.yml" mode=644 force=yes
+  when: elasticsearch_major_version < "5"
+
+- name: Copy over elasticsearch5.yml.j3 conf for version - {{ elasticsearch_version }}
+  template: src="elasticsearch5.yml.j2" dest="/etc/elasticsearch/elasticsearch.yml" mode=644 force=yes
+  when: elasticsearch_major_version >= "5"
 
 # FIXME: Maybe it is best to bite the bullet and just copy the entire config
 - name: Patch elasticsearch init.d
