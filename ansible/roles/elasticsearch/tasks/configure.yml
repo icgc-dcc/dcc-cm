@@ -25,8 +25,12 @@
   lineinfile: dest="/etc/default/elasticsearch" regexp="^#ES_HEAP_SIZE" line="ES_HEAP_SIZE=4g"
   when:  elasticsearch_major_version < "5"
 
-- name: Change HEAP size to {{ es_heapsize }} gb
-  replace: dest=/etc/elasticsearch/jvm.options    regexp='-Xm(s|x)(\d+)g' replace='-Xm\1{{ es_heapsize }}g' backup=yes
+- name: Change min HEAP size to {{ es_heapsize  }} gb
+  replace: dest=/etc/elasticsearch/jvm.options    regexp='\-Xms\d+g' replace="-Xms{{ es_heapsize  }}g" backup=yes
+  when:  elasticsearch_major_version >= "5"
+
+- name: Change max HEAP size to {{ es_heapsize  }} gb
+  replace: dest=/etc/elasticsearch/jvm.options    regexp='\-Xmx\d+g' replace="-Xmx{{ es_heapsize  }}g" backup=yes
   when:  elasticsearch_major_version >= "5"
 
 - name: Patch elasticsearch init.d to add jdk location 
