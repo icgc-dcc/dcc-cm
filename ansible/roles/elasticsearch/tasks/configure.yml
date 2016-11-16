@@ -21,7 +21,7 @@
   when: elasticsearch_major_version >= "5"
 
 # FIXME: Maybe it is best to bite the bullet and just copy the entire config. Always appending ES_HEAP_SIZE
- - name: Patch elasticsearch init.d
+- name: Patch elasticsearch init.d
   lineinfile: dest="/etc/default/elasticsearch" regexp="^#ES_HEAP_SIZE" line="ES_HEAP_SIZE=4g"
   when:  elasticsearch_major_version < "5"
 
