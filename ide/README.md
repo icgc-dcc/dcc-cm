@@ -6,9 +6,9 @@ Project that contains all of the IDE configurations for DCC.
 
 ### Java Formatter
 
-Configuration is at [eclipse/java-formatter.xml](). To import see [http://stackoverflow.com/questions/10432538/eclipse-import-conf-xml-files]()
+Configuration is at [eclipse/java-formatter.xml](eclipse/java-formatter.xml). To import see [http://stackoverflow.com/questions/10432538/eclipse-import-conf-xml-files]()
 
 ### Grep Console
 
-Configuration is at [eclipse/grep-console.xml](). To import see [http://marian.schedenig.name/projects/grep-console/]()
+Configuration is at [eclipse/grep-console.xml](eclipse/grep-console.xml). To import see [http://marian.schedenig.name/projects/grep-console/]()
 
