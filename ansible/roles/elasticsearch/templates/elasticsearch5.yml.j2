@@ -17,6 +17,8 @@ node.name: ${HOSTNAME}-node
 # Refer to: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#bootstrap.memory_lock
 #
 bootstrap.memory_lock: true
+indices.memory.index_buffer_size: {{ es_memory_index_buffer_size }}
+
 #removed this as nolonger supported         bootstrap.mlockall: true
 #
 # Make sure that the heap size is set to about half the memory available
