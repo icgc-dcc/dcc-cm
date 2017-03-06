@@ -21,7 +21,8 @@ WORKDIR $DCC_HOME
 #
 # Elasticsearch installation
 #
-ADD http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.4.deb $DCC_HOME/elasticsearch.deb
+ENV ES_SKIP_SET_KERNEL_PARAMETERS true
+ADD https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.1.2.deb $DCC_HOME/elasticsearch.deb
 RUN \
   dpkg -i -E --force-depends $DCC_HOME/elasticsearch.deb && \
   rm $DCC_HOME/elasticsearch.deb && \
