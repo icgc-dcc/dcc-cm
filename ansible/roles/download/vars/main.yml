@@ -1,6 +1,6 @@
 # Copyright 2016(c) The Ontario Institute for Cancer Research. All rights reserved.
 
-download_dist_version: "4.2.18"
+download_dist_version: "5.0.0"
 
 install_dir: /srv
 download_name: dcc-download-server
