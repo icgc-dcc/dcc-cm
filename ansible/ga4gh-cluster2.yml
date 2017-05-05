@@ -7,7 +7,8 @@
   vars:
     elasticsearch_version: 5.1.2
     es_cluster_name: elasticsearch
+    es_num_nodes: 15
+    es_node_name_prefix: ga4gh-node-
   roles: 
     - elasticsearch
-    - jdk-ppa
 

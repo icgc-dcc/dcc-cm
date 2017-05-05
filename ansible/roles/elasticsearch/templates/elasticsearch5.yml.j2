@@ -45,7 +45,16 @@ network.host: ${HOSTNAME}
 # Pass an initial list of hosts to perform discovery when new node is started:
 # The default list of hosts is ["127.0.0.1", "[::1]"]
 #
-discovery.zen.ping.unicast.hosts: ["ga4gh-elasticsearch-1","ga4gh-elasticsearch-2","ga4gh-elasticsearch-3","ga4gh-elasticsearch-4","ga4gh-elasticsearch-5","ga4gh-elasticsearch-6","ga4gh-elasticsearch-7","ga4gh-elasticsearch-8","ga4gh-elasticsearch-9","ga4gh-elasticsearch-10"]
+discovery.zen.ping.unicast.hosts: [
+{% for i in range (1, es_num_nodes+1) %}
+ {% if i < es_num_nodes %}
+ "{{ es_node_name_prefix }}{{ i }}",
+ {% else %}
+ "{{ es_node_name_prefix }}{{ i }}"
+ {% endif %}
+{% endfor %}
+]
+
 
 http:
   max_initial_line_length: 1000kb
