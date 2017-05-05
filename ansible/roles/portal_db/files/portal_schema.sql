@@ -10,42 +10,90 @@
 -- 
 -- GRANT SELECT, INSERT ON user_gene_set TO dcc;
 
-
-/* Create tables */
-
 CREATE TABLE IF NOT EXISTS user_gene_set(
    id   UUID NOT NULL,
    data TEXT NOT NULL,
    
    PRIMARY KEY(id) 
 );
+GRANT SELECT, INSERT, UPDATE, DELETE ON user_gene_set TO dcc;
 
+--------------------------------------------------------------------------------
+ 
 CREATE TABLE IF NOT EXISTS enrichment_analysis(
-   id   UUID NOT NULL,
-   data TEXT NOT NULL,
-   version INT,
+   id      UUID NOT NULL,
+   version INT,   
+   data    TEXT NOT NULL,
    
    PRIMARY KEY(id) 
 );
-
 GRANT SELECT, INSERT, UPDATE, DELETE ON enrichment_analysis TO dcc;
 
+-------------------------------------------------------------------------------- 
+
 CREATE TABLE IF NOT EXISTS union_analysis(
-   id   UUID NOT NULL,
-   data TEXT NOT NULL,
-   version INT,
+   id      UUID NOT NULL,
+   version INT,   
+   data    TEXT NOT NULL,
 
    PRIMARY KEY(id)
 );
-
 GRANT SELECT, INSERT, UPDATE, DELETE ON union_analysis TO dcc;
 
+-------------------------------------------------------------------------------- 
+
 CREATE TABLE IF NOT EXISTS entity_set(
-   id   UUID NOT NULL,
-   data TEXT NOT NULL,
-   version INT,
+   id      UUID NOT NULL,
+   version INT,   
+   data    TEXT NOT NULL,
 
    PRIMARY KEY(id)
 );
-
 GRANT SELECT, INSERT, UPDATE, DELETE ON entity_set TO dcc;
+
+-------------------------------------------------------------------------------- 
+
+CREATE TABLE IF NOT EXISTS phenotype_analysis(
+   id      UUID NOT NULL,
+   version INT,   
+   data    TEXT NOT NULL,
+
+   PRIMARY KEY(id)
+);
+GRANT SELECT, INSERT, UPDATE, DELETE ON phenotype_analysis TO dcc;
+
+-------------------------------------------------------------------------------- 
+
+CREATE TABLE IF NOT EXISTS survival_analysis(
+   id      UUID NOT NULL,
+   version INT,   
+   data    TEXT NOT NULL,
+
+   PRIMARY KEY(id)
+);
+GRANT SELECT, INSERT, UPDATE, DELETE ON survival_analysis TO dcc;
+
+-------------------------------------------------------------------------------- 
+
+CREATE TABLE IF NOT EXISTS manifest(
+   id      UUID NOT NULL,
+   version INT,   
+   data    TEXT NOT NULL,
+
+   PRIMARY KEY(id)
+);
+GRANT SELECT, INSERT, UPDATE, DELETE ON manifest TO dcc;
+
+--------------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS oncogrid_analysis(
+   id   UUID NOT NULL,
+   version INT,
+   data TEXT NOT NULL,
+
+   PRIMARY KEY(id)
+);
+GRANT SELECT, INSERT, UPDATE, DELETE ON oncogrid_analysis TO dcc;
+
+--------------------------------------------------------------------------------
+ 

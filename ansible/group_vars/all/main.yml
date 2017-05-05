@@ -28,7 +28,7 @@ release_name: test18-0-0
 ################################################################################
 
 dictionary_version: 0.11c
-elasticsearch_version: 1.4.4
+elasticsearch_version: 5.1.2
 shiro_version: 1.2.1
 mongodb_version: 2.4.1
 postgresql_version: 9.2
@@ -39,7 +39,7 @@ cli_version: 3.8.14.2-SNAPSHOT
 downloader_workflows_dist_version: 3.8.6.2-SNAPSHOT
 exporter_dist_version: 3.8.27-SNAPSHOT
 identifier_dist_version: 4.0.2-SNAPSHOT
-portal_dist_version: 4.3.6-SNAPSHOT
+portal_dist_version: 5.0.6
 
 ################################################################################
 # DCC Resources, DCC Dependencies

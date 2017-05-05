@@ -5,7 +5,7 @@ release_name: dcc-release-client
 release_home: "{{ install_dir }}/{{ release_name }}"
 release_conf: "{{ release_home }}/conf"
 
-release_dist_version: 4.2.4
+release_dist_version: 5.0.0
 
 release_dist_name: dcc-release-client
 release_dist_fullname: "{{ release_dist_name }}-{{ release_dist_version }}"

@@ -2,8 +2,7 @@
 
 Collection of CM files and automation for DCC operational environments.
 
-
-## Projects 
+## Modules 
 
 ### [Ansible](ansible/README.md)
 Ansible scripts for provisioning ETL, Portal, Downloader and Submission systems as well as the Hadoop cluster powering these systems. 
@@ -15,3 +14,6 @@ Module for the Docker containers used for provisioning software on docker hosts.
 production and can be considered experimental. 
 
 Contains docker files for CDH and an Elasticsearch, Logstash, Kibana stack. 
+
+### [IDE](ide/README.md)
+Module containing configuration files for IDE development.
