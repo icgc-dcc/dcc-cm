@@ -17,3 +17,6 @@ Contains docker files for CDH and an Elasticsearch, Logstash, Kibana stack.
 
 ### [IDE](ide/README.md)
 Module containing configuration files for IDE development.
+
+### [Terraform](terraform/README.md)
+Module for describing infrastrucure as code.
