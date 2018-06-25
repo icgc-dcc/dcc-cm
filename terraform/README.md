@@ -6,4 +6,4 @@ For more information about terraform click here: [Terraform](https://www.terrafo
 
 ## Current Modules
 
-* Openstack
+* [Openstack](openstack/README.md)
