@@ -84,7 +84,7 @@ resource "openstack_compute_instance_v2" "jenkins_slave" {
 }
 
 resource "openstack_compute_floatingip_associate_v2" "jenkins_ip" {
-  floating_ip = "10.30.134.182"
+  floating_ip = "10.30.134.32"
   instance_id = "${openstack_compute_instance_v2.jenkins_slave.id}"
 }
 
@@ -106,7 +106,7 @@ resource "openstack_compute_instance_v2" "dcc_portal_dev" {
 }
 
 resource "openstack_compute_floatingip_associate_v2" "dcc_portal_dev_ip" {
-  floating_ip = "10.30.134.50"
+  floating_ip = "10.30.134.33"
   instance_id = "${openstack_compute_instance_v2.dcc_portal_dev.id}"
 }
 
@@ -128,6 +128,74 @@ resource "openstack_compute_instance_v2" "dcc_portal_staging" {
 }
 
 resource "openstack_compute_floatingip_associate_v2" "dcc_portal_staging_ip" {
-  floating_ip = "10.30.134.64"
+  floating_ip = "10.30.134.34"
   instance_id = "${openstack_compute_instance_v2.dcc_portal_staging.id}"
+}
+
+# Elasticsearch Cluster
+resource "openstack_compute_instance_v2" "dcc_elasticsearch" {
+  name            = "dcc-elasticsearch-${count.index}"
+  image_id        = "${var.ubuntu_18}"
+  flavor_id       = "${var.xlarge}"
+  key_pair        = "dusan"
+  security_groups = ["default", "${openstack_networking_secgroup_v2.microservice_sec_group.id}"]
+  count           = 10
+
+  metadata {
+    app = "dcc-elasticsearch"
+  }
+
+  network {
+    name = "sweng-dev-net"
+  }
+}
+
+resource "openstack_compute_floatingip_associate_v2" "dcc_elasticsearch0_ip" {
+  floating_ip = "10.30.134.10"
+  instance_id = "${openstack_compute_instance_v2.dcc_elasticsearch.0.id}"
+}
+
+resource "openstack_compute_floatingip_associate_v2" "dcc_elasticsearch1_ip" {
+  floating_ip = "10.30.134.11"
+  instance_id = "${openstack_compute_instance_v2.dcc_elasticsearch.1.id}"
+}
+
+resource "openstack_compute_floatingip_associate_v2" "dcc_elasticsearch2_ip" {
+  floating_ip = "10.30.134.12"
+  instance_id = "${openstack_compute_instance_v2.dcc_elasticsearch.2.id}"
+}
+
+resource "openstack_compute_floatingip_associate_v2" "dcc_elasticsearch3_ip" {
+  floating_ip = "10.30.134.13"
+  instance_id = "${openstack_compute_instance_v2.dcc_elasticsearch.3.id}"
+}
+
+resource "openstack_compute_floatingip_associate_v2" "dcc_elasticsearch4_ip" {
+  floating_ip = "10.30.134.14"
+  instance_id = "${openstack_compute_instance_v2.dcc_elasticsearch.4.id}"
+}
+
+resource "openstack_compute_floatingip_associate_v2" "dcc_elasticsearch5_ip" {
+  floating_ip = "10.30.134.15"
+  instance_id = "${openstack_compute_instance_v2.dcc_elasticsearch.5.id}"
+}
+
+resource "openstack_compute_floatingip_associate_v2" "dcc_elasticsearch6_ip" {
+  floating_ip = "10.30.134.16"
+  instance_id = "${openstack_compute_instance_v2.dcc_elasticsearch.6.id}"
+}
+
+resource "openstack_compute_floatingip_associate_v2" "dcc_elasticsearch7_ip" {
+  floating_ip = "10.30.134.17"
+  instance_id = "${openstack_compute_instance_v2.dcc_elasticsearch.7.id}"
+}
+
+resource "openstack_compute_floatingip_associate_v2" "dcc_elasticsearch8_ip" {
+  floating_ip = "10.30.134.18"
+  instance_id = "${openstack_compute_instance_v2.dcc_elasticsearch.8.id}"
+}
+
+resource "openstack_compute_floatingip_associate_v2" "dcc_elasticsearch9_ip" {
+  floating_ip = "10.30.134.19"
+  instance_id = "${openstack_compute_instance_v2.dcc_elasticsearch.9.id}"
 }

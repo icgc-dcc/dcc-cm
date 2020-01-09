@@ -3,3 +3,6 @@ ansible/tasks/*_bootstrap_hosts*
 ansible/vars/main.yml
 setup_cluster.py
 setup_node.py
+
+terraform.tfvars
+terraform.tfstate
