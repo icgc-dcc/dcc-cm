@@ -1,0 +1,67 @@
+- name: Provision Elasticsearch
+  hosts: elasticsearch
+  remote_user: ubuntu
+  become: yes
+
+  tasks:
+    - name: Run the equivalent of "apt-get update" as a separate step
+      apt:
+        update_cache: yes
+
+    - name: Update all packages to the latest version
+      apt:
+        upgrade: yes
+
+    - name: openjdk
+      apt:
+        name: openjdk-8-jdk
+
+    - name: Installs elasticsearch
+      apt:
+        deb: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.7.deb
+
+    - name: Create a directory if it does not exist
+      file:
+        path: /data
+        state: directory
+        mode: '0755'
+
+    - name: Fixing Permissions
+      command: chown root:elasticsearch /data
+
+    - name: Fixing Permissions
+      command: chmod 777 /data
+
+    - name: Copy over jvm config
+      copy:
+        src: files/jvm.options
+        dest: /etc/elasticsearch/jvm.options
+        owner: root
+        group: elasticsearch
+
+    - name: Copy over Elasticsearch config
+      copy:
+        src: files/elasticsearch.yml
+        dest: /etc/elasticsearch/elasticsearch.yml
+        owner: root
+        group: elasticsearch
+
+    - name: Create systemd config directory
+      file:
+        path: /etc/systemd/system/elasticsearch.service.d/
+        recurse: yes
+        state: directory
+
+    - name: Override memlock settings on OS
+      copy:
+        src: files/override.conf
+        dest: /etc/systemd/system/elasticsearch.service.d/override.conf
+        owner: root
+    
+    - name: Reload systemd
+      command: sudo systemctl daemon-reload
+
+    - name: Restart Elasticsearch
+      service:
+        name: elasticsearch
+        state: restarted
