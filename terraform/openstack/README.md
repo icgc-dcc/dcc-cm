@@ -6,8 +6,8 @@ Uses an artifactory backend.
 ## Infrastrucure
 
 ### Networking
-3x floating IPs
+13x floating IPs
 1x Security Group
 
 ### Compute
-3x Compute Instances
+13x Compute Instances
